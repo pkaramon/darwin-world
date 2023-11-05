@@ -6,23 +6,41 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AnimalTest {
+    private static class RectMoveValidator implements MoveValidator {
+        public final int HEIGHT = 5;
+        public final int WIDTH = 5;
+
+        @Override
+        public boolean canMoveTo(Vector2d position) {
+            int x = position.getX();
+            int y = position.getY();
+            return x >=0 && x < WIDTH && y >= 0 && y < HEIGHT;
+        }
+    }
+
+    private final MoveValidator moveValidator = new RectMoveValidator();
 
     @Test
-    void newAnimalIsCreatedAtBoardCenterFacingNorth() {
+    void newAnimalIsCreatedAtDefaultPositionFacingNorth() {
         Animal a = new Animal();
 
-        assertTrue(a.isAt(Animal.MAP_CENTER));
+        assertTrue(a.isAt(Animal.DEFAULT_POSITION));
         assertTrue(a.facesDirection(MapDirection.NORTH));
     }
 
     @Test
-    void toString_printsPositionAndOrientation() {
+    void toString_printsOrientationIndicator() {
         Animal a = new Animal(new Vector2d(2, 3));
-        Animal b = new Animal(new Vector2d(3, 4));
-        b.move(MoveDirection.RIGHT);
+        assertEquals("^", a.toString());
 
-        assertEquals("pozycja=(2,3), orientacja=Północ", a.toString());
-        assertEquals("pozycja=(3,4), orientacja=Wschód", b.toString());
+        a.move(MoveDirection.RIGHT, moveValidator);
+        assertEquals(">", a.toString());
+
+        a.move(MoveDirection.RIGHT, moveValidator);
+        assertEquals("v", a.toString());
+
+        a.move(MoveDirection.RIGHT, moveValidator);
+        assertEquals("<", a.toString());
     }
 
     @Test
@@ -40,7 +58,7 @@ class AnimalTest {
         };
 
         for (int i = 0; i < moves.length; i++){
-            a.move(moves[i]);
+            a.move(moves[i], moveValidator);
             assertTrue(a.facesDirection(expectedDirectionAfter[i]));
         }
     }
@@ -49,38 +67,40 @@ class AnimalTest {
     void move_ForwardOrBackward_MovesForwardOrBackwardInCurrentDirection() {
         Animal a = new Animal(new Vector2d(2, 2));
 
-        a.move(MoveDirection.FORWARD);
+        a.move(MoveDirection.FORWARD, moveValidator);
         assertTrue(a.isAt(new Vector2d(2, 3)));
 
-        a.move(MoveDirection.BACKWARD);
+        a.move(MoveDirection.BACKWARD, moveValidator);
         assertTrue(a.isAt(new Vector2d(2, 2)));
 
-        a.move(MoveDirection.LEFT);
-        a.move(MoveDirection.FORWARD);
+        a.move(MoveDirection.LEFT, moveValidator);
+        a.move(MoveDirection.FORWARD, moveValidator);
         assertTrue(a.isAt(new Vector2d(1, 2)));
 
-        a.move(MoveDirection.BACKWARD);
+        a.move(MoveDirection.BACKWARD, moveValidator);
         assertTrue(a.isAt(new Vector2d(2, 2)));
     }
 
     @Test
     void move_TryingToMoveOutOfBounds_CallGetsIgnored() {
-        Animal a = new Animal(Animal.MAP_LOWER_LEFT);
-        a.move(MoveDirection.BACKWARD);
-        assertTrue(a.isAt(Animal.MAP_LOWER_LEFT));
+        Animal a = new Animal(new Vector2d(0,0));
+        a.move(MoveDirection.BACKWARD, moveValidator);
+        System.out.println(a.getPosition());
+        assertTrue(a.isAt(new Vector2d(0,0)));
 
-        a.move(MoveDirection.LEFT);
-        a.move(MoveDirection.FORWARD);
-        assertTrue(a.isAt(Animal.MAP_LOWER_LEFT));
+        a.move(MoveDirection.LEFT, moveValidator);
+        a.move(MoveDirection.FORWARD, moveValidator);
+        assertTrue(a.isAt(new Vector2d(0,0)));
 
 
-        Animal b = new Animal(Animal.MAP_UPPER_RIGHT);
-        b.move(MoveDirection.FORWARD);
-        assertTrue(b.isAt(Animal.MAP_UPPER_RIGHT));
+        Animal b = new Animal(new Vector2d(4,4));
+        b.move(MoveDirection.FORWARD, moveValidator);
+        System.out.println(b.getPosition());
+        assertTrue(b.isAt(new Vector2d(4,4)));
 
-        b.move(MoveDirection.RIGHT);
-        b.move(MoveDirection.FORWARD);
-        assertTrue(b.isAt(Animal.MAP_UPPER_RIGHT));
+        b.move(MoveDirection.RIGHT, moveValidator);
+        b.move(MoveDirection.FORWARD, moveValidator);
+        assertTrue(b.isAt(new Vector2d(4,4)));
     }
 
 }

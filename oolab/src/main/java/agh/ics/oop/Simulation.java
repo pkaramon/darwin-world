@@ -3,29 +3,39 @@ package agh.ics.oop;
 import agh.ics.oop.model.Animal;
 import agh.ics.oop.model.MoveDirection;
 import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.WorldMap;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Simulation {
     private final List<MoveDirection> moves;
     private final List<Animal> animals;
+    private final WorldMap map;
 
-    public Simulation(List<MoveDirection> moves, List<Vector2d> initialPositions) {
+    public Simulation(List<MoveDirection> moves, List<Vector2d> initialPositions, WorldMap map) {
         this.moves = moves;
-        this.animals = initialPositions.stream().map(Animal::new).collect(Collectors.toList());
+        this.animals = new ArrayList<>();
+        this.map = map;
+        initializeMapAndAnimals(initialPositions);
+    }
+
+    private void initializeMapAndAnimals(List<Vector2d> initialPositions) {
+        for (Vector2d position: initialPositions) {
+            Animal animal = new Animal(position);
+            if(map.place(animal)) {
+                animals.add(animal);
+            }
+        }
     }
 
     public void run() {
         int animalIndex = 0;
         for (MoveDirection mv: moves) {
             Animal animal = animals.get(animalIndex);
-            animal.move(mv);
-
-            String message = "Zwierzę %d: %s".formatted(animalIndex, animal);
-            System.out.println(message);
-
+            map.move(animal, mv);
+            System.out.println(map);
             animalIndex = (animalIndex + 1) % animals.size();
         }
     }

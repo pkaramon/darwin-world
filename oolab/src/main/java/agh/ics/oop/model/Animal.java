@@ -1,9 +1,7 @@
 package agh.ics.oop.model;
 
 public class Animal {
-    public static final Vector2d MAP_LOWER_LEFT = new Vector2d(0,0);
-    public static final Vector2d MAP_UPPER_RIGHT = new Vector2d(4,4);
-    public static final Vector2d MAP_CENTER = new Vector2d(2,2);
+    public static final Vector2d DEFAULT_POSITION = new Vector2d(2, 2);
 
     private Vector2d position;
     private MapDirection orientation;
@@ -14,12 +12,16 @@ public class Animal {
     }
 
     public Animal() {
-        this(MAP_CENTER);
+        this(DEFAULT_POSITION);
     }
 
     @Override
     public String toString() {
-        return "pozycja=%s, orientacja=%s".formatted(position, orientation);
+        return orientation.indicator();
+    }
+
+    public Vector2d getPosition() {
+        return position;
     }
 
     public boolean isAt(Vector2d position) {
@@ -30,17 +32,17 @@ public class Animal {
         return this.orientation.equals(dir);
     }
 
-    public void move(MoveDirection direction) {
-        switch(direction) {
-            case RIGHT ->  orientation = orientation.next();
+    public void move(MoveDirection direction, MoveValidator moveValidator) {
+        switch (direction) {
+            case RIGHT -> orientation = orientation.next();
             case LEFT -> orientation = orientation.previous();
-            case FORWARD ->  setPosition(position.add(orientation.toUnitVector()));
-            case BACKWARD ->   setPosition( position.subtract(orientation.toUnitVector()));
+            case FORWARD -> setPosition(position.add(orientation.toUnitVector()), moveValidator);
+            case BACKWARD -> setPosition(position.subtract(orientation.toUnitVector()), moveValidator);
         }
     }
 
-    private void setPosition(Vector2d newPosition) {
-        if(newPosition.follows(MAP_LOWER_LEFT) && newPosition.precedes(MAP_UPPER_RIGHT))        {
+    private void setPosition(Vector2d newPosition, MoveValidator validator) {
+        if (validator.canMoveTo(newPosition)) {
             position = newPosition;
         }
     }
