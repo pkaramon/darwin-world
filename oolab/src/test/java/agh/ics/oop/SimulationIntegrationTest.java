@@ -15,7 +15,7 @@ class SimulationIntegrationTest {
     }
 
     private List<Animal> runSimulationWith(List<String> options, List<Vector2d> initialPositions, int width, int height) {
-        WorldMap map = new RectangularMap(width, height);
+        WorldMap<Animal, Vector2d> map = new RectangularMap(width, height);
 
         Simulation s = new Simulation(OptionsParser.parse(options), initialPositions, map);
         s.run();
@@ -24,13 +24,13 @@ class SimulationIntegrationTest {
 
     @Test
     void run_NoMoves() {
-        List<Vector2d> initialPositions = List.of(new Vector2d(2, 2), new Vector2d(3, 4));
+        List<Vector2d> initialPositions = List.of(new Vector2d(0, 0), new Vector2d(1, 1));
         List<String> options = List.of();
 
-        List<Animal> finalState = runSimulationWith(options, initialPositions, 4, 4);
+        List<Animal> finalState = runSimulationWith(options, initialPositions, 2, 2);
 
-        assertAnimalState(new Vector2d(2, 2), MapDirection.NORTH, finalState.get(0));
-        assertAnimalState(new Vector2d(3, 4), MapDirection.NORTH, finalState.get(1));
+        assertAnimalState(new Vector2d(0, 0), MapDirection.NORTH, finalState.get(0));
+        assertAnimalState(new Vector2d(1, 1), MapDirection.NORTH, finalState.get(1));
     }
 
     @Test
@@ -47,7 +47,7 @@ class SimulationIntegrationTest {
         );
         List<Vector2d> positions = List.of(new Vector2d(2, 2), new Vector2d(3, 4));
 
-        List<Animal> finalState = runSimulationWith(options, positions, 4, 4);
+        List<Animal> finalState = runSimulationWith(options, positions, 5, 5);
 
         assertAnimalState(new Vector2d(2, 0), MapDirection.SOUTH, finalState.get(0));
         assertAnimalState(new Vector2d(3, 4), MapDirection.NORTH, finalState.get(1));
