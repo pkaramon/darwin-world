@@ -12,8 +12,8 @@ public enum MapDirection {
     private final String indicator;
     private final Vector2d unitVector;
 
-    MapDirection(String longString, String indicator, Vector2d unitVector) {
-        this.string = longString;
+    MapDirection(String string, String indicator, Vector2d unitVector) {
+        this.string = string;
         this.indicator = indicator;
         this.unitVector = unitVector;
     }

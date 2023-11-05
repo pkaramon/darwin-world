@@ -116,7 +116,6 @@ class SimulationIntegrationTest {
     void run_TryingToEscapeFromMap() {
         int width = 7;
         int height = 3;
-        System.out.println("START---------------------------");
         List<Vector2d> initialPositions = List.of(
                 new Vector2d(width - 1, height - 1),
                 new Vector2d(0, 0),
