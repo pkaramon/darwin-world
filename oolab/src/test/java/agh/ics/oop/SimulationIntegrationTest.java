@@ -1,12 +1,11 @@
 package agh.ics.oop;
 
-import agh.ics.oop.model.Animal;
-import agh.ics.oop.model.MapDirection;
-import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SimulationIntegrationTest {
@@ -15,10 +14,23 @@ class SimulationIntegrationTest {
         assertTrue(animal.facesDirection(expectedOrientation));
     }
 
-    private List<Animal> runSimulationWith(List<String> options, List<Vector2d> initialPositions) {
-        Simulation s = new Simulation(OptionsParser.parse(options), initialPositions);
+    private List<Animal> runSimulationWith(List<String> options, List<Vector2d> initialPositions, int width, int height) {
+        WorldMap<Animal, Vector2d> map = new RectangularMap(width, height);
+
+        Simulation s = new Simulation(OptionsParser.parse(options), initialPositions, map);
         s.run();
         return s.getAnimalsState();
+    }
+
+    @Test
+    void run_NoMoves() {
+        List<Vector2d> initialPositions = List.of(new Vector2d(0, 0), new Vector2d(1, 1));
+        List<String> options = List.of();
+
+        List<Animal> finalState = runSimulationWith(options, initialPositions, 2, 2);
+
+        assertAnimalState(new Vector2d(0, 0), MapDirection.NORTH, finalState.get(0));
+        assertAnimalState(new Vector2d(1, 1), MapDirection.NORTH, finalState.get(1));
     }
 
     @Test
@@ -26,7 +38,7 @@ class SimulationIntegrationTest {
         List<String> options = List.of(
                 "f", "b",
                 "r", "l",
-                "f","f",
+                "f", "f",
                 "r", "r",
                 "f", "f",
                 "f", "f",
@@ -35,22 +47,12 @@ class SimulationIntegrationTest {
         );
         List<Vector2d> positions = List.of(new Vector2d(2, 2), new Vector2d(3, 4));
 
-        List<Animal> finalState = runSimulationWith(options, positions);
+        List<Animal> finalState = runSimulationWith(options, positions, 5, 5);
 
-        assertAnimalState(new Vector2d(3, 0), MapDirection.SOUTH, finalState.get(0));
-        assertAnimalState(new Vector2d(2, 4), MapDirection.NORTH, finalState.get(1));
-    }
-
-    @Test
-    void run_NoMoves() {
-        List<Vector2d> initialPositions = List.of(new Vector2d(2, 2), new Vector2d(3, 4));
-        List<String> options = List.of();
-
-        List<Animal> finalState = runSimulationWith(options, initialPositions);
-
-        assertAnimalState(new Vector2d(2, 2), MapDirection.NORTH, finalState.get(0));
+        assertAnimalState(new Vector2d(2, 0), MapDirection.SOUTH, finalState.get(0));
         assertAnimalState(new Vector2d(3, 4), MapDirection.NORTH, finalState.get(1));
     }
+
 
     @Test
     void run_MovingAroundAndChangingDirections() {
@@ -61,14 +63,39 @@ class SimulationIntegrationTest {
                 "f", "b"
         );
 
-        List<Animal> finalState = runSimulationWith(options, initialPositions);
+        List<Animal> finalState = runSimulationWith(options, initialPositions, 4, 4);
 
         assertAnimalState(new Vector2d(1, 1), MapDirection.EAST, finalState.get(0));
         assertAnimalState(new Vector2d(3, 1), MapDirection.WEST, finalState.get(1));
     }
 
     @Test
-    void run_MovementsWithinBoard_SomeOptionsAreInvalid() {
+    void run_TestingCollisionsOnStartAndThroughoutSimulation() {
+        int width = 6, height = 4;
+        List<Vector2d> initialPositions = List.of(
+                new Vector2d(1, 2),
+                new Vector2d(1, 2), // ought to be discarded
+                new Vector2d(2, 2),
+                new Vector2d(3, 2),
+                new Vector2d(2, 2) // ought to be discarded
+        );
+        List<String> options = List.of(
+                "r", "l", "l",
+                "f", "f", "f",
+                "f", "b", "r",
+                "r", "b", "f"
+        );
+
+        List<Animal> finalState = runSimulationWith(options, initialPositions, width, height);
+
+        assertEquals(3, finalState.size());
+        assertAnimalState(new Vector2d(1, 2), MapDirection.SOUTH, finalState.get(0));
+        assertAnimalState(new Vector2d(2, 2), MapDirection.WEST, finalState.get(1));
+        assertAnimalState(new Vector2d(3, 3), MapDirection.NORTH, finalState.get(2));
+    }
+
+    @Test
+    void run_SomeOptionsAreInvalid() {
         List<Vector2d> initialPositions = List.of(new Vector2d(3, 3), new Vector2d(0, 1));
         List<String> options = List.of(
                 "b", "r",
@@ -78,7 +105,7 @@ class SimulationIntegrationTest {
                 "r", "asdfasfd"
         );
 
-        List<Animal> finalState = runSimulationWith(options, initialPositions);
+        List<Animal> finalState = runSimulationWith(options, initialPositions, 4, 4);
 
         assertAnimalState(new Vector2d(2, 2), MapDirection.NORTH, finalState.get(0));
         assertAnimalState(new Vector2d(0, 0), MapDirection.SOUTH, finalState.get(1));
@@ -86,12 +113,14 @@ class SimulationIntegrationTest {
 
 
     @Test
-    void run_TryingToEscapeFromBoardFromMoreVertices() {
+    void run_TryingToEscapeFromMap() {
+        int width = 7;
+        int height = 3;
         List<Vector2d> initialPositions = List.of(
-                Animal.MAP_UPPER_RIGHT,
-                Animal.MAP_LOWER_LEFT,
-                new Vector2d(0, Animal.MAP_UPPER_RIGHT.getY()),
-                new Vector2d(Animal.MAP_UPPER_RIGHT.getX(), 0)
+                new Vector2d(width - 1, height - 1),
+                new Vector2d(0, 0),
+                new Vector2d(0, height - 1),
+                new Vector2d(width - 1, 0)
         );
         List<String> options = List.of(
                 "f", "b", "l", "r",
@@ -101,7 +130,7 @@ class SimulationIntegrationTest {
                 "f", "b", "l", "r"
         );
 
-        List<Animal> finalState = runSimulationWith(options, initialPositions);
+        List<Animal> finalState = runSimulationWith(options, initialPositions, width, height);
 
         assertAnimalState(initialPositions.get(0), MapDirection.NORTH, finalState.get(0));
         assertAnimalState(initialPositions.get(1), MapDirection.NORTH, finalState.get(1));
