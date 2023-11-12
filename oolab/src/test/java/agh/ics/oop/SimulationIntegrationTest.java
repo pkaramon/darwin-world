@@ -15,7 +15,7 @@ class SimulationIntegrationTest {
     }
 
     private List<Animal> runSimulationWith(List<String> options, List<Vector2d> initialPositions, int width, int height) {
-        WorldMap<Animal, Vector2d> map = new RectangularMap(width, height);
+        WorldMap map = new RectangularMap(width, height);
 
         Simulation s = new Simulation(OptionsParser.parse(options), initialPositions, map);
         s.run();

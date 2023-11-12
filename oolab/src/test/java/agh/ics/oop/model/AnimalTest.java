@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AnimalTest {
-    private static class RectMoveValidator implements MoveValidator<Vector2d> {
+    private static class RectMoveValidator implements MoveValidator {
         public final int HEIGHT = 5;
         public final int WIDTH = 5;
 
@@ -18,7 +18,7 @@ class AnimalTest {
         }
     }
 
-    private final MoveValidator<Vector2d> moveValidator = new RectMoveValidator();
+    private final MoveValidator moveValidator = new RectMoveValidator();
 
     @Test
     void newAnimalIsCreatedAtDefaultPositionFacingNorth() {

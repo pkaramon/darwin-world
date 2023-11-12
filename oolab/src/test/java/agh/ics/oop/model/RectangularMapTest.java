@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class RectangularMapTest {
     @Test
     void isOccupied_ReturnsTrueIfPositionIsTakenOrOutOfBoundsFalseOtherwise() {
-        WorldMap<Animal, Vector2d> map = new RectangularMap(4, 4);
+        WorldMap map = new RectangularMap(4, 4);
         Animal a = new Animal(new Vector2d(1, 1));
         Animal b = new Animal(new Vector2d(2, 3));
         map.place(a);
@@ -25,7 +25,7 @@ class RectangularMapTest {
 
     @Test
     void objectAt_ReturnsAnimalIfPresentNullOtherwise() {
-        WorldMap<Animal, Vector2d> map = new RectangularMap(4, 4);
+        WorldMap map = new RectangularMap(4, 4);
         Animal a = new Animal(new Vector2d(1, 1));
         Animal b = new Animal(new Vector2d(2, 3));
         map.place(a);
@@ -40,7 +40,7 @@ class RectangularMapTest {
 
     @Test
     void canMoveTo_PositionIsEmptyAndWithinBounds_ReturnsTrue() {
-        WorldMap<Animal, Vector2d> map = new RectangularMap(4, 3);
+        WorldMap map = new RectangularMap(4, 3);
 
         assertTrue(map.canMoveTo(new Vector2d(1, 2)));
         assertTrue(map.canMoveTo(new Vector2d(3, 1)));
@@ -48,7 +48,7 @@ class RectangularMapTest {
 
     @Test
     void canMoveTo_PositionIsOccupiedOrOutOfBounds_ReturnsFalse() {
-        WorldMap<Animal, Vector2d> map = new RectangularMap(4, 3);
+        WorldMap map = new RectangularMap(4, 3);
         map.place(new Animal(new Vector2d(1, 2)));
 
         assertFalse(map.canMoveTo(new Vector2d(-1, 0)));
@@ -58,7 +58,7 @@ class RectangularMapTest {
 
     @Test
     void place_PositionIsWithinBoundsAndIsNotOccupied_ReturnsTrueAndPlacesTheAnimal() {
-        WorldMap<Animal, Vector2d> map = new RectangularMap(4, 3);
+        WorldMap map = new RectangularMap(4, 3);
         Animal a = new Animal(new Vector2d(1, 0));
         Animal b = new Animal(new Vector2d(2, 2));
 
@@ -71,7 +71,7 @@ class RectangularMapTest {
 
     @Test
     void place_PositionIsOutOfBoundsOrOccupied_ReturnsFalseDoesNothing() {
-        WorldMap<Animal, Vector2d> map = new RectangularMap(4, 4);
+        WorldMap map = new RectangularMap(4, 4);
         Animal a = new Animal(new Vector2d(1, 0));
         map.place(a);
         Animal b = new Animal(new Vector2d(1, 0));
@@ -90,7 +90,7 @@ class RectangularMapTest {
 
     @Test
     void move_AnimalIsNotPresentOnMap_DoesNothing() {
-        WorldMap<Animal, Vector2d> map = new RectangularMap(4, 4);
+        WorldMap map = new RectangularMap(4, 4);
         Animal a = new Animal(new Vector2d(1, 1));
 
         map.move(a, MoveDirection.FORWARD);
@@ -101,7 +101,7 @@ class RectangularMapTest {
 
     @Test
     void move_AnimalIsPresentOnMap_MovesAnimalAccordingToDirectionIfPossible() {
-        WorldMap<Animal, Vector2d> map = new RectangularMap(4, 4);
+        WorldMap map = new RectangularMap(4, 4);
         Vector2d position = new Vector2d(1, 1);
         Vector2d newPosition = new Vector2d(1, 2);
         Animal a = new Animal(position);
@@ -118,7 +118,7 @@ class RectangularMapTest {
 
     @Test
     void move_AnimalIsPresentOnMap_RotationsDoNotAlterAnimalsPlacement() {
-        WorldMap<Animal, Vector2d> map = new RectangularMap(4, 4);
+        WorldMap map = new RectangularMap(4, 4);
         Vector2d position = new Vector2d(1, 1);
         Animal a = new Animal(position);
         map.place(a);
