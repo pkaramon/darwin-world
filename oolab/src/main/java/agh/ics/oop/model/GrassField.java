@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 public class GrassField extends AbstractWorldMap {
     private final int grassAmount;
     private final Map<Vector2d, Grass> grassElements = new HashMap<>();
+    private final MapBounds mapBounds = new MapBounds();
 
 
     public GrassField(int grassAmount) {
@@ -18,40 +19,47 @@ public class GrassField extends AbstractWorldMap {
 
     private void initializeGrassElements() {
         int upperBound = (int) Math.sqrt(10 * grassAmount);
-        RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(
-                upperBound, upperBound, grassAmount);
+        RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(upperBound, upperBound, grassAmount);
         for (Vector2d grassPosition : randomPositionGenerator) {
-            grassElements.put(grassPosition, new Grass(grassPosition));
+            Grass g = new Grass(grassPosition);
+            grassElements.put(grassPosition, g);
+            mapBounds.addElement(g);
         }
     }
 
     @Override
     public String toString() {
-        Vector2d lowerLeft = new Vector2d(0, 0);
-        Vector2d upperRight = new Vector2d(0, 0);
-
-        for (WorldElement elem : getElements()) {
-            lowerLeft = elem.getPosition().lowerLeft(lowerLeft);
-            upperRight = elem.getPosition().upperRight(upperRight);
-        }
-
-        return mapVisualizer.draw(lowerLeft, upperRight);
+        return mapVisualizer.draw(mapBounds.lowerLeft(), mapBounds.upperRight());
     }
 
+    @Override
+    public boolean place(Animal animal) {
+        if (super.place(animal)) {
+            mapBounds.addElement(animal);
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public WorldElement objectAt(Vector2d position) {
         if (super.objectAt(position) != null) {
             return super.objectAt(position);
         } else {
-            return this.grassElements.get(position);
+            return grassElements.get(position);
         }
     }
 
     @Override
-    public Collection<WorldElement> getElements() {
-        return Stream.concat(super.getElements().stream(), this.grassElements.values().stream())
-                .collect(Collectors.toList());
+    public void move(Animal animal, MoveDirection direction) {
+        mapBounds.removeElement(animal);
+        super.move(animal, direction);
+        mapBounds.addElement(animal);
+    }
 
+    @Override
+    public Collection<WorldElement> getElements() {
+        return Stream.concat(super.getElements().stream(),
+                this.grassElements.values().stream()).collect(Collectors.toList());
     }
 }
