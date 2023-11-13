@@ -15,7 +15,7 @@ public class RectangularMap extends AbstractWorldMap {
 
     @Override
     public boolean canMoveTo(Vector2d position) {
-        return withinMapBounds(position) && !isOccupied(position);
+        return super.canMoveTo(position) && withinMapBounds(position);
     }
 
     private boolean withinMapBounds(Vector2d position) {
