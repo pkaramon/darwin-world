@@ -1,6 +1,5 @@
 package agh.ics.oop.model;
 
-import agh.ics.oop.World;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
