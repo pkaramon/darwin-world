@@ -1,6 +1,6 @@
 package agh.ics.oop.model;
 
-public class Animal {
+public class Animal implements WorldElement{
     public static final Vector2d DEFAULT_POSITION = new Vector2d(2, 2);
 
     private Vector2d position;
@@ -20,6 +20,7 @@ public class Animal {
         return orientation.indicator();
     }
 
+    @Override
     public Vector2d getPosition() {
         return position;
     }
