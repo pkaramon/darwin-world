@@ -1,6 +1,10 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.World;
 import org.junit.jupiter.api.Test;
+
+import java.util.Collection;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -130,6 +134,23 @@ class RectangularMapTest {
         map.move(a, MoveDirection.RIGHT);
 
         assertSame(map.objectAt(position), a);
+    }
+
+    @Test
+    void getElements_ReturnsAllOfAnimals() {
+        WorldMap map = new RectangularMap(4, 4);
+        Animal a = new Animal(new Vector2d(1, 0));
+        Animal b = new Animal(new Vector2d(1, 2));
+        Animal c = new Animal(new Vector2d(3, 2));
+        map.place(a);
+        map.place(b);
+        map.place(c);
+
+        Collection<WorldElement> elements = map.getElements();
+
+        assertEquals(3, elements.size());
+        assertTrue(elements.containsAll( List.of(a, b, c) ));
+
     }
 
 }
