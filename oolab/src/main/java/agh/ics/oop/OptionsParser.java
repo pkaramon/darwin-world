@@ -2,20 +2,13 @@ package agh.ics.oop;
 
 import agh.ics.oop.model.MoveDirection;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OptionsParser {
 
     public static List<MoveDirection> parse(List<String> options) {
-        var directions = new ArrayList<MoveDirection>();
-
-        for(String opt: options) {
-            MoveDirection dir = parseOption(opt);
-            if(dir != null) directions.add(dir);
-        }
-
-        return directions;
+        return options.stream().map(OptionsParser::parseOption).collect(Collectors.toList());
     }
 
     private static MoveDirection parseOption(String option) {
@@ -24,7 +17,7 @@ public class OptionsParser {
             case "b" -> MoveDirection.BACKWARD;
             case "r" -> MoveDirection.RIGHT;
             case "l" -> MoveDirection.LEFT;
-            default -> null;
+            default -> throw new IllegalArgumentException(option + " is not legal move specification.");
         };
     }
 }

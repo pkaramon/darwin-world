@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OptionsParserTest {
     @Test
@@ -18,16 +18,15 @@ public class OptionsParserTest {
 
         List<MoveDirection> parsedDirections = OptionsParser.parse(options);
 
-       assertIterableEquals(expectedDirections, parsedDirections);
+        assertIterableEquals(expectedDirections, parsedDirections);
     }
 
     @Test
-    public void parse_InvalidOptions_InvalidOptionsAreDiscarded() {
+    public void parse_InvalidOptions_ExceptionIsThrown() {
         List<String> options = List.of("f", "hello", "r", "abc");
-        List<MoveDirection> expectedDirections = List.of(MoveDirection.FORWARD, MoveDirection.RIGHT);
 
-        List<MoveDirection> parsedDirections = OptionsParser.parse(options);
+        Throwable exception = assertThrows(IllegalArgumentException.class, () -> OptionsParser.parse(options));
 
-        assertIterableEquals(expectedDirections, parsedDirections);
+        assertEquals("hello is not legal move specification.", exception.getMessage());
     }
 }

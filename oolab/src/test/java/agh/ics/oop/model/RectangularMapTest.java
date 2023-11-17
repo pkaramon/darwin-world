@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class RectangularMapTest {
     @Test
-    void isOccupied_ReturnsTrueIfPositionIsTakenOrOutOfBoundsFalseOtherwise() {
+    void isOccupied_ReturnsTrueIfPositionIsTakenOrOutOfBoundsFalseOtherwise() throws PositionAlreadyOccupiedException {
         WorldMap map = new RectangularMap(4, 4);
         Animal a = new Animal(new Vector2d(1, 1));
         Animal b = new Animal(new Vector2d(2, 3));
@@ -27,7 +27,7 @@ class RectangularMapTest {
     }
 
     @Test
-    void objectAt_ReturnsAnimalIfPresentNullOtherwise() {
+    void objectAt_ReturnsAnimalIfPresentNullOtherwise() throws PositionAlreadyOccupiedException {
         WorldMap map = new RectangularMap(4, 4);
         Animal a = new Animal(new Vector2d(1, 1));
         Animal b = new Animal(new Vector2d(2, 3));
@@ -50,7 +50,7 @@ class RectangularMapTest {
     }
 
     @Test
-    void canMoveTo_PositionIsOccupiedOrOutOfBounds_ReturnsFalse() {
+    void canMoveTo_PositionIsOccupiedOrOutOfBounds_ReturnsFalse() throws PositionAlreadyOccupiedException {
         WorldMap map = new RectangularMap(4, 3);
         map.place(new Animal(new Vector2d(1, 2)));
 
@@ -60,20 +60,20 @@ class RectangularMapTest {
     }
 
     @Test
-    void place_PositionIsWithinBoundsAndIsNotOccupied_ReturnsTrueAndPlacesTheAnimal() {
+    void place_PositionIsWithinBoundsAndIsNotOccupied_PlacesTheAnimal() throws PositionAlreadyOccupiedException {
         WorldMap map = new RectangularMap(4, 3);
         Animal a = new Animal(new Vector2d(1, 0));
         Animal b = new Animal(new Vector2d(2, 2));
 
-        assertTrue(map.place(a));
-        assertTrue(map.place(b));
+        map.place(a);
+        map.place(b);
 
         assertSame(map.objectAt(new Vector2d(1, 0)), a);
         assertSame(map.objectAt(new Vector2d(2, 2)), b);
     }
 
     @Test
-    void place_PositionIsOutOfBoundsOrOccupied_ReturnsFalseDoesNothing() {
+    void place_PositionIsOutOfBoundsOrOccupied_ThrowsException() throws PositionAlreadyOccupiedException {
         WorldMap map = new RectangularMap(4, 4);
         Animal a = new Animal(new Vector2d(1, 0));
         map.place(a);
@@ -81,11 +81,13 @@ class RectangularMapTest {
         Animal c = new Animal(new Vector2d(-1, 3));
         Animal d = new Animal(new Vector2d(7, 3));
 
-        assertFalse(map.place(b));
+        Throwable exception = assertThrows(PositionAlreadyOccupiedException.class, () ->  map.place(b));
+
+        assertEquals("Position (1,0) is already occupied", exception.getMessage());
         assertSame(map.objectAt(new Vector2d(1, 0)), a);
 
-        assertFalse(map.place(c));
-        assertFalse(map.place(d));
+        assertThrows(PositionAlreadyOccupiedException.class, () ->  map.place(c));
+        assertThrows(PositionAlreadyOccupiedException.class, () ->  map.place(d));
 
         assertNull(map.objectAt(new Vector2d(-1, 3)));
         assertNull(map.objectAt(new Vector2d(7, 3)));
@@ -103,7 +105,7 @@ class RectangularMapTest {
     }
 
     @Test
-    void move_AnimalIsPresentOnMap_MovesAnimalAccordingToDirectionIfPossible() {
+    void move_AnimalIsPresentOnMap_MovesAnimalAccordingToDirectionIfPossible() throws PositionAlreadyOccupiedException {
         WorldMap map = new RectangularMap(4, 4);
         Vector2d position = new Vector2d(1, 1);
         Vector2d newPosition = new Vector2d(1, 2);
@@ -120,7 +122,7 @@ class RectangularMapTest {
     }
 
     @Test
-    void move_AnimalIsPresentOnMap_RotationsDoNotAlterAnimalsPlacement() {
+    void move_AnimalIsPresentOnMap_RotationsDoNotAlterAnimalsPlacement() throws PositionAlreadyOccupiedException {
         WorldMap map = new RectangularMap(4, 4);
         Vector2d position = new Vector2d(1, 1);
         Animal a = new Animal(position);
@@ -136,7 +138,7 @@ class RectangularMapTest {
     }
 
     @Test
-    void getElements_ReturnsAllOfAnimals() {
+    void getElements_ReturnsAllOfAnimals() throws PositionAlreadyOccupiedException {
         WorldMap map = new RectangularMap(4, 4);
         Animal a = new Animal(new Vector2d(1, 0));
         Animal b = new Animal(new Vector2d(1, 2));

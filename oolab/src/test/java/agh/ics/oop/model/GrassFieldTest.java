@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GrassFieldTest {
     @Test
-    void move_allowsAnimalToMoveOnGrassOrEmptyFieldButNotOnOtherAnimal() {
+    void move_allowsAnimalToMoveOnGrassOrEmptyFieldButNotOnOtherAnimal() throws PositionAlreadyOccupiedException {
         WorldMap map = new GrassField(1);
         Grass grass = (Grass) map.getElements().iterator().next();
         Animal a = new Animal(grass.getPosition().add(new Vector2d(0, 1)));
@@ -32,7 +32,7 @@ class GrassFieldTest {
     }
 
     @Test
-    void test_toString() {
+    void test_toString() throws PositionAlreadyOccupiedException {
         int grassCount = 40;
         WorldMap map = new GrassField(grassCount);
         Animal a = new Animal(new Vector2d(-3, 4));
@@ -69,19 +69,20 @@ class GrassFieldTest {
     }
 
     @Test
-    void place_ReturnsTrueIfAnimalWasSuccessfullyPlaceFalseOtherwise() {
+    void place_PlacesTheAnimalOrThrowsExceptionIfAlreadyOccupied() throws PositionAlreadyOccupiedException {
         WorldMap map = new GrassField(1);
         Grass firstGrass = (Grass) map.getElements().iterator().next();
 
-        assertTrue(map.place(new Animal(firstGrass.getPosition())));
-        assertTrue(map.place(new Animal(new Vector2d( -2, 3))));
-        assertTrue(map.place(new Animal( new Vector2d(-3, 5))));
-        assertFalse(map.place(new Animal( new Vector2d(-3, 5))));
+        map.place(new Animal(firstGrass.getPosition()));
+        map.place(new Animal(new Vector2d( -2, 3)));
+        map.place(new Animal( new Vector2d(-3, 5)));
+
+        assertThrows(PositionAlreadyOccupiedException.class , () -> map.place(new Animal( new Vector2d(-3, 5))));
     }
 
 
     @Test
-    void isOccupied_ThereIsGrassOrAnimalReturnsTrueFalseOtherwise() {
+    void isOccupied_ThereIsGrassOrAnimalReturnsTrueFalseOtherwise() throws PositionAlreadyOccupiedException {
         WorldMap map = new GrassField(1);
         Grass firstGrass = (Grass) map.getElements().iterator().next();
 
@@ -94,7 +95,7 @@ class GrassFieldTest {
     }
 
     @Test
-    void canMoveTo_ReturnsTrueUnlessThereIsAnimal() {
+    void canMoveTo_ReturnsTrueUnlessThereIsAnimal() throws PositionAlreadyOccupiedException {
         WorldMap map = new GrassField(1);
         Grass firstGrass = (Grass) map.getElements().iterator().next();
 
@@ -113,7 +114,7 @@ class GrassFieldTest {
 
 
     @Test
-    void objectAt_ReturnsAnimalOrGrassOrNull() {
+    void objectAt_ReturnsAnimalOrGrassOrNull() throws PositionAlreadyOccupiedException {
         WorldMap map = new GrassField(1);
         Animal animal = new Animal(new Vector2d(-3, 4));
         Grass firstGrass = (Grass) map.getElements().iterator().next();
@@ -127,7 +128,7 @@ class GrassFieldTest {
     }
 
     @Test
-    void getElements_ReturnsAllElementsOnMap() {
+    void getElements_ReturnsAllElementsOnMap() throws PositionAlreadyOccupiedException {
         WorldMap map = new GrassField(3);
         Animal a = new Animal(new Vector2d(3,4));
         map.place(a);

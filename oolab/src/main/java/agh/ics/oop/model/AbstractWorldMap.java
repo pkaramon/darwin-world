@@ -9,7 +9,15 @@ import java.util.Map;
 
 public abstract class AbstractWorldMap implements WorldMap{
     protected final Map<Vector2d, Animal> animals = new HashMap<>();
-    protected final MapVisualizer mapVisualizer = new MapVisualizer(this);
+    private final MapVisualizer mapVisualizer = new MapVisualizer(this);
+
+   abstract Boundary getCurrentBounds();
+
+    @Override
+    public String toString() {
+        Boundary boundary = getCurrentBounds();
+        return mapVisualizer.draw(boundary.lowerLeft(), boundary.upperRight());
+    }
 
     @Override
     public boolean canMoveTo(Vector2d position) {
@@ -17,12 +25,12 @@ public abstract class AbstractWorldMap implements WorldMap{
     }
 
     @Override
-    public boolean place(Animal animal) {
-        if (canMoveTo(animal.getPosition())) {
-            this.animals.put(animal.getPosition(), animal);
-            return true;
+    public void place(Animal animal) throws PositionAlreadyOccupiedException {
+        if (!canMoveTo(animal.getPosition())) {
+            throw new PositionAlreadyOccupiedException(animal.getPosition());
         }
-        return false;
+
+        this.animals.put(animal.getPosition(), animal);
     }
 
     @Override

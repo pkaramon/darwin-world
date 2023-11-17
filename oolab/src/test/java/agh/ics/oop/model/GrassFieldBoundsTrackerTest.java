@@ -4,32 +4,32 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
 
-class MapBoundsTest {
-    private MapBounds mapBounds;
+class GrassFieldBoundsTrackerTest {
+    private GrassFieldBoundsTracker grassFieldsBoundsTracker;
     @BeforeEach
     public void setUp() {
-        mapBounds = new MapBounds();
+        grassFieldsBoundsTracker = new GrassFieldBoundsTracker();
     }
 
     @Test
     public void lowerLeftCornerOfEmptyMapShouldBeZeroZero() {
-        Vector2d result = mapBounds.lowerLeft();
+        Vector2d result = grassFieldsBoundsTracker.lowerLeft();
         assertEquals(new Vector2d(0, 0), result);
     }
 
     @Test
     public void upperRightCornerOfEmptyMapShouldBeZeroZero() {
-        Vector2d result = mapBounds.upperRight();
+        Vector2d result = grassFieldsBoundsTracker.upperRight();
         assertEquals(new Vector2d(0, 0), result);
     }
 
     @Test
     public void addingOneElement() {
         WorldElement element = new Animal(new Vector2d(3, 5));
-        mapBounds.addElement(element);
+        grassFieldsBoundsTracker.addElement(element);
 
-        Vector2d lowerLeft = mapBounds.lowerLeft();
-        Vector2d upperRight = mapBounds.upperRight();
+        Vector2d lowerLeft = grassFieldsBoundsTracker.lowerLeft();
+        Vector2d upperRight = grassFieldsBoundsTracker.upperRight();
 
         assertEquals(new Vector2d(3, 5), lowerLeft);
         assertEquals(new Vector2d(3, 5), upperRight);
@@ -39,11 +39,11 @@ class MapBoundsTest {
     public void addingTwoElements() {
         WorldElement element1 = new Grass(new Vector2d(3, 5));
         WorldElement element2 = new Animal(new Vector2d(1, 2));
-        mapBounds.addElement(element1);
-        mapBounds.addElement(element2);
+        grassFieldsBoundsTracker.addElement(element1);
+        grassFieldsBoundsTracker.addElement(element2);
 
-        Vector2d lowerLeft = mapBounds.lowerLeft();
-        Vector2d upperRight = mapBounds.upperRight();
+        Vector2d lowerLeft = grassFieldsBoundsTracker.lowerLeft();
+        Vector2d upperRight = grassFieldsBoundsTracker.upperRight();
 
         assertEquals(new Vector2d(1, 2), lowerLeft);
         assertEquals(new Vector2d(3, 5), upperRight);
@@ -54,12 +54,12 @@ class MapBoundsTest {
         WorldElement element1 = new Animal(new Vector2d(3, 5));
         WorldElement element2 = new Grass(new Vector2d(1, 2));
         WorldElement element3 = new Grass(new Vector2d(6, 8));
-        mapBounds.addElement(element1);
-        mapBounds.addElement(element2);
-        mapBounds.addElement(element3);
+        grassFieldsBoundsTracker.addElement(element1);
+        grassFieldsBoundsTracker.addElement(element2);
+        grassFieldsBoundsTracker.addElement(element3);
 
-        Vector2d lowerLeft = mapBounds.lowerLeft();
-        Vector2d upperRight = mapBounds.upperRight();
+        Vector2d lowerLeft = grassFieldsBoundsTracker.lowerLeft();
+        Vector2d upperRight = grassFieldsBoundsTracker.upperRight();
 
         assertEquals(new Vector2d(1, 2), lowerLeft);
         assertEquals(new Vector2d(6, 8), upperRight);
@@ -68,12 +68,12 @@ class MapBoundsTest {
     @Test
     public void removingElement() {
         WorldElement element = new Animal(new Vector2d(2, 4));
-        mapBounds.addElement(element);
+        grassFieldsBoundsTracker.addElement(element);
 
-        mapBounds.removeElement(element);
+        grassFieldsBoundsTracker.removeElement(element);
 
-        Vector2d lowerLeft = mapBounds.lowerLeft();
-        Vector2d upperRight = mapBounds.upperRight();
+        Vector2d lowerLeft = grassFieldsBoundsTracker.lowerLeft();
+        Vector2d upperRight = grassFieldsBoundsTracker.upperRight();
 
         assertEquals(new Vector2d(0, 0), lowerLeft);
         assertEquals(new Vector2d(0, 0), upperRight);
