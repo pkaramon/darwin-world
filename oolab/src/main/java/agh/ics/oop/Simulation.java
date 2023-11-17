@@ -25,7 +25,7 @@ public class Simulation {
                 map.place(animal);
                 animals.add(animal);
             } catch(PositionAlreadyOccupiedException exception) {
-                // ignoring the error here is the desired behaviour
+                // animal cannot be placed, so we don't include it in simulation
             }
         }
    }
