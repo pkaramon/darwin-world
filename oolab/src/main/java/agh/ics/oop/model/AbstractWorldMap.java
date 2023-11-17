@@ -54,7 +54,7 @@ public abstract class AbstractWorldMap implements WorldMap {
         Vector2d oldPosition = animal.getPosition();
         animal.move(direction, this);
 
-        String message = "Animal changed from:  %s to %s, %s".formatted(
+        String message = "Animal changed from: %s to %s, %s".formatted(
                 oldInfo, animal.getPosition(), animal.toString()
         );
         mapChanged(message);
