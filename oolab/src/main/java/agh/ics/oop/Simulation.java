@@ -35,7 +35,6 @@ public class Simulation {
         for (MoveDirection mv: moves) {
             Animal animal = animals.get(animalIndex);
             map.move(animal, mv);
-            System.out.println(map);
             animalIndex = (animalIndex + 1) % animals.size();
         }
     }
