@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class SimulationIntegrationTest {
     void assertAnimalState(Vector2d expectedPosition, MapDirection expectedOrientation, Animal animal) {
@@ -14,7 +13,7 @@ class SimulationIntegrationTest {
         assertTrue(animal.facesDirection(expectedOrientation));
     }
 
-    private List<Animal> runSimulationWith(List<String> options, List<Vector2d> initialPositions, int width, int height) {
+    private List<Animal> runSimulationWith(List<String> options, List<Vector2d> initialPositions, int width, int height)  {
         WorldMap map = new RectangularMap(width, height);
 
         Simulation s = new Simulation(OptionsParser.parse(options), initialPositions, map);
@@ -23,7 +22,7 @@ class SimulationIntegrationTest {
     }
 
     @Test
-    void run_NoMoves() {
+    void run_NoMoves()  {
         List<Vector2d> initialPositions = List.of(new Vector2d(0, 0), new Vector2d(1, 1));
         List<String> options = List.of();
 
@@ -34,7 +33,7 @@ class SimulationIntegrationTest {
     }
 
     @Test
-    void run_BasicTest() {
+    void run_BasicTest()  {
         List<String> options = List.of(
                 "f", "b",
                 "r", "l",
@@ -55,7 +54,7 @@ class SimulationIntegrationTest {
 
 
     @Test
-    void run_MovingAroundAndChangingDirections() {
+    void run_MovingAroundAndChangingDirections()  {
         List<Vector2d> initialPositions = List.of(new Vector2d(0, 0), new Vector2d(2, 2));
         List<String> options = List.of(
                 "f", "b",
@@ -70,7 +69,7 @@ class SimulationIntegrationTest {
     }
 
     @Test
-    void run_TestingCollisionsOnStartAndThroughoutSimulation() {
+    void run_TestingCollisionsOnStartAndThroughoutSimulation()  {
         int width = 6, height = 4;
         List<Vector2d> initialPositions = List.of(
                 new Vector2d(1, 2),
@@ -95,7 +94,7 @@ class SimulationIntegrationTest {
     }
 
     @Test
-    void run_SomeOptionsAreInvalid() {
+    void run_SomeOptionsAreInvalid()  {
         List<Vector2d> initialPositions = List.of(new Vector2d(3, 3), new Vector2d(0, 1));
         List<String> options = List.of(
                 "b", "r",
@@ -105,10 +104,10 @@ class SimulationIntegrationTest {
                 "r", "asdfasfd"
         );
 
-        List<Animal> finalState = runSimulationWith(options, initialPositions, 4, 4);
+       Throwable exception = assertThrows(IllegalArgumentException.class,
+               () -> runSimulationWith(options, initialPositions, 4, 4));
 
-        assertAnimalState(new Vector2d(2, 2), MapDirection.NORTH, finalState.get(0));
-        assertAnimalState(new Vector2d(0, 0), MapDirection.SOUTH, finalState.get(1));
+       assertEquals("hello is not legal move specification.",exception.getMessage());
     }
 
 

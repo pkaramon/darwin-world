@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-class MapBounds {
+class GrassFieldBoundsTracker {
     private final SortedSet<WorldElement> sortedByX = new TreeSet<>(Comparator.comparingInt(e -> e.getPosition().getX()));
     private final SortedSet<WorldElement> sortedByY = new TreeSet<>(Comparator.comparingInt(e -> e.getPosition().getY()));
 

@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 public class GrassField extends AbstractWorldMap {
     private final int grassAmount;
     private final Map<Vector2d, Grass> grassElements = new HashMap<>();
-    private final MapBounds mapBounds = new MapBounds();
+    private final GrassFieldBoundsTracker boundsTracker = new GrassFieldBoundsTracker();
 
 
     public GrassField(int grassAmount) {
@@ -23,22 +23,19 @@ public class GrassField extends AbstractWorldMap {
         for (Vector2d grassPosition : randomPositionGenerator) {
             Grass g = new Grass(grassPosition);
             grassElements.put(grassPosition, g);
-            mapBounds.addElement(g);
+            boundsTracker.addElement(g);
         }
     }
 
     @Override
-    public String toString() {
-        return mapVisualizer.draw(mapBounds.lowerLeft(), mapBounds.upperRight());
+    Boundary getCurrentBounds() {
+        return new Boundary(boundsTracker.lowerLeft(), boundsTracker.upperRight());
     }
 
     @Override
-    public boolean place(Animal animal) {
-        if (super.place(animal)) {
-            mapBounds.addElement(animal);
-            return true;
-        }
-        return false;
+    public void place(Animal animal) throws PositionAlreadyOccupiedException {
+        super.place(animal);
+        boundsTracker.addElement(animal);
     }
 
     @Override
@@ -52,9 +49,9 @@ public class GrassField extends AbstractWorldMap {
 
     @Override
     public void move(Animal animal, MoveDirection direction) {
-        mapBounds.removeElement(animal);
+        boundsTracker.removeElement(animal);
         super.move(animal, direction);
-        mapBounds.addElement(animal);
+        boundsTracker.addElement(animal);
     }
 
     @Override
