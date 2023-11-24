@@ -53,16 +53,18 @@ class GrassFieldBoundsTrackerTest {
     public void addingThreeElements() {
         WorldElement element1 = new Animal(new Vector2d(3, 5));
         WorldElement element2 = new Grass(new Vector2d(1, 2));
-        WorldElement element3 = new Grass(new Vector2d(6, 8));
+        WorldElement element3 = new Grass(new Vector2d(3, 6));
+
         boundsTracker.addElement(element1);
         boundsTracker.addElement(element2);
         boundsTracker.addElement(element3);
 
-        Vector2d lowerLeft = boundsTracker.lowerLeft();
-        Vector2d upperRight = boundsTracker.upperRight();
+        assertEquals(new Vector2d(1, 2), boundsTracker.lowerLeft());
+        assertEquals(new Vector2d(3, 6), boundsTracker.upperRight());
 
-        assertEquals(new Vector2d(1, 2), lowerLeft);
-        assertEquals(new Vector2d(6, 8), upperRight);
+        boundsTracker.removeElement(element3);
+        assertEquals(new Vector2d(1, 2), boundsTracker.lowerLeft());
+        assertEquals(new Vector2d(3, 5), boundsTracker.upperRight());
     }
 
     @Test

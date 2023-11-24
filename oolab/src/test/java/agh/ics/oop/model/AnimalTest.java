@@ -85,7 +85,6 @@ class AnimalTest {
     void move_TryingToMoveOutOfBounds_CallGetsIgnored() {
         Animal a = new Animal(new Vector2d(0,0));
         a.move(MoveDirection.BACKWARD, moveValidator);
-        System.out.println(a.getPosition());
         assertTrue(a.isAt(new Vector2d(0,0)));
 
         a.move(MoveDirection.LEFT, moveValidator);
@@ -95,7 +94,6 @@ class AnimalTest {
 
         Animal b = new Animal(new Vector2d(4,4));
         b.move(MoveDirection.FORWARD, moveValidator);
-        System.out.println(b.getPosition());
         assertTrue(b.isAt(new Vector2d(4,4)));
 
         b.move(MoveDirection.RIGHT, moveValidator);

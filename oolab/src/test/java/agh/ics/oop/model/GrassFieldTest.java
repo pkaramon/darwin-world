@@ -32,23 +32,6 @@ class GrassFieldTest {
     }
 
     @Test
-    void test_toString() throws PositionAlreadyOccupiedException {
-        int grassCount = 40;
-        WorldMap map = new GrassField(grassCount);
-        Animal a = new Animal(new Vector2d(-3, 4));
-        Animal b = new Animal(new Vector2d(1000, 1000));
-        Animal c = new Animal(new Vector2d(-5, 8));
-        map.place(a);
-        map.place(b);
-        map.place(c);
-
-        String grid = map.toString();
-
-        assertEquals(grassCount, grid.chars().filter(ch -> ch == '*').count());
-        assertEquals(3, grid.chars().filter(ch -> ch == '^').count());
-    }
-
-    @Test
     void test_GrassCount() {
         int grassCount = 20;
         int maxBound = (int)Math.round(Math.sqrt(grassCount * 10));

@@ -5,15 +5,16 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 class GrassFieldBoundsTracker {
-    private final SortedSet<WorldElement> sortedByX = new TreeSet<>(Comparator.comparingInt(e -> e.getPosition().getX()));
-    private final SortedSet<WorldElement> sortedByY = new TreeSet<>(Comparator.comparingInt(e -> e.getPosition().getY()));
+    private final SortedSet<WorldElement> sortedByX = new TreeSet<>(
+            Comparator.comparingInt((WorldElement e) -> e.getPosition().getX()).thenComparing(System::identityHashCode));
+    private final SortedSet<WorldElement> sortedByY = new TreeSet<>(
+            Comparator.comparingInt((WorldElement e) -> e.getPosition().getY()).thenComparing(System::identityHashCode));
 
     public Vector2d lowerLeft() {
         if (isMapNotEmpty()) {
             return new Vector2d(this.sortedByX.first().getPosition().getX(),
-                                this.sortedByY.first().getPosition().getY());
-        }
-        else {
+                    this.sortedByY.first().getPosition().getY());
+        } else {
             return new Vector2d(0, 0);
         }
     }
@@ -21,7 +22,7 @@ class GrassFieldBoundsTracker {
     public Vector2d upperRight() {
         if (isMapNotEmpty()) {
             return new Vector2d(sortedByX.last().getPosition().getX(),
-                                sortedByY.last().getPosition().getY());
+                    sortedByY.last().getPosition().getY());
         } else {
             return new Vector2d(0, 0);
         }
