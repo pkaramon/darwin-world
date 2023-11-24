@@ -2,6 +2,7 @@ package agh.ics.oop;
 
 import agh.ics.oop.model.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -9,16 +10,35 @@ public class World {
     public static void main(String[] options) {
         System.out.println("Start");
 
-        SimulationEngine simulationEngine = new SimulationEngine(getGrassFieldSimulations());
-        simulationEngine.runAsync();
+        SimulationEngine simulationEngine = new SimulationEngine(getSimulations(500));
+        simulationEngine.runAsyncInThreadPool();
 
         try {
             simulationEngine.awaitSimulationEnd();
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Could not finish all of the simulations: " + e);
         }
 
-        System.out.println("End");
+        System.out.println("System zakończył działanie");
+    }
+
+
+    private static List<Simulation> getSimulations(int n) {
+        ConsoleMapDisplay consoleMapDisplay = new ConsoleMapDisplay();
+        List<Simulation> simulations = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            RectangularMap map = new RectangularMap(5, 5);
+            map.addListener(consoleMapDisplay);
+            Simulation simulation = new Simulation(
+                    tryToParseOptions("f b r l f f r r f f f f f f f".split(" ")),
+                    List.of(new Vector2d(2, 2), new Vector2d(3, 4)),
+                    map
+            );
+            simulations.add(simulation);
+        }
+
+        return simulations;
     }
 
 
@@ -30,16 +50,14 @@ public class World {
         map2.addListener(consoleMapDisplay);
 
         Simulation sim1 = new Simulation(
-                tryToParseOptions("f b r l f f r r f f f f f f f".split(" ")),
-                List.of(new Vector2d(2, 2), new Vector2d(3, 4)),
+                tryToParseOptions("f b r l f f f r l f f r f".split(" ")),
+                List.of(new Vector2d(-3, 5), new Vector2d(3, 4)),
                 map1
         );
 
         Simulation sim2 = new Simulation(
-                OptionsParser.parse(
-                        Arrays.stream("f b r l f f r r f f f f".split(" ")).toList()
-                ),
-                List.of(new Vector2d(0, 0), new Vector2d(1, 3)),
+                tryToParseOptions("f b r l f f r r f b b f".split(" ")),
+                List.of(new Vector2d(-2, -2), new Vector2d(1, 3)),
                 map2
         );
 
@@ -48,7 +66,7 @@ public class World {
 
 
     private static List<Simulation> getRectangularMapSimulations() {
-        RectangularMap map1 = new RectangularMap(5, 5);
+        RectangularMap map1 = new RectangularMap(8, 8);
         RectangularMap map2 = new RectangularMap(4, 4);
         ConsoleMapDisplay consoleMapDisplay = new ConsoleMapDisplay();
         map1.addListener(consoleMapDisplay);
@@ -61,7 +79,7 @@ public class World {
         );
 
         Simulation sim2 = new Simulation(
-                tryToParseOptions("f b r l f f r r f f f f f f f".split(" ")),
+                tryToParseOptions("f b r l f f r r f f r l f f f f f b b b".split(" ")),
                 List.of(new Vector2d(0, 0), new Vector2d(1, 3)),
                 map2
         );
