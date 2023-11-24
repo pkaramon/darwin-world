@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Simulation {
+public class Simulation implements Runnable {
     private final List<MoveDirection> moves;
     private final List<Animal> animals;
     private final WorldMap map;
@@ -19,20 +19,21 @@ public class Simulation {
     }
 
     private void initializeMapAndAnimals(List<Vector2d> initialPositions) {
-        for (Vector2d position: initialPositions) {
+        for (Vector2d position : initialPositions) {
             Animal animal = new Animal(position);
             try {
                 map.place(animal);
                 animals.add(animal);
-            } catch(PositionAlreadyOccupiedException exception) {
+            } catch (PositionAlreadyOccupiedException exception) {
                 // animal cannot be placed, so we don't include it in simulation
             }
         }
-   }
+    }
 
+    @Override
     public void run() {
         int animalIndex = 0;
-        for (MoveDirection mv: moves) {
+        for (MoveDirection mv : moves) {
             Animal animal = animals.get(animalIndex);
             map.move(animal, mv);
             animalIndex = (animalIndex + 1) % animals.size();
