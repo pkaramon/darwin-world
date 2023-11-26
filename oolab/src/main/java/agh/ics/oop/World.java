@@ -10,7 +10,7 @@ public class World {
     public static void main(String[] options) {
         System.out.println("Start");
 
-        SimulationEngine simulationEngine = new SimulationEngine(getSimulations(1200));
+        SimulationEngine simulationEngine = new SimulationEngine(getSimulations(1000));
         simulationEngine.runAsyncInThreadPool();
 
         try {
