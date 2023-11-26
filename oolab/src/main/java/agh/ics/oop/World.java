@@ -16,7 +16,7 @@ public class World {
         try {
             simulationEngine.awaitSimulationEnd();
         } catch (InterruptedException e) {
-            throw new RuntimeException("Could not finish all of the simulations: " + e);
+            throw new RuntimeException("Nie udało się zakończyć wszystkich symulacji: " + e);
         }
 
         System.out.println("System zakończył działanie");
