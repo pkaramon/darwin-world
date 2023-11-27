@@ -8,6 +8,12 @@ public abstract class AbstractWorldMap implements WorldMap {
     protected final Map<Vector2d, Animal> animals = new HashMap<>();
     private final MapVisualizer mapVisualizer = new MapVisualizer(this);
     private final Set<MapChangeListener> listeners = new LinkedHashSet<>();
+    private final UUID id = UUID.randomUUID();
+
+    @Override
+    public UUID getId() {
+        return id;
+    }
 
     public void addListener(MapChangeListener listener) {
         listeners.add(listener);
