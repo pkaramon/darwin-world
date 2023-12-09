@@ -26,7 +26,7 @@ public class GrassField extends AbstractWorldMap {
     }
 
     @Override
-    Boundary getCurrentBounds() {
+    public Boundary getCurrentBounds() {
         if(animals.size() + grassElements.size() == 0) {
             return new Boundary(new Vector2d(0, 0), new Vector2d(0,0));
         }

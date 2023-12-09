@@ -29,8 +29,6 @@ public abstract class AbstractWorldMap implements WorldMap {
         }
     }
 
-    abstract Boundary getCurrentBounds();
-
     @Override
     public String toString() {
         Boundary boundary = getCurrentBounds();
