@@ -154,4 +154,21 @@ class RectangularMapTest {
 
     }
 
+    @Test
+    void getOrderedAnimals_ReturnsAnimalsSortedByXThenByY() throws PositionAlreadyOccupiedException {
+        WorldMap map = new GrassField(5);
+
+        Animal a = new Animal(new Vector2d(2, 3));
+        Animal b = new Animal(new Vector2d(2, 1));
+        Animal c = new Animal(new Vector2d(4, 0));
+        Animal d = new Animal(new Vector2d(3, 1));
+        Animal e = new Animal(new Vector2d(1, 10));
+
+        for (Animal animal : List.of(a, b, c, d, e)) {
+            map.place(animal);
+        }
+
+        assertIterableEquals(map.getOrderedAnimals(), List.of(e, b, a, d, c));
+    }
+
 }
