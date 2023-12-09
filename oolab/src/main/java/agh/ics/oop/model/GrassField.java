@@ -3,6 +3,7 @@ package agh.ics.oop.model;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -43,11 +44,11 @@ public class GrassField extends AbstractWorldMap {
 
 
     @Override
-    public WorldElement objectAt(Vector2d position) {
-        if (super.objectAt(position) != null) {
+    public Optional<WorldElement> objectAt(Vector2d position) {
+        if (super.objectAt(position).isPresent()) {
             return super.objectAt(position);
         } else {
-            return grassElements.get(position);
+            return Optional.ofNullable(grassElements.get(position));
         }
     }
 

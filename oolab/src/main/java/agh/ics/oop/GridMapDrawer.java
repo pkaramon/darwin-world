@@ -2,7 +2,6 @@ package agh.ics.oop;
 
 import agh.ics.oop.model.Boundary;
 import agh.ics.oop.model.Vector2d;
-import agh.ics.oop.model.WorldElement;
 import agh.ics.oop.model.WorldMap;
 import javafx.geometry.HPos;
 import javafx.scene.control.Label;
@@ -65,8 +64,11 @@ public class GridMapDrawer {
     private void drawWorldElements() {
         for (int x = boundary.lowerLeft().getX(); x <= boundary.upperRight().getX(); x++) {
             for (int y = boundary.lowerLeft().getY(); y <= boundary.upperRight().getY(); y++) {
-                WorldElement element = map.objectAt(new Vector2d(x, y));
-                String labelText = element != null ? element.toString() : "";
+                String labelText = map
+                        .objectAt(new Vector2d(x, y))
+                        .map(Object::toString)
+                        .orElse("");
+
                 addToMapGrid(labelText,
                         1 - boundary.lowerLeft().getX() + x,
                         1 + boundary.upperRight().getY() -  y
