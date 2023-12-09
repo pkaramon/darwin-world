@@ -3,6 +3,7 @@ package agh.ics.oop.model;
 import agh.ics.oop.model.util.MapVisualizer;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class AbstractWorldMap implements WorldMap {
     protected final Map<Vector2d, Animal> animals = new HashMap<>();
@@ -87,11 +88,12 @@ public abstract class AbstractWorldMap implements WorldMap {
 
     @Override
     public List<Animal> getOrderedAnimals() {
-        List<Animal> listOfAnimals = new ArrayList<>(animals.values());
-        Collections.sort(listOfAnimals,
-                Comparator.comparingInt((Animal a) -> a.getPosition().getX())
+        return animals
+                .values()
+                .stream()
+                .sorted(Comparator.comparingInt((Animal a) -> a.getPosition().getX())
                         .thenComparingInt((Animal a) -> a.getPosition().getY())
-        );
-        return listOfAnimals;
+                )
+                .collect(Collectors.toList());
     }
 }
