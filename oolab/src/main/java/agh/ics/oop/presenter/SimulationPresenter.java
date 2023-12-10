@@ -58,6 +58,7 @@ public class SimulationPresenter implements MapChangeListener {
                     System.out.println(LocalDateTime.now().format(formatter) + " " + message);
                 }
         );
+        map.addListener(new FileMapDisplay());
 
         String[] options = textField.getText().split(" ");
 
