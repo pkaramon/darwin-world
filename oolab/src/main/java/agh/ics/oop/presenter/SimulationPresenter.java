@@ -1,9 +1,6 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.OptionsParser;
-import agh.ics.oop.Simulation;
-import agh.ics.oop.SimulationEngine;
-import agh.ics.oop.GridMapDrawer;
+import agh.ics.oop.*;
 import agh.ics.oop.model.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -27,6 +24,11 @@ public class SimulationPresenter implements MapChangeListener {
     @FXML
     public GridPane mapGrid;
 
+    private WorldMap worldMap;
+
+    public void setWorldMap(WorldMap map) {
+        this.worldMap = map;
+    }
 
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
@@ -47,26 +49,26 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     private void startSimulation() {
-        GrassField map = new GrassField(10);
-        map.addListener(this);
-
         String[] options = textField.getText().split(" ");
 
         List<Vector2d> initialPositions = List.of(new Vector2d(-3, 5), new Vector2d(3, 4));
-        Simulation simulation = new Simulation(tryToParseOptions(options), initialPositions, map);
+        Simulation simulation = new Simulation(tryToParseOptions(options), initialPositions, worldMap);
 
         SimulationEngine simulationEngine = new SimulationEngine(List.of(simulation));
         simulationEngine.runAsync();
+        Platform.runLater(() -> startButton.setDisable(true));
     }
 
     private static List<MoveDirection> tryToParseOptions(String[] options) {
         try {
             return OptionsParser.parse(Arrays.stream(options).toList());
         } catch (IllegalArgumentException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Invalid moves");
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Invalid moves");
+                alert.setContentText(e.getMessage());
+                alert.showAndWait();
+            });
             throw e;
         }
     }
