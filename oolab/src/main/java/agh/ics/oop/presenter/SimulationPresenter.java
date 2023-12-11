@@ -13,6 +13,7 @@ import javafx.scene.layout.GridPane;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SimulationPresenter implements MapChangeListener {
     @FXML
@@ -29,15 +30,15 @@ public class SimulationPresenter implements MapChangeListener {
     public void setWorldMap(WorldMap map) {
         this.worldMap = map;
     }
+    private final ConcurrentHashMap<WorldElement, WorldElementBox> boxes = new ConcurrentHashMap<>();
 
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
         Platform.runLater(() -> {
+            moveInfoLabel.setText(message);
             GridMapDrawer gridMapDrawer = new GridMapDrawer(mapGrid, worldMap);
             gridMapDrawer.draw();
-            moveInfoLabel.setText(message);
         });
-
     }
 
     public void onSimulationStartClicked(ActionEvent actionEvent) {

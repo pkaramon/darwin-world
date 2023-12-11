@@ -1,13 +1,14 @@
 package agh.ics.oop;
 
-import agh.ics.oop.model.Boundary;
-import agh.ics.oop.model.Vector2d;
-import agh.ics.oop.model.WorldMap;
+import agh.ics.oop.model.*;
+import agh.ics.oop.presenter.WorldElementBox;
 import javafx.geometry.HPos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
 
 public class GridMapDrawer {
     private static final int CELL_WIDTH = 40;
@@ -15,13 +16,10 @@ public class GridMapDrawer {
 
     private final GridPane mapGrid;
     private final WorldMap map;
-    private final Boundary boundary;
-
 
     public GridMapDrawer(GridPane mapGrid, WorldMap map) {
         this.mapGrid = mapGrid;
         this.map = map;
-        this.boundary = map.getCurrentBounds();
     }
 
     public void draw() {
@@ -40,6 +38,7 @@ public class GridMapDrawer {
 
 
     private void setCellsSizes() {
+        Boundary boundary = map.getCurrentBounds();
         int gridHeight = boundary.height() + 1;
         int gridWidth = boundary.width() + 1;
         for (int i = 0; i < gridHeight; i++) {
@@ -52,6 +51,7 @@ public class GridMapDrawer {
 
 
     private void drawAxis() {
+        Boundary boundary = map.getCurrentBounds();
         addToMapGrid("y/x", 0, 0);
         for (int x = boundary.lowerLeft().getX(); x <= boundary.upperRight().getX(); x++) {
             addToMapGrid(Integer.toString(x), 1-boundary.lowerLeft().getX() + x, 0);
@@ -62,19 +62,25 @@ public class GridMapDrawer {
     }
 
     private void drawWorldElements() {
+        Boundary boundary = map.getCurrentBounds();
+
         for (int x = boundary.lowerLeft().getX(); x <= boundary.upperRight().getX(); x++) {
             for (int y = boundary.lowerLeft().getY(); y <= boundary.upperRight().getY(); y++) {
-                String labelText = map
-                        .objectAt(new Vector2d(x, y))
-                        .map(Object::toString)
-                        .orElse("");
-
-                addToMapGrid(labelText,
-                        1 - boundary.lowerLeft().getX() + x,
-                        1 + boundary.upperRight().getY() -  y
-                );
+                drawGridCell(x, y, boundary);
             }
         }
+
+    }
+
+    private void drawGridCell(int x, int y, Boundary boundary) {
+        Node box = map
+                .objectAt(new Vector2d(x, y))
+                .map(worldElement -> (Node) new WorldElementBox(worldElement))
+                .orElse(new VBox());
+        addToMapGrid(box,
+                1 - boundary.lowerLeft().getX() + x,
+                1 + boundary.upperRight().getY() - y
+        );
     }
 
 
@@ -84,5 +90,9 @@ public class GridMapDrawer {
         mapGrid.add(label, columnIndex, rowIndex );
     }
 
+    private void addToMapGrid(Node node, int columnIndex, int rowIndex) {
+        GridPane.setHalignment(node, HPos.CENTER);
+        mapGrid.add(node, columnIndex, rowIndex );
+    }
 }
 

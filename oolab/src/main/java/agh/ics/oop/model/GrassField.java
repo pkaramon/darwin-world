@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 public class GrassField extends AbstractWorldMap {
     private final int grassAmount;
-    private final Map<Vector2d, Grass> grassElements = new HashMap<>();
+    private  final Map<Vector2d, Grass> grassElements = new HashMap<>();
 
 
     public GrassField(int grassAmount) {
