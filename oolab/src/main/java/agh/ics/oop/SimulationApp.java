@@ -1,5 +1,6 @@
 package agh.ics.oop;
 
+import agh.ics.oop.model.FileMapDisplay;
 import agh.ics.oop.model.GrassField;
 import agh.ics.oop.presenter.SimulationPresenter;
 import javafx.application.Application;
@@ -7,6 +8,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 
 public class SimulationApp extends Application {
@@ -20,6 +24,13 @@ public class SimulationApp extends Application {
         GrassField grassField = new GrassField(7);
         grassField.addListener(presenter);
         presenter.setWorldMap(grassField);
+        grassField.addListener((worldMap, message) -> {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                    System.out.println(LocalDateTime.now().format(formatter) + " " + message);
+                }
+        );
+        grassField.addListener(new FileMapDisplay());
+
 
         configureStage(primaryStage, viewRoot);
 

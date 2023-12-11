@@ -11,8 +11,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -51,15 +49,6 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     private void startSimulation() {
-        GrassField map = new GrassField(10);
-        map.addListener(this);
-        map.addListener((worldMap, message) -> {
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                    System.out.println(LocalDateTime.now().format(formatter) + " " + message);
-                }
-        );
-        map.addListener(new FileMapDisplay());
-
         String[] options = textField.getText().split(" ");
 
         List<Vector2d> initialPositions = List.of(new Vector2d(-3, 5), new Vector2d(3, 4));
