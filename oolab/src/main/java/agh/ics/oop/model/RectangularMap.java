@@ -8,7 +8,7 @@ public class RectangularMap extends AbstractWorldMap {
     }
 
     @Override
-    Boundary getCurrentBounds() {
+    public Boundary getCurrentBounds() {
         return boundary;
     }
 

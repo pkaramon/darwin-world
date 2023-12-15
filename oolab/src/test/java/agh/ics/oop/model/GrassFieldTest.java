@@ -3,6 +3,8 @@ package agh.ics.oop.model;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -41,7 +43,8 @@ class GrassFieldTest {
         for (int i = 0; i <= maxBound; ++i) {
             for (int j = 0; j <= maxBound; ++j) {
                 Vector2d pos = new Vector2d(i,j);
-                boolean isOccupiedByGrass = map.isOccupied(pos)&& map.objectAt(pos) instanceof Grass;
+                boolean isOccupiedByGrass = map.isOccupied(pos)
+                        && map.objectAt(pos).map(e -> e instanceof Grass).orElse(false);
                 if (isOccupiedByGrass) {
                     encountered++;
                 }
@@ -82,7 +85,7 @@ class GrassFieldTest {
         WorldMap map = new GrassField(1);
         Grass firstGrass = (Grass) map.getElements().iterator().next();
 
-        assertEquals(firstGrass, map.objectAt(firstGrass.getPosition()));
+        assertEquals(Optional.of(firstGrass), map.objectAt(firstGrass.getPosition()));
 
         assertTrue(map.canMoveTo(firstGrass.getPosition()));
 
@@ -97,17 +100,17 @@ class GrassFieldTest {
 
 
     @Test
-    void objectAt_ReturnsAnimalOrGrassOrNull() throws PositionAlreadyOccupiedException {
+    void objectAt_ReturnsAnimalOrGrassOnField() throws PositionAlreadyOccupiedException {
         WorldMap map = new GrassField(1);
         Animal animal = new Animal(new Vector2d(-3, 4));
         Grass firstGrass = (Grass) map.getElements().iterator().next();
 
         map.place(animal);
-        assertEquals(animal, map.objectAt(new Vector2d(-3, 4)));
-        assertEquals(firstGrass, map.objectAt(firstGrass.getPosition()));
+        assertEquals(Optional.of(animal), map.objectAt(new Vector2d(-3, 4)));
+        assertEquals(Optional.of(firstGrass), map.objectAt(firstGrass.getPosition()));
 
-        assertNull(map.objectAt(new Vector2d(-4, 3)));
-        assertNull(map.objectAt(new Vector2d(4, -3)));
+        assertTrue(map.objectAt(new Vector2d(-4, 3)).isEmpty());
+        assertTrue(map.objectAt(new Vector2d(4, -3)).isEmpty());
     }
 
     @Test
@@ -121,5 +124,21 @@ class GrassFieldTest {
         assertTrue(elements.contains(a));
     }
 
+    @Test
+    void getOrderedAnimals_ReturnsAnimalsSortedByXThenByY() throws PositionAlreadyOccupiedException {
+        WorldMap map = new GrassField(5);
+
+        Animal a = new Animal(new Vector2d(2, 3));
+        Animal b = new Animal(new Vector2d(2, 1));
+        Animal c = new Animal(new Vector2d(4, 0));
+        Animal d = new Animal(new Vector2d(3, 1));
+        Animal e = new Animal(new Vector2d(1, 10));
+
+        for (Animal animal : List.of(a, b, c, d, e)) {
+            map.place(animal);
+        }
+
+        assertIterableEquals(map.getOrderedAnimals(), List.of(e, b, a, d, c));
+    }
 
 }

@@ -3,6 +3,7 @@ package agh.ics.oop.model;
 import agh.ics.oop.model.util.MapVisualizer;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class AbstractWorldMap implements WorldMap {
     protected final Map<Vector2d, Animal> animals = new HashMap<>();
@@ -28,8 +29,6 @@ public abstract class AbstractWorldMap implements WorldMap {
             listener.mapChanged(this, message);
         }
     }
-
-    abstract Boundary getCurrentBounds();
 
     @Override
     public String toString() {
@@ -74,16 +73,27 @@ public abstract class AbstractWorldMap implements WorldMap {
 
     @Override
     public boolean isOccupied(Vector2d position) {
-        return objectAt(position) != null;
+        return objectAt(position).isPresent();
     }
 
     @Override
-    public WorldElement objectAt(Vector2d position) {
-        return this.animals.get(position);
+    public Optional<WorldElement> objectAt(Vector2d position) {
+        return Optional.ofNullable(this.animals.get(position));
     }
 
     @Override
     public Collection<WorldElement> getElements() {
         return new ArrayList<>(this.animals.values());
+    }
+
+    @Override
+    public List<Animal> getOrderedAnimals() {
+        return animals
+                .values()
+                .stream()
+                .sorted(Comparator.comparingInt((Animal a) -> a.getPosition().getX())
+                        .thenComparingInt((Animal a) -> a.getPosition().getY())
+                )
+                .collect(Collectors.toList());
     }
 }

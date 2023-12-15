@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,18 +28,18 @@ class RectangularMapTest {
     }
 
     @Test
-    void objectAt_ReturnsAnimalIfPresentNullOtherwise() throws PositionAlreadyOccupiedException {
+    void objectAt_ReturnsAnimalIfPresent() throws PositionAlreadyOccupiedException {
         WorldMap map = new RectangularMap(4, 4);
         Animal a = new Animal(new Vector2d(1, 1));
         Animal b = new Animal(new Vector2d(2, 3));
         map.place(a);
         map.place(b);
 
-        assertSame(map.objectAt(a.getPosition()), a);
-        assertSame(map.objectAt(b.getPosition()), b);
-        assertNull(map.objectAt(new Vector2d(0, 0)));
-        assertNull(map.objectAt(new Vector2d(2, 2)));
-        assertNull(map.objectAt(new Vector2d(-3, 3)));
+        assertEquals(map.objectAt(a.getPosition()),  Optional.of(a));
+        assertEquals(map.objectAt(b.getPosition()), Optional.of(b));
+        assertTrue(map.objectAt(new Vector2d(0, 0)).isEmpty());
+        assertTrue(map.objectAt(new Vector2d(2, 2)).isEmpty());
+        assertTrue(map.objectAt(new Vector2d(-3, 3)).isEmpty());
     }
 
     @Test
@@ -68,8 +69,8 @@ class RectangularMapTest {
         map.place(a);
         map.place(b);
 
-        assertSame(map.objectAt(new Vector2d(1, 0)), a);
-        assertSame(map.objectAt(new Vector2d(2, 2)), b);
+        assertEquals(map.objectAt(new Vector2d(1, 0)), Optional.of(a));
+        assertEquals(map.objectAt(new Vector2d(2, 2)), Optional.of(b));
     }
 
     @Test
@@ -84,13 +85,13 @@ class RectangularMapTest {
         Throwable exception = assertThrows(PositionAlreadyOccupiedException.class, () ->  map.place(b));
 
         assertEquals("Position (1,0) is already occupied", exception.getMessage());
-        assertSame(map.objectAt(new Vector2d(1, 0)), a);
+        assertEquals(map.objectAt(new Vector2d(1, 0)), Optional.of(a));
 
         assertThrows(PositionAlreadyOccupiedException.class, () ->  map.place(c));
         assertThrows(PositionAlreadyOccupiedException.class, () ->  map.place(d));
 
-        assertNull(map.objectAt(new Vector2d(-1, 3)));
-        assertNull(map.objectAt(new Vector2d(7, 3)));
+        assertTrue(map.objectAt(new Vector2d(-1, 3)).isEmpty());
+        assertTrue(map.objectAt(new Vector2d(7, 3)).isEmpty());
     }
 
     @Test
@@ -101,7 +102,7 @@ class RectangularMapTest {
         map.move(a, MoveDirection.FORWARD);
 
         assertFalse(map.isOccupied(new Vector2d(1, 1)));
-        assertNull(map.objectAt(new Vector2d(1, 1)));
+        assertTrue(map.objectAt(new Vector2d(1, 1)).isEmpty());
     }
 
     @Test
@@ -114,10 +115,10 @@ class RectangularMapTest {
 
         map.move(a, MoveDirection.FORWARD);
 
-        assertSame(map.objectAt(newPosition), a);
+        assertEquals(map.objectAt(newPosition), Optional.of(a));
         assertTrue(map.isOccupied(newPosition));
 
-        assertNull(map.objectAt(position));
+        assertTrue(map.objectAt(position).isEmpty());
         assertFalse(map.isOccupied(position));
     }
 
@@ -130,11 +131,11 @@ class RectangularMapTest {
 
         map.move(a, MoveDirection.LEFT);
 
-        assertSame(map.objectAt(position), a);
+        assertEquals(map.objectAt(position), Optional.of(a));
 
         map.move(a, MoveDirection.RIGHT);
 
-        assertSame(map.objectAt(position), a);
+        assertEquals(map.objectAt(position), Optional.of(a));
     }
 
     @Test
@@ -152,6 +153,23 @@ class RectangularMapTest {
         assertEquals(3, elements.size());
         assertTrue(elements.containsAll( List.of(a, b, c) ));
 
+    }
+
+    @Test
+    void getOrderedAnimals_ReturnsAnimalsSortedByXThenByY() throws PositionAlreadyOccupiedException {
+        WorldMap map = new GrassField(5);
+
+        Animal a = new Animal(new Vector2d(2, 3));
+        Animal b = new Animal(new Vector2d(2, 1));
+        Animal c = new Animal(new Vector2d(4, 0));
+        Animal d = new Animal(new Vector2d(3, 1));
+        Animal e = new Animal(new Vector2d(1, 10));
+
+        for (Animal animal : List.of(a, b, c, d, e)) {
+            map.place(animal);
+        }
+
+        assertIterableEquals(map.getOrderedAnimals(), List.of(e, b, a, d, c));
     }
 
 }

@@ -25,6 +25,16 @@ public class Animal implements WorldElement{
         return position;
     }
 
+    @Override
+    public String getImagePath() {
+        return orientation.getImagePath();
+    }
+
+    @Override
+    public String getDisplayText() {
+        return "Z %s".formatted(position);
+    }
+
     public boolean isAt(Vector2d position) {
         return this.position.equals(position);
     }

@@ -3,12 +3,13 @@ package agh.ics.oop.model;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class GrassField extends AbstractWorldMap {
     private final int grassAmount;
-    private final Map<Vector2d, Grass> grassElements = new HashMap<>();
+    private  final Map<Vector2d, Grass> grassElements = new HashMap<>();
 
 
     public GrassField(int grassAmount) {
@@ -26,7 +27,7 @@ public class GrassField extends AbstractWorldMap {
     }
 
     @Override
-    Boundary getCurrentBounds() {
+    public Boundary getCurrentBounds() {
         if(animals.size() + grassElements.size() == 0) {
             return new Boundary(new Vector2d(0, 0), new Vector2d(0,0));
         }
@@ -43,17 +44,19 @@ public class GrassField extends AbstractWorldMap {
 
 
     @Override
-    public WorldElement objectAt(Vector2d position) {
-        if (super.objectAt(position) != null) {
+    public Optional<WorldElement> objectAt(Vector2d position) {
+        if (super.objectAt(position).isPresent()) {
             return super.objectAt(position);
         } else {
-            return grassElements.get(position);
+            return Optional.ofNullable(grassElements.get(position));
         }
     }
 
     @Override
     public Collection<WorldElement> getElements() {
-        return Stream.concat(super.getElements().stream(),
-                this.grassElements.values().stream()).collect(Collectors.toList());
+        return Stream.concat(
+                super.getElements().stream(),
+                this.grassElements.values().stream()).collect(Collectors.toList()
+        );
     }
 }
