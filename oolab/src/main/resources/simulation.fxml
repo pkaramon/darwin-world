@@ -1,24 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            minHeight="550.0" minWidth="850.0"
+            minHeight="550.0" minWidth="550.0"
             fx:controller="agh.ics.oop.presenter.SimulationPresenter">
     <center>
-        <VBox>
-            <HBox spacing="10">
-                <TextField fx:id="textField" HBox.hgrow="ALWAYS" />
-                <Button fx:id="startButton" minWidth="100" text="Start" onAction="#onSimulationStartClicked" />
+        <VBox spacing="10" alignment="TOP_CENTER">
+            <padding>
+                <Insets top="50" right="50" bottom="50" left="50"/>
+            </padding>
+
+            <TitledPane text="Map Properties" collapsible="false">
+                <VBox alignment="CENTER" spacing="8">
+                    <HBox alignment="CENTER" spacing="10" maxWidth="Infinity">
+                        <Label text="Map Height:" minWidth="100"/>
+                        <TextField fx:id="mapHeightField" maxWidth="120"/>
+                    </HBox>
+                    <HBox alignment="CENTER" spacing="10" maxWidth="Infinity">
+                        <Label text="Max Width:" minWidth="100"/>
+                        <TextField fx:id="maxWidthField" maxWidth="120"/>
+                    </HBox>
+                    <HBox alignment="CENTER" spacing="10" maxWidth="Infinity">
+                        <Label text="Jungle Width:" minWidth="100"/>
+                        <TextField fx:id="jungleWidthField" maxWidth="120"/>
+                    </HBox>
+                    <HBox alignment="CENTER" spacing="10" maxWidth="Infinity">
+                        <Label text="Jungle Height:" minWidth="100"/>
+                        <TextField fx:id="jungleHeightField" maxWidth="120"/>
+                    </HBox>
+                </VBox>
+            </TitledPane>
+
+            <!-- Sekcja Energy Properties -->
+            <TitledPane text="Energy Properties" collapsible="false">
+                <VBox alignment="CENTER" spacing="8">
+                    <HBox alignment="CENTER" spacing="10" maxWidth="Infinity">
+                        <Label text="Grass Energy Profit:" minWidth="100"/>
+                        <TextField fx:id="grassEnergyProfitField" maxWidth="120"/>
+                    </HBox>
+                    <HBox alignment="CENTER" spacing="10" maxWidth="Infinity">
+                        <Label text="Minimum Energy to Copulation:" minWidth="100"/>
+                        <TextField fx:id="minEnergyCopulationField" maxWidth="120"/>
+                    </HBox>
+                    <HBox alignment="CENTER" spacing="10" maxWidth="Infinity">
+                        <Label text="Animal Start Energy:" minWidth="100"/>
+                        <TextField fx:id="animalStartEnergyField" maxWidth="120"/>
+                    </HBox>
+                    <HBox alignment="CENTER" spacing="10" maxWidth="Infinity">
+                        <Label text="Daily Energy Cost:" minWidth="100"/>
+                        <TextField fx:id="dailyEnergyCostField" maxWidth="120"/>
+                    </HBox>
+                </VBox>
+            </TitledPane>
+
+            <!-- Sekcja Spawning Properties -->
+            <TitledPane text="Spawning Properties" collapsible="false">
+                <VBox alignment="CENTER" spacing="8">
+                    <HBox alignment="CENTER" spacing="10" maxWidth="Infinity">
+                        <Label text="Animals Spawning at Start:" minWidth="100"/>
+                        <TextField fx:id="animalsSpawningStartField" maxWidth="120"/>
+                    </HBox>
+                    <HBox alignment="CENTER" spacing="10" maxWidth="Infinity">
+                        <Label text="Grass Spawned Each Day:" minWidth="100"/>
+                        <TextField fx:id="grassSpawnedDayField" maxWidth="120"/>
+                    </HBox>
+                </VBox>
+            </TitledPane>
+
+            <!-- Sekcja Others -->
+            <TitledPane text="Others" collapsible="false">
+                <VBox alignment="CENTER" spacing="8">
+                    <HBox alignment="CENTER" spacing="10" maxWidth="Infinity">
+                        <Label text="Real Refresh Time (ms):" minWidth="100"/>
+                        <TextField fx:id="realRefreshTimeField" maxWidth="120"/>
+                    </HBox>
+                </VBox>
+            </TitledPane>
+
+            <!-- Przyciski Sterujące -->
+            <HBox spacing="10" alignment="CENTER">
+                <Button text="Start Simulation" onAction="#onSimulationStartClicked"/>
             </HBox>
-            <Label fx:id="moveInfoLabel" />
-            <GridPane fx:id="mapGrid" gridLinesVisible="true" alignment="CENTER" />
         </VBox>
     </center>
 </BorderPane>
