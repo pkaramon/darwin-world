@@ -2,19 +2,51 @@ package agh.ics.oop.model;
 
 import agh.ics.oop.model.genes.Genotype;
 
-public class Animal implements WorldElement{
-    public static final Vector2d DEFAULT_POSITION = new Vector2d(2, 2);
+import java.util.Optional;
 
+public class Animal implements WorldElement {
+    private final Genotype genotype;
+    private final AnimalReproducingInfo animalReproducingInfo;
     private Vector2d position;
     private MapDirection orientation;
+    private int energy;
 
-    public Animal(Vector2d position) {
+    public Animal(AnimalReproducingInfo animalReproducingInfo,
+                  Vector2d position,
+                  Genotype genotype,
+                  int energy) {
         this.position = position;
         this.orientation = MapDirection.NORTH;
+        this.animalReproducingInfo = animalReproducingInfo;
+        this.genotype = genotype;
+        this.energy = energy;
     }
 
-    public Animal() {
-        this(DEFAULT_POSITION);
+    public int getEnergy() {
+        return energy;
+    }
+
+    Optional<Animal> reproduce(Animal partner) {
+        if (this.energy < animalReproducingInfo.minEnergyToReproduce() ||
+            partner.energy < animalReproducingInfo.minEnergyToReproduce()
+        ) {
+            return Optional.empty();
+        }
+
+        Genotype combined = Genotype.combine(
+                this.genotype, this.energy, partner.genotype,partner.energy
+        );
+        Genotype mutated = combined.applyMutation(animalReproducingInfo.mutation());
+
+        Animal child = new Animal(
+                animalReproducingInfo,
+                this.getPosition(),
+                mutated,
+                animalReproducingInfo.parentEnergyGivenToChild() * 2
+        );
+        this.energy -= animalReproducingInfo.parentEnergyGivenToChild();
+        partner.energy -= animalReproducingInfo.parentEnergyGivenToChild();
+        return Optional.of(child);
     }
 
     @Override
@@ -45,6 +77,7 @@ public class Animal implements WorldElement{
         return this.orientation.equals(dir);
     }
 
+    // TODO : CHANGE
     public void move(MoveDirection direction, MoveValidator moveValidator) {
         switch (direction) {
             case RIGHT -> orientation = orientation.next();

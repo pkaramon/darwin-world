@@ -22,9 +22,7 @@ public abstract class AbstractGeneMutation implements GeneMutation {
                         0,
                         genes.size()
                 )
-                .forEach(index -> {
-                    mutatedGenes.set(index, mutateGene(info, genes.get(index)));
-                });
+                .forEach(index -> mutatedGenes.set(index, mutateGene(info, genes.get(index))));
         return mutatedGenes;
     }
 
