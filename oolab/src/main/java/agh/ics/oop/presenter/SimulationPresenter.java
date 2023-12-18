@@ -5,10 +5,7 @@ import agh.ics.oop.model.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
 import java.util.Arrays;
@@ -25,27 +22,27 @@ public class SimulationPresenter implements MapChangeListener {
     @FXML
     public GridPane mapGrid;
     @FXML
-    private TextField mapHeightField;
+    private Spinner<Integer> mapHeightField;
     @FXML
-    private TextField maxWidthField;
+    private Spinner<Integer> maxWidthField;
     @FXML
-    private TextField jungleWidthField;
+    private Spinner<Integer> jungleWidthField;
     @FXML
-    private TextField jungleHeightField;
+    private Spinner<Integer> jungleHeightField;
     @FXML
-    private TextField grassEnergyProfitField;
+    private Spinner<Integer> grassEnergyProfitField;
     @FXML
-    private TextField minEnergyCopulationField;
+    private Spinner<Integer> minEnergyCopulationField;
     @FXML
-    private TextField animalStartEnergyField;
+    private Spinner<Integer> animalStartEnergyField;
     @FXML
-    private TextField dailyEnergyCostField;
+    private Spinner<Integer> dailyEnergyCostField;
     @FXML
-    private TextField animalsSpawningStartField;
+    private Spinner<Integer> animalsSpawningStartField;
     @FXML
-    private TextField grassSpawnedDayField;
+    private Spinner<Integer> grassSpawnedDayField;
     @FXML
-    private TextField realRefreshTimeField;
+    private Spinner<Integer> realRefreshTimeField;
 
     private WorldMap worldMap;
 
@@ -62,18 +59,48 @@ public class SimulationPresenter implements MapChangeListener {
             gridMapDrawer.draw();
         });
     }
+
+    @FXML
+    public void initialize() {
+        setupSpinner(mapHeightField, 1, 1000, 1);
+        setupSpinner(maxWidthField, 1, 1000, 1);
+        setupSpinner(jungleWidthField, 1, 1000, 1);
+        setupSpinner(jungleHeightField, 1, 1000, 1);
+        setupSpinner(grassEnergyProfitField, 1, 1000, 1);
+        setupSpinner(minEnergyCopulationField, 1, 1000, 1);
+        setupSpinner(animalStartEnergyField, 1, 1000, 1);
+        setupSpinner(dailyEnergyCostField, 1, 1000, 1);
+        setupSpinner(animalsSpawningStartField, 1, 1000, 1);
+        setupSpinner(grassSpawnedDayField, 1, 1000, 1);
+        setupSpinner(realRefreshTimeField, 1, 1000, 1);
+    }
+
+    private void setupSpinner(Spinner<Integer> spinner, int min, int max, int initialValue) {
+        spinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(min, max, initialValue));
+        spinner.setEditable(true);
+
+        spinner.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*") && !newValue.isEmpty()) {
+                spinner.getEditor().setText(oldValue);
+            }
+        });
+
+        spinner.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                try {
+                    Integer value = Integer.parseInt(spinner.getEditor().getText());
+                    spinner.getValueFactory().setValue(value);
+                } catch (NumberFormatException e) {
+                    spinner.getEditor().setText(String.valueOf(initialValue));
+                    spinner.getValueFactory().setValue(initialValue);
+                }
+            }
+        });
+    }
+
     @FXML
     private void onSimulationStartClicked() {
-        String missingFields = getMissingFields();
-        String invalidFields = getInvalidFields();
-
-        if (!missingFields.isEmpty()) {
-            showAlert("Missing Fields", "Please fill in the following fields:\n" + missingFields);
-        } else if (!invalidFields.isEmpty()) {
-            showAlert("Invalid Input", "Please enter valid numbers in the following fields:\n" + invalidFields);
-        } else {
-            startSimulation();
-        }
+        startSimulation();
     }
 
     private void startSimulation() {
@@ -99,123 +126,6 @@ public class SimulationPresenter implements MapChangeListener {
             });
             throw e;
         }
-    }
-
-    private boolean validateInputs() {
-        try {
-            int mapHeight = Integer.parseInt(mapHeightField.getText());
-            int maxWidth = Integer.parseInt(maxWidthField.getText());
-            int jungleWidth = Integer.parseInt(jungleWidthField.getText());
-            int jungleHeight = Integer.parseInt(jungleHeightField.getText());
-            int grassEnergyProfit = Integer.parseInt(grassEnergyProfitField.getText());
-            int minEnergyCopulation = Integer.parseInt(minEnergyCopulationField.getText());
-            int animalStartEnergy = Integer.parseInt(animalStartEnergyField.getText());
-            int dailyEnergyCost = Integer.parseInt(dailyEnergyCostField.getText());
-            int animalsSpawningStart = Integer.parseInt(animalsSpawningStartField.getText());
-            int grassSpawnedDay = Integer.parseInt(grassSpawnedDayField.getText());
-            int realRefreshTime = Integer.parseInt(realRefreshTimeField.getText());
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    private String getMissingFields() {
-        StringBuilder missingFields = new StringBuilder();
-
-        if (mapHeightField.getText().isEmpty()) {
-            missingFields.append("Map Height\n");
-        }
-        if (maxWidthField.getText().isEmpty()) {
-            missingFields.append("Max Width\n");
-        }
-        if (jungleWidthField.getText().isEmpty()) {
-            missingFields.append("Jungle Width\n");
-        }
-        if (jungleHeightField.getText().isEmpty()) {
-            missingFields.append("Jungle Height\n");
-        }
-        if (grassEnergyProfitField.getText().isEmpty()) {
-            missingFields.append("Grass Energy Profit\n");
-        }
-        if (minEnergyCopulationField.getText().isEmpty()) {
-            missingFields.append("Minimum Energy to Copulation\n");
-        }
-        if (animalStartEnergyField.getText().isEmpty()) {
-            missingFields.append("Animal Start Energy\n");
-        }
-        if (dailyEnergyCostField.getText().isEmpty()) {
-            missingFields.append("Daily Energy Cost\n");
-        }
-        if (animalsSpawningStartField.getText().isEmpty()) {
-            missingFields.append("Animals Spawning at Start\n");
-        }
-        if (grassSpawnedDayField.getText().isEmpty()) {
-            missingFields.append("Grass Spawned Each Day\n");
-        }
-        if (realRefreshTimeField.getText().isEmpty()) {
-            missingFields.append("Real Refresh Time (ms)\n");
-        }
-
-        return missingFields.toString();
-    }
-
-    private String getInvalidFields() {
-        StringBuilder invalidFields = new StringBuilder();
-
-        if (!isNumeric(mapHeightField.getText())) {
-            invalidFields.append("Map Height\n");
-        }
-        if (!isNumeric(maxWidthField.getText())) {
-            invalidFields.append("Max Width\n");
-        }
-        if (!isNumeric(jungleWidthField.getText())) {
-            invalidFields.append("Jungle Width\n");
-        }
-        if (!isNumeric(jungleHeightField.getText())) {
-            invalidFields.append("Jungle Height\n");
-        }
-        if (!isNumeric(grassEnergyProfitField.getText())) {
-            invalidFields.append("Grass Energy Profit\n");
-        }
-        if (!isNumeric(minEnergyCopulationField.getText())) {
-            invalidFields.append("Minimum Energy to Copulation\n");
-        }
-        if (!isNumeric(animalStartEnergyField.getText())) {
-            invalidFields.append("Animal Start Energy\n");
-        }
-        if (!isNumeric(dailyEnergyCostField.getText())) {
-            invalidFields.append("Daily Energy Cost\n");
-        }
-        if (!isNumeric(animalsSpawningStartField.getText())) {
-            invalidFields.append("Animals Spawning at Start\n");
-        }
-        if (!isNumeric(grassSpawnedDayField.getText())) {
-            invalidFields.append("Grass Spawned Each Day\n");
-        }
-        if (!isNumeric(realRefreshTimeField.getText())) {
-            invalidFields.append("Real Refresh Time (ms)\n");
-        }
-
-        return invalidFields.toString();
-    }
-    private boolean isNumeric(String text) {
-        if (text == null || text.isEmpty()) {
-            return true; // Puste pola są obsługiwane przez getMissingFields
-        }
-        try {
-            Integer.parseInt(text);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }
 

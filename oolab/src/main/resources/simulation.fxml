@@ -18,70 +18,66 @@
                 <VBox alignment="CENTER" spacing="8">
                     <HBox alignment="CENTER" spacing="10" maxWidth="Infinity">
                         <Label text="Map Height:" minWidth="100"/>
-                        <TextField fx:id="mapHeightField" maxWidth="120"/>
+                        <Spinner  fx:id="mapHeightField" maxWidth="120" editable="true"/>
                     </HBox>
                     <HBox alignment="CENTER" spacing="10" maxWidth="Infinity">
                         <Label text="Max Width:" minWidth="100"/>
-                        <TextField fx:id="maxWidthField" maxWidth="120"/>
+                        <Spinner  fx:id="maxWidthField" maxWidth="120" editable="true"/>
                     </HBox>
                     <HBox alignment="CENTER" spacing="10" maxWidth="Infinity">
                         <Label text="Jungle Width:" minWidth="100"/>
-                        <TextField fx:id="jungleWidthField" maxWidth="120"/>
+                        <Spinner  fx:id="jungleWidthField" maxWidth="120" editable="true"/>
                     </HBox>
                     <HBox alignment="CENTER" spacing="10" maxWidth="Infinity">
                         <Label text="Jungle Height:" minWidth="100"/>
-                        <TextField fx:id="jungleHeightField" maxWidth="120"/>
+                        <Spinner  fx:id="jungleHeightField" maxWidth="120" editable="true"/>
                     </HBox>
                 </VBox>
             </TitledPane>
 
-            <!-- Sekcja Energy Properties -->
             <TitledPane text="Energy Properties" collapsible="false">
                 <VBox alignment="CENTER" spacing="8">
                     <HBox alignment="CENTER" spacing="10" maxWidth="Infinity">
                         <Label text="Grass Energy Profit:" minWidth="100"/>
-                        <TextField fx:id="grassEnergyProfitField" maxWidth="120"/>
+                        <Spinner  fx:id="grassEnergyProfitField" maxWidth="120" editable="true"/>
                     </HBox>
                     <HBox alignment="CENTER" spacing="10" maxWidth="Infinity">
                         <Label text="Minimum Energy to Copulation:" minWidth="100"/>
-                        <TextField fx:id="minEnergyCopulationField" maxWidth="120"/>
+                        <Spinner  fx:id="minEnergyCopulationField" maxWidth="120" editable="true"/>
                     </HBox>
                     <HBox alignment="CENTER" spacing="10" maxWidth="Infinity">
                         <Label text="Animal Start Energy:" minWidth="100"/>
-                        <TextField fx:id="animalStartEnergyField" maxWidth="120"/>
+                        <Spinner  fx:id="animalStartEnergyField" maxWidth="120" editable="true"/>
                     </HBox>
                     <HBox alignment="CENTER" spacing="10" maxWidth="Infinity">
                         <Label text="Daily Energy Cost:" minWidth="100"/>
-                        <TextField fx:id="dailyEnergyCostField" maxWidth="120"/>
+                        <Spinner  fx:id="dailyEnergyCostField" maxWidth="120" editable="true"/>
                     </HBox>
                 </VBox>
             </TitledPane>
 
-            <!-- Sekcja Spawning Properties -->
             <TitledPane text="Spawning Properties" collapsible="false">
                 <VBox alignment="CENTER" spacing="8">
                     <HBox alignment="CENTER" spacing="10" maxWidth="Infinity">
                         <Label text="Animals Spawning at Start:" minWidth="100"/>
-                        <TextField fx:id="animalsSpawningStartField" maxWidth="120"/>
+                        <Spinner  fx:id="animalsSpawningStartField" maxWidth="120" editable="true"/>
                     </HBox>
                     <HBox alignment="CENTER" spacing="10" maxWidth="Infinity">
                         <Label text="Grass Spawned Each Day:" minWidth="100"/>
-                        <TextField fx:id="grassSpawnedDayField" maxWidth="120"/>
+                        <Spinner  fx:id="grassSpawnedDayField" maxWidth="120" editable="true"/>
                     </HBox>
                 </VBox>
             </TitledPane>
 
-            <!-- Sekcja Others -->
             <TitledPane text="Others" collapsible="false">
                 <VBox alignment="CENTER" spacing="8">
                     <HBox alignment="CENTER" spacing="10" maxWidth="Infinity">
                         <Label text="Real Refresh Time (ms):" minWidth="100"/>
-                        <TextField fx:id="realRefreshTimeField" maxWidth="120"/>
+                        <Spinner  fx:id="realRefreshTimeField" maxWidth="120" editable="true"/>
                     </HBox>
                 </VBox>
             </TitledPane>
 
-            <!-- Przyciski Sterujące -->
             <HBox spacing="10" alignment="CENTER">
                 <Button text="Start Simulation" onAction="#onSimulationStartClicked"/>
             </HBox>
