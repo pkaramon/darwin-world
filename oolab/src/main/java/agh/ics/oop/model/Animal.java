@@ -1,5 +1,7 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.genes.Genotype;
+
 public class Animal implements WorldElement{
     public static final Vector2d DEFAULT_POSITION = new Vector2d(2, 2);
 
