@@ -79,7 +79,7 @@
             </TitledPane>
 
             <HBox spacing="10" alignment="CENTER">
-                <Button text="Start Simulation" onAction="#onSimulationStartClicked"/>
+                <Button fx:id="startButton" text="Start Simulation" onAction="#onSimulationStartClicked"/>
             </HBox>
         </VBox>
     </center>
