@@ -26,6 +26,10 @@ public class Animal implements WorldElement {
         return energy;
     }
 
+    public Genotype getGenotype() {
+        return genotype;
+    }
+
     Optional<Animal> reproduce(Animal partner) {
         if (this.energy < animalReproducingInfo.minEnergyToReproduce() ||
             partner.energy < animalReproducingInfo.minEnergyToReproduce()

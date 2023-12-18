@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -54,13 +55,13 @@ class AnimalTest {
         Animal father = new Animal(
                 info,
                 new Vector2d(2, 2),
-                Genotype.generateRandom(genotypeInfo),
+                new Genotype(genotypeInfo, List.of(3, 2, 1, 1, 2)),
                 50
         );
         Animal mother = new Animal(
                 info,
                 new Vector2d(2, 2),
-                Genotype.generateRandom(genotypeInfo),
+                new Genotype(genotypeInfo, List.of(8, 7, 6, 5, 4)),
                 40
         );
 
@@ -68,11 +69,16 @@ class AnimalTest {
         assertTrue(child.isPresent());
 
         Animal offspring = child.get();
+
+        offspring.getGenotype().forEach(System.out::println);
+
         assertEquals(20, offspring.getEnergy());
         assertEquals(40, father.getEnergy());
         assertEquals(30, mother.getEnergy());
-
-        assertEquals(new Vector2d(2, 2), offspring.getPosition());
+        assertTrue(
+                Objects.equals(offspring.getGenotype(), new Genotype(genotypeInfo, List.of(8, 7, 8, 1, 2))) ||
+                        Objects.equals(offspring.getGenotype(), new Genotype(genotypeInfo, List.of(3, 2, 8, 5, 4)))
+        );
     }
 
 

@@ -1,9 +1,6 @@
 package agh.ics.oop.model.genes;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class Genotype implements Iterable<Integer> {
@@ -11,7 +8,7 @@ public class Genotype implements Iterable<Integer> {
     private final GenotypeInfo genotypeInfo;
     private int currentGeneIndex = 0;
 
-    Genotype(GenotypeInfo info, List<Integer> genes) {
+    public Genotype(GenotypeInfo info, List<Integer> genes) {
         this.genes = genes;
         this.genotypeInfo = info;
     }
@@ -81,6 +78,18 @@ public class Genotype implements Iterable<Integer> {
         return new Genotype(genotypeInfo, Stream.concat(genes.stream(), b.genes.stream()).toList());
     }
 
-    private record GenotypeSplit(Genotype left, Genotype right) {
+    private record GenotypeSplit(Genotype left, Genotype right) {}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Genotype integers = (Genotype) o;
+        return Objects.equals(genes, integers.genes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(genes);
     }
 }
