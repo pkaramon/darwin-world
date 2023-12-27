@@ -1,14 +1,11 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.*;
-import agh.ics.oop.model.*;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
 
-public class SimulationPresenter implements MapChangeListener {
+public class SimulationPresenter {
     @FXML
     public Label moveInfoLabel;
     @FXML
@@ -38,15 +35,6 @@ public class SimulationPresenter implements MapChangeListener {
     @FXML
     private Spinner<Integer> realRefreshTimeField;
 
-
-    @Override
-    public void mapChanged(WorldMap worldMap, String message) {
-        Platform.runLater(() -> {
-            moveInfoLabel.setText(message);
-            GridMapDrawer gridMapDrawer = new GridMapDrawer(mapGrid, worldMap);
-            gridMapDrawer.draw();
-        });
-    }
 
     @FXML
     public void initialize() {

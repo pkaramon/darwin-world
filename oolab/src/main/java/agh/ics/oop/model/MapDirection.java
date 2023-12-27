@@ -1,10 +1,15 @@
 package agh.ics.oop.model;
 
 public enum MapDirection {
-    NORTH("Północ", "^",  new Vector2d(0, 1), "/images/up.png"),
+    NORTH("Północ", "^", new Vector2d(0, 1), "/images/up.png"),
+    NORTHEAST("Północny Wschód", "↗", new Vector2d(1, 1), "/images/northeast.png"),
     EAST("Wschód", ">", new Vector2d(1, 0), "/images/right.png"),
+    SOUTHEAST("Południowy Wschód", "↘", new Vector2d(1, -1), "/images/southeast.png"),
     SOUTH("Południe", "v", new Vector2d(0, -1), "/images/down.png"),
-    WEST("Zachód", "<", new Vector2d(-1, 0), "/images/left.png");
+    SOUTHWEST("Południowy Zachód", "↙", new Vector2d(-1, -1), "/images/southwest.png"),
+    WEST("Zachód", "<", new Vector2d(-1, 0), "/images/left.png"),
+    NORTHWEST("Północny Zachód", "↖", new Vector2d(-1, 1), "/images/northwest.png");
+
 
     private static final MapDirection[] allValues = values();
 
@@ -18,6 +23,13 @@ public enum MapDirection {
         this.indicator = indicator;
         this.unitVector = unitVector;
         this.imagePath = imagePath;
+    }
+
+    public static MapDirection fromOrdinal(int ordinal) {
+        if(0 <  ordinal || ordinal >= allValues.length){
+            throw new IllegalArgumentException("Invalid ordinal value");
+        }
+        return allValues[ordinal];
     }
 
     @Override
@@ -44,4 +56,5 @@ public enum MapDirection {
     public Vector2d toUnitVector() {
         return unitVector;
     }
+
 }
