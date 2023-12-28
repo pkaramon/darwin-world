@@ -18,7 +18,7 @@ class AnimalTest {
         newGenes.set(2, 8);
         return newGenes;
     });
-    private static final AnimalReproducingInfo info = new AnimalReproducingInfo(
+    private static final AnimalMatingInfo info = new AnimalMatingInfo(
             30,
             10,
             fakeGeneMutation

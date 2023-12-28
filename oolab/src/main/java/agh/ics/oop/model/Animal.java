@@ -6,16 +6,16 @@ import java.util.Optional;
 
 public class Animal implements WorldElement {
     private final Genotype genotype;
-    private final AnimalReproducingInfo animalReproducingInfo;
+    private final AnimalMatingInfo animalMatingInfo;
     private Pose pose;
     private int energy;
 
-    public Animal(AnimalReproducingInfo animalReproducingInfo,
+    public Animal(AnimalMatingInfo animalMatingInfo,
                   Pose pose,
                   Genotype genotype,
                   int energy) {
         this.pose = pose;
-        this.animalReproducingInfo = animalReproducingInfo;
+        this.animalMatingInfo = animalMatingInfo;
         this.genotype = genotype;
         this.energy = energy;
     }
@@ -29,23 +29,22 @@ public class Animal implements WorldElement {
     }
 
     Optional<Animal> mateWith(Animal partner) {
-        if (this.energy < animalReproducingInfo.minEnergyToReproduce() ||
-            partner.energy < animalReproducingInfo.minEnergyToReproduce()
-        ) {
+        if (this.energy < animalMatingInfo.minEnergyToReproduce() ||
+                partner.energy < animalMatingInfo.minEnergyToReproduce()
+        )
             return Optional.empty();
-        }
 
         Genotype combined = this.genotype.combine(partner.getGenotype(), this.energy, partner.energy);
 
-        Genotype mutated = combined.applyMutation(animalReproducingInfo.mutation());
+        Genotype mutated = combined.applyMutation(animalMatingInfo.mutation());
         Animal child = new Animal(
-                animalReproducingInfo,
+                animalMatingInfo,
                 pose,
                 mutated,
-                animalReproducingInfo.parentEnergyGivenToChild() * 2
+                animalMatingInfo.parentEnergyGivenToChild() * 2
         );
-        this.energy -= animalReproducingInfo.parentEnergyGivenToChild();
-        partner.energy -= animalReproducingInfo.parentEnergyGivenToChild();
+        this.energy -= animalMatingInfo.parentEnergyGivenToChild();
+        partner.energy -= animalMatingInfo.parentEnergyGivenToChild();
         return Optional.of(child);
     }
 
