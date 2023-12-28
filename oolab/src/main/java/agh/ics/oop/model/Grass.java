@@ -13,16 +13,6 @@ public class Grass implements WorldElement {
     }
 
     @Override
-    public String getImagePath() {
-        return "/images/grass.png";
-    }
-
-    @Override
-    public String getDisplayText() {
-        return "Trawa";
-    }
-
-    @Override
     public String toString() {
         return "*";
     }

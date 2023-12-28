@@ -8,14 +8,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class GenotypeTest {
+class GenotypeImpTest {
 
     private static final GenotypeInfo genotypeInfo = new GenotypeInfo(5, 0, 8, 2, 4);
 
 
     @Test
     void testRandomGenerationOfGenotype() {
-        Genotype genotype = Genotype.generateRandom(genotypeInfo);
+        GenotypeImp genotype = GenotypeImp.generateRandom(genotypeInfo);
 
         for (int gene : genotype) {
             assertTrue(gene >= genotypeInfo.minGene() && gene <= genotypeInfo.maxGene());
@@ -26,7 +26,7 @@ class GenotypeTest {
 
     @Test
     void testChangingTheGenes() {
-        Genotype genotype = new Genotype(genotypeInfo, List.of(0, 3, 8, 4, 3));
+        GenotypeImp genotype = new GenotypeImp(genotypeInfo, List.of(0, 3, 8, 4, 3));
         genotype.setCurrentGeneIndex(1);
         assertEquals(3, genotype.nextGene());
         assertEquals(8, genotype.nextGene());
@@ -38,10 +38,10 @@ class GenotypeTest {
 
     @Test
     void testCreatingAnOffspring() {
-        Genotype a = new Genotype(genotypeInfo, List.of(0, 3, 8, 4, 5));
-        Genotype b = new Genotype(genotypeInfo, List.of(7, 3, 2, 1, 3));
+        GenotypeImp a = new GenotypeImp(genotypeInfo, List.of(0, 3, 8, 4, 5));
+        GenotypeImp b = new GenotypeImp(genotypeInfo, List.of(7, 3, 2, 1, 3));
 
-        Genotype child = Genotype.combine(a, 3, b, 2);
+        GenotypeImp child = GenotypeImp.combine(a, 3, b, 2);
 
 
         assertTrue(
@@ -52,10 +52,10 @@ class GenotypeTest {
 
     @Test
     void testCreatingAnOffspringUnevenDivision() {
-        Genotype a = new Genotype(genotypeInfo, List.of(0, 3, 8, 4, 5));
-        Genotype b = new Genotype(genotypeInfo, List.of(7, 3, 2, 1, 3));
+        GenotypeImp a = new GenotypeImp(genotypeInfo, List.of(0, 3, 8, 4, 5));
+        GenotypeImp b = new GenotypeImp(genotypeInfo, List.of(7, 3, 2, 1, 3));
 
-        Genotype child = Genotype.combine(a, 9, b, 7);
+        GenotypeImp child = GenotypeImp.combine(a, 9, b, 7);
 
         System.out.println(child.getGenes());
 
@@ -68,8 +68,8 @@ class GenotypeTest {
 
     @Test
     void applyingAMutation() {
-        Genotype a = new Genotype(genotypeInfo, List.of(1,2,3,4,0));
-        Genotype mutated = a.applyMutation((genes)-> {
+        GenotypeImp a = new GenotypeImp(genotypeInfo, List.of(1,2,3,4,0));
+        GenotypeImp mutated = a.applyMutation((genes)-> {
             List<Integer> newGenes = new ArrayList<>(genes);
             newGenes.set(2, 8);
             return newGenes;

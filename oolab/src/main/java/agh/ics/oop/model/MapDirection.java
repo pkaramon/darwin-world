@@ -25,13 +25,6 @@ public enum MapDirection {
         this.imagePath = imagePath;
     }
 
-    public static MapDirection fromOrdinal(int ordinal) {
-        if(0 <  ordinal || ordinal >= allValues.length){
-            throw new IllegalArgumentException("Invalid ordinal value");
-        }
-        return allValues[ordinal];
-    }
-
     @Override
     public String toString() {
         return string;
@@ -46,12 +39,22 @@ public enum MapDirection {
     }
 
     public MapDirection next() {
-        return allValues[(ordinal() + 1) % allValues.length];
+        return nextN(1);
     }
 
-    public MapDirection previous() {
-        return allValues[(ordinal() - 1 + allValues.length) % allValues.length];
+    public MapDirection nextN(int n) {
+        return allValues[(ordinal() + n) % allValues.length];
     }
+
+
+    public MapDirection previous() {
+        return previousN(1);
+    }
+
+    public MapDirection previousN(int n) {
+        return allValues[(ordinal() - n + n*allValues.length) % allValues.length];
+    }
+
 
     public Vector2d toUnitVector() {
         return unitVector;

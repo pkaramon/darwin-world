@@ -7,16 +7,14 @@ import java.util.Optional;
 public class Animal implements WorldElement {
     private final Genotype genotype;
     private final AnimalReproducingInfo animalReproducingInfo;
-    private Vector2d position;
-    private MapDirection orientation;
+    private Pose pose;
     private int energy;
 
     public Animal(AnimalReproducingInfo animalReproducingInfo,
-                  Vector2d position,
+                  Pose pose,
                   Genotype genotype,
                   int energy) {
-        this.position = position;
-        this.orientation = MapDirection.NORTH;
+        this.pose = pose;
         this.animalReproducingInfo = animalReproducingInfo;
         this.genotype = genotype;
         this.energy = energy;
@@ -30,21 +28,19 @@ public class Animal implements WorldElement {
         return genotype;
     }
 
-    Optional<Animal> reproduce(Animal partner) {
+    Optional<Animal> mateWith(Animal partner) {
         if (this.energy < animalReproducingInfo.minEnergyToReproduce() ||
             partner.energy < animalReproducingInfo.minEnergyToReproduce()
         ) {
             return Optional.empty();
         }
 
-        Genotype combined = Genotype.combine(
-                this.genotype, this.energy, partner.genotype,partner.energy
-        );
-        Genotype mutated = combined.applyMutation(animalReproducingInfo.mutation());
+        Genotype combined = this.genotype.combine(partner.getGenotype(), this.energy, partner.energy);
 
+        Genotype mutated = combined.applyMutation(animalReproducingInfo.mutation());
         Animal child = new Animal(
                 animalReproducingInfo,
-                this.getPosition(),
+                pose,
                 mutated,
                 animalReproducingInfo.parentEnergyGivenToChild() * 2
         );
@@ -55,45 +51,25 @@ public class Animal implements WorldElement {
 
     @Override
     public String toString() {
-        return orientation.indicator();
+        return pose.orientation().indicator();
     }
 
     @Override
     public Vector2d getPosition() {
-        return position;
+        return pose.position();
     }
 
-    @Override
-    public String getImagePath() {
-        return orientation.getImagePath();
+
+    public void move(MoveValidator moveValidator) {
+        int gene = genotype.nextGene();
+
+        MapDirection desiredOrientation = pose.orientation().nextN(gene);
+        Vector2d desiredPosition = pose.position().add(desiredOrientation.toUnitVector());
+
+        pose = moveValidator.validate(new Pose(desiredPosition, desiredOrientation));
     }
 
-    @Override
-    public String getDisplayText() {
-        return "Z %s".formatted(position);
-    }
-
-    public boolean isAt(Vector2d position) {
-        return this.position.equals(position);
-    }
-
-    public boolean facesDirection(MapDirection dir) {
-        return this.orientation.equals(dir);
-    }
-
-    // TODO : CHANGE
-    public void move(MoveDirection direction, MoveValidator moveValidator) {
-        switch (direction) {
-            case RIGHT -> orientation = orientation.next();
-            case LEFT -> orientation = orientation.previous();
-            case FORWARD -> setPosition(position.add(orientation.toUnitVector()), moveValidator);
-            case BACKWARD -> setPosition(position.subtract(orientation.toUnitVector()), moveValidator);
-        }
-    }
-
-    private void setPosition(Vector2d newPosition, MoveValidator validator) {
-        if (validator.canMoveTo(newPosition)) {
-            position = newPosition;
-        }
+    public MapDirection getOrientation() {
+        return pose.orientation();
     }
 }
