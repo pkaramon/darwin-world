@@ -29,23 +29,32 @@ public class Animal implements WorldElement {
     }
 
     Optional<Animal> mateWith(Animal partner) {
-        if (this.energy < animalMatingInfo.minEnergyToReproduce() ||
-                partner.energy < animalMatingInfo.minEnergyToReproduce()
-        )
-            return Optional.empty();
+        if (parentEnergyDeficiency(partner)) return Optional.empty();
+        Animal child = createChild(partner);
+        updateParentsEnergies(partner);
+        return Optional.of(child);
+    }
 
+
+    private boolean parentEnergyDeficiency(Animal partner) {
+        return this.energy < animalMatingInfo.minEnergyToReproduce() ||
+                partner.energy < animalMatingInfo.minEnergyToReproduce();
+    }
+
+    private Animal createChild(Animal partner) {
         Genotype combined = this.genotype.combine(partner.getGenotype(), this.energy, partner.energy);
-
         Genotype mutated = combined.applyMutation(animalMatingInfo.mutation());
-        Animal child = new Animal(
+        return new Animal(
                 animalMatingInfo,
                 pose,
                 mutated,
                 animalMatingInfo.parentEnergyGivenToChild() * 2
         );
+    }
+
+    private void updateParentsEnergies(Animal partner) {
         this.energy -= animalMatingInfo.parentEnergyGivenToChild();
         partner.energy -= animalMatingInfo.parentEnergyGivenToChild();
-        return Optional.of(child);
     }
 
     @Override
