@@ -85,4 +85,9 @@ public class Genotype {
     public int hashCode() {
         return Objects.hash(genes);
     }
+
+    @Override
+    public String toString() {
+        return "Genotype{genes=%s}".formatted(genes);
+    }
 }
