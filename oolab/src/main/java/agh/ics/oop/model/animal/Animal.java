@@ -1,5 +1,6 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.animal;
 
+import agh.ics.oop.model.*;
 import agh.ics.oop.model.genes.Genotype;
 
 public class Animal implements WorldElement {
@@ -7,9 +8,7 @@ public class Animal implements WorldElement {
     private Pose pose;
     private int energy;
 
-    public Animal(Pose pose,
-                  Genotype genotype,
-                  int energy) {
+    public Animal(Pose pose, Genotype genotype, int energy) {
         this.pose = pose;
         this.genotype = genotype;
         this.energy = energy;
@@ -22,7 +21,6 @@ public class Animal implements WorldElement {
     public Genotype getGenotype() {
         return genotype;
     }
-
 
     @Override
     public String toString() {

@@ -1,5 +1,6 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.animal;
 
+import agh.ics.oop.model.Pose;
 import agh.ics.oop.model.genes.Genotype;
 
 import java.util.Optional;
@@ -11,30 +12,37 @@ public class AnimalCrosser {
         this.matingInfo = matingInfo;
     }
 
-    public Optional<Animal> cross(Animal father, Animal mother) {
+    public Optional<AnimalData> cross(AnimalData father, AnimalData mother) {
         if (parentEnergyDeficiency(father, mother)) return Optional.empty();
-        Animal child = createChild(father, mother);
+        AnimalData child = createChild(father, mother);
         updateParentsEnergies(father, mother);
+        attributeChildToParents(child, father, mother);
         return Optional.of(child);
     }
 
+    private void attributeChildToParents(AnimalData child, AnimalData father, AnimalData mother) {
+        father.addChild(child);
+        mother.addChild(child);
+    }
 
-    private boolean parentEnergyDeficiency(Animal father, Animal mother) {
+
+    private boolean parentEnergyDeficiency(AnimalData father, AnimalData mother) {
         return father.getEnergy() < matingInfo.minEnergyToReproduce() ||
                 mother.getEnergy() < matingInfo.minEnergyToReproduce();
     }
 
-    private Animal createChild(Animal father, Animal mother) {
+    private AnimalData createChild(AnimalData father, AnimalData mother) {
         Genotype fatherGenotype = father.getGenotype();
         Genotype motherGenotype = mother.getGenotype();
 
         Genotype combined = combine(fatherGenotype, father.getEnergy(), motherGenotype, mother.getEnergy());
         Genotype mutated = combined.applyMutation(matingInfo.mutation());
 
-        return new Animal(
+        return new AnimalData(
                 new Pose(father.getPosition(), matingInfo.getChildOrientation().get()),
                 mutated,
-                matingInfo.parentEnergyGivenToChild() * 2
+                matingInfo.parentEnergyGivenToChild() * 2,
+                matingInfo.getCurrentDay().get()
         );
     }
 
@@ -72,7 +80,7 @@ public class AnimalCrosser {
     }
 
 
-    private void updateParentsEnergies(Animal father, Animal mother) {
+    private void updateParentsEnergies(AnimalData father, AnimalData mother) {
         father.useEnergy(matingInfo.parentEnergyGivenToChild());
         mother.useEnergy(matingInfo.parentEnergyGivenToChild());
     }

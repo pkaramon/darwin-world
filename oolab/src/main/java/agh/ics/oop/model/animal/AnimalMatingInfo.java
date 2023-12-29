@@ -1,5 +1,6 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.animal;
 
+import agh.ics.oop.model.MapDirection;
 import agh.ics.oop.model.genes.GeneMutation;
 
 import java.util.function.Supplier;
@@ -9,7 +10,8 @@ public record AnimalMatingInfo(
         int parentEnergyGivenToChild,
         GeneMutation mutation,
         Supplier<Boolean> rightSideOfGenotypeForStrongerParent,
-        Supplier<MapDirection> getChildOrientation
+        Supplier<MapDirection> getChildOrientation,
+        Supplier<Integer> getCurrentDay
 ) {
 
 }

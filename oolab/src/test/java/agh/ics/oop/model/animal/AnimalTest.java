@@ -1,5 +1,9 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.animal;
 
+import agh.ics.oop.model.MapDirection;
+import agh.ics.oop.model.MoveValidator;
+import agh.ics.oop.model.Pose;
+import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.genes.Genotype;
 import org.junit.jupiter.api.Test;
 
@@ -58,9 +62,7 @@ class AnimalTest {
                 50
         );
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            a.useEnergy(51);
-        });
+        assertThrows(IllegalArgumentException.class, () -> a.useEnergy(51));
     }
 
     @Test
@@ -75,4 +77,6 @@ class AnimalTest {
 
         assertEquals(30, a.getEnergy());
     }
+
+
 }
