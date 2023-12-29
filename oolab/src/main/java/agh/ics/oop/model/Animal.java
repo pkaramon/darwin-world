@@ -2,20 +2,15 @@ package agh.ics.oop.model;
 
 import agh.ics.oop.model.genes.Genotype;
 
-import java.util.Optional;
-
 public class Animal implements WorldElement {
     private final Genotype genotype;
-    private final AnimalMatingInfo animalMatingInfo;
     private Pose pose;
     private int energy;
 
-    public Animal(AnimalMatingInfo animalMatingInfo,
-                  Pose pose,
+    public Animal(Pose pose,
                   Genotype genotype,
                   int energy) {
         this.pose = pose;
-        this.animalMatingInfo = animalMatingInfo;
         this.genotype = genotype;
         this.energy = energy;
     }
@@ -28,34 +23,6 @@ public class Animal implements WorldElement {
         return genotype;
     }
 
-    Optional<Animal> mateWith(Animal partner) {
-        if (parentEnergyDeficiency(partner)) return Optional.empty();
-        Animal child = createChild(partner);
-        updateParentsEnergies(partner);
-        return Optional.of(child);
-    }
-
-
-    private boolean parentEnergyDeficiency(Animal partner) {
-        return this.energy < animalMatingInfo.minEnergyToReproduce() ||
-                partner.energy < animalMatingInfo.minEnergyToReproduce();
-    }
-
-    private Animal createChild(Animal partner) {
-        Genotype combined = this.genotype.combine(partner.getGenotype(), this.energy, partner.energy);
-        Genotype mutated = combined.applyMutation(animalMatingInfo.mutation());
-        return new Animal(
-                animalMatingInfo,
-                pose,
-                mutated,
-                animalMatingInfo.parentEnergyGivenToChild() * 2
-        );
-    }
-
-    private void updateParentsEnergies(Animal partner) {
-        this.energy -= animalMatingInfo.parentEnergyGivenToChild();
-        partner.energy -= animalMatingInfo.parentEnergyGivenToChild();
-    }
 
     @Override
     public String toString() {
@@ -79,5 +46,12 @@ public class Animal implements WorldElement {
 
     public MapDirection getOrientation() {
         return pose.orientation();
+    }
+
+    public void useEnergy(int usage) {
+        if(usage > energy) {
+            throw new IllegalArgumentException("Not enough energy");
+        }
+        energy -= usage;
     }
 }

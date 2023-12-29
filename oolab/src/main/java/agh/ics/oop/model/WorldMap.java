@@ -6,13 +6,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface WorldMap extends MoveValidator {
+    void place(WorldElement element);
+    void remove(WorldElement element);
 
-    void place(Animal animal) throws PositionAlreadyOccupiedException;
-
-    void move(Animal animal);
-
-    boolean isOccupied(Vector2d position);
-
+    void place(Grass grass) throws PositionAlreadyOccupiedException;
     Optional<WorldElement> objectAt(Vector2d position);
 
     Collection<WorldElement> getElements();
