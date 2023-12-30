@@ -67,6 +67,7 @@ class AnimalMoverTest {
         mover.move(passThroughValidator, animalData);
 
         assertEquals(49, animalData.getEnergy());
+        assertEquals(-1, animalData.getDeathDay());
     }
 
     @Test

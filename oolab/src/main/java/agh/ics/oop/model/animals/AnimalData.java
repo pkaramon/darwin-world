@@ -29,63 +29,63 @@ public class AnimalData {
         this.bornDay = bornDay;
     }
 
-    public List<AnimalData> getChildren() {
+    List<AnimalData> getChildren() {
         return children;
     }
 
-    public void addChild(AnimalData child) {
+    void addChild(AnimalData child) {
         children.add(child);
     }
 
-    public int getEnergy() {
+    int getEnergy() {
         return energy;
     }
 
-    public Genotype getGenotype() {
+    Genotype getGenotype() {
         return genotype;
     }
 
-    public Vector2d getPosition() {
+    Vector2d getPosition() {
         return pose.position();
     }
 
-    public MapDirection getOrientation() {
+    MapDirection getOrientation() {
         return pose.orientation();
     }
 
-    public void setPose(Pose pose) {
+    void setPose(Pose pose) {
         this.pose = pose;
     }
 
-    public void useEnergy(int usage) {
+    void useEnergy(int usage) {
         if (usage > energy) {
             throw new IllegalArgumentException("Not enough energy");
         }
         energy -= usage;
     }
 
-    public void giveEnergy(int energy) {
+    void giveEnergy(int energy) {
         this.energy += energy;
     }
 
 
-    public int getBornDay() {
+    int getBornDay() {
         return bornDay;
     }
 
-    public int getDeathDay() {
+    int getDeathDay() {
         return deathDay;
     }
 
-    public void setDeathDay(int deathDay) {
+    void setDeathDay(int deathDay) {
         this.deathDay = deathDay;
     }
 
-    public int getPlantsEaten() {
+    int getPlantsEaten() {
         return plantsEaten;
     }
 
-    public void incrementPlantsEaten() {
+    void incrementPlantsEaten() {
         plantsEaten++;
     }
 }

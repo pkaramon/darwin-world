@@ -22,6 +22,9 @@ public class AnimalMover {
 
         animalData.setPose(moveValidator.validateMove(new Pose(desiredPosition, desiredOrientation)));
         animalData.useEnergy(1);
-        animalData.setDeathDay(getCurrentDay.get());
+
+        if(animalData.getEnergy() <= 0) {
+            animalData.setDeathDay(getCurrentDay.get());
+        }
     }
 }
