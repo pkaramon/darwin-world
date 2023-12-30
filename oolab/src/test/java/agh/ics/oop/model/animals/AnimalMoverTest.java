@@ -16,7 +16,7 @@ import static org.mockito.Mockito.*;
 class AnimalMoverTest {
     private static final MoveValidator passThroughValidator = (pose) -> pose;
     private static final Supplier<Integer> getCurrentDay = () -> 123;
-    private static AnimalMover mover = new AnimalMover(getCurrentDay);
+    private static final AnimalMover mover = new AnimalMover(getCurrentDay);
 
     @Test
     void move_PicksNextGeneRotatesAndTriesToMoveInNewDirection() {

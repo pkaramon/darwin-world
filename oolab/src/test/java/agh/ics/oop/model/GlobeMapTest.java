@@ -109,4 +109,20 @@ class GlobeMapTest {
 
         assertEquals(new Boundary(new Vector2d(0, 0), new Vector2d(2, 3)), map.getBoundary());
     }
+
+    @Test
+    void moveMovesAnimalToCorrectMapField() {
+        var map = createGlobeMap(3, 4);
+        MoveableWorldElement animal = mock(MoveableWorldElement.class);
+        when(animal.getPosition()).thenReturn(new Vector2d(1, 1),
+                new Vector2d(1, 1),
+                new Vector2d(1, 2));
+
+        map.place(animal);
+        map.move(animal);
+
+        verify(map.mapFieldAt(new Vector2d(1, 1))).removeElement(animal);
+        verify(map.mapFieldAt(new Vector2d(1, 2))).addElement(animal);
+        verify(animal).move(map);
+    }
 }

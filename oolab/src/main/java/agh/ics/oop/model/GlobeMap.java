@@ -1,6 +1,7 @@
 package agh.ics.oop.model;
 
 import java.util.Optional;
+import java.util.Vector;
 import java.util.stream.Stream;
 
 public class GlobeMap<T extends MapField> implements WorldMap<T> {
@@ -81,6 +82,17 @@ public class GlobeMap<T extends MapField> implements WorldMap<T> {
     @Override
     public T mapFieldAt(Vector2d position) {
         return fields[position.getX()][position.getY()];
+    }
+
+    @Override
+    public void move(MoveableWorldElement element) {
+        Vector2d oldPosition = element.getPosition();
+        mapFieldAt(oldPosition).removeElement(element);
+
+        element.move(this);
+        Vector2d newPosition = element.getPosition();
+
+        mapFieldAt(newPosition).addElement(element);
     }
 
     @Override
