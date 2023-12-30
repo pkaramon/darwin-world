@@ -3,13 +3,16 @@ package agh.ics.oop.model;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class GlobeMap implements MoveValidator {
+public class GlobeMap<T extends MapField> implements WorldMap<T> {
+
     private final int height;
+    private final T[][] fields;
     private final int width;
 
-    GlobeMap(int width, int height) {
+    GlobeMap(int width, int height, T[][] fields) {
         this.width = width;
         this.height = height;
+        this.fields = fields;
     }
 
     @Override
@@ -65,4 +68,23 @@ public class GlobeMap implements MoveValidator {
     }
 
 
+    @Override
+    public void place(WorldElement element) {
+        mapFieldAt(element.getPosition()).addElement(element);
+    }
+
+    @Override
+    public void remove(WorldElement element) {
+        mapFieldAt(element.getPosition()).removeElement(element);
+    }
+
+    @Override
+    public T mapFieldAt(Vector2d position) {
+        return fields[position.getX()][position.getY()];
+    }
+
+    @Override
+    public Boundary getBoundary() {
+        return new Boundary(new Vector2d(0, 0), new Vector2d(width - 1, height - 1));
+    }
 }

@@ -4,11 +4,24 @@ import org.junit.jupiter.api.Test;
 
 import static agh.ics.oop.model.MapDirection.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class GlobeMapTest {
+    private GlobeMap<MapField> createGlobeMap(int width, int height) {
+        MapField[][] fields = new MapField[width][height];
+        for (int i = 0; i < width; i++) {
+            for (int j = 0 ; j < height; j++) {
+                fields[i][j] = mock(MapField.class);
+            }
+        }
+
+        return new GlobeMap<>(width, height, fields);
+    }
+
+
     @Test
     void validateMove_ObjectWantsToMoveInsideOfMapBoundaries_MoveIsAccepted() {
-        GlobeMap globeMap = new GlobeMap(5, 5);
+        var globeMap = createGlobeMap(5, 5);
 
         Pose newPose = globeMap.validateMove(new Pose(new Vector2d(2, 2), NORTH));
 
@@ -17,7 +30,7 @@ class GlobeMapTest {
 
     @Test
     void validateMove_ObjectsWantsToMoveOutsideOfLeftOrRightMapBoundaries_GetsMovedToOtherBoundary() {
-        GlobeMap globeMap = new GlobeMap(5, 5);
+        var globeMap = createGlobeMap(5, 5);
 
         Pose newPose = globeMap.validateMove(new Pose(new Vector2d(5, 2), EAST));
         assertEquals(new Pose(new Vector2d(0, 2), EAST), newPose);
@@ -33,7 +46,7 @@ class GlobeMapTest {
 
     @Test
     void validateMove_ObjectsWantsToMoveOutsideOfTopOrBottomBoundary_GetsTurnedAround() {
-        GlobeMap globeMap = new GlobeMap(4, 3);
+        var globeMap = createGlobeMap(5, 5);
 
         Pose newPose = globeMap.validateMove(new Pose(new Vector2d(2, 3), NORTH));
         assertEquals(new Pose(new Vector2d(2, 2), SOUTH), newPose);
@@ -48,7 +61,7 @@ class GlobeMapTest {
 
     @Test
     void validateMove_Corners() {
-        GlobeMap globeMap = new GlobeMap(5, 5);
+        var globeMap = createGlobeMap(5, 5);
 
         Pose newPose = globeMap.validateMove(new Pose(new Vector2d(5, 5), NORTHEAST));
         assertEquals(new Pose(new Vector2d(4, 4), SOUTHWEST), newPose);
@@ -61,5 +74,39 @@ class GlobeMapTest {
 
         newPose = globeMap.validateMove(new Pose(new Vector2d(-1, 5), NORTHWEST));
         assertEquals(new Pose(new Vector2d(0, 4), SOUTHEAST), newPose);
+    }
+
+
+    private static final WorldElement dummyElement = new WorldElement() {
+        @Override
+        public Vector2d getPosition() {
+            return new Vector2d(1, 3);
+        }
+    };
+
+    @Test
+    void place_AddsWorldElementToCorrectMapField() {
+        var map = createGlobeMap(3, 4);
+
+        map.place(dummyElement);
+
+        verify(map.mapFieldAt(new Vector2d(1, 3))).addElement(dummyElement);
+    }
+
+    @Test
+    void remove_RemovesWorldElementFromCorrectMapField() {
+        var map = createGlobeMap(3, 4);
+
+        map.place(dummyElement);
+        map.remove(dummyElement);
+
+        verify(map.mapFieldAt(new Vector2d(1, 3))).removeElement(dummyElement);
+    }
+
+    @Test
+    void boundary_ReturnsBoundaryBasedOnWidthAndHeight() {
+        var map = createGlobeMap(3, 4);
+
+        assertEquals(new Boundary(new Vector2d(0, 0), new Vector2d(2, 3)), map.getBoundary());
     }
 }

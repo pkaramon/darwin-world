@@ -28,10 +28,9 @@ public class Genotype {
 
 
     public Genotype applyMutation(GeneMutation mutation) {
-        List<Integer> mutatedGenes = mutation.mutate(genes);
+        List<Integer> mutatedGenes = mutation.mutate(new ArrayList<>(genes));
         return new Genotype(mutatedGenes);
     }
-
 
     public List<Integer> getGenes() {
         return genes;
