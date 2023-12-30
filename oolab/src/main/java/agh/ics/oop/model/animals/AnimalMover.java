@@ -8,16 +8,13 @@ import agh.ics.oop.model.Vector2d;
 import java.util.function.Supplier;
 
 public class AnimalMover {
-    private final AnimalData animalData;
     private final Supplier<Integer> getCurrentDay;
 
-    public AnimalMover(AnimalData animalData, Supplier<Integer> getCurrentDay) {
-
-        this.animalData = animalData;
+    public AnimalMover(Supplier<Integer> getCurrentDay) {
         this.getCurrentDay = getCurrentDay;
     }
 
-    public void move(MoveValidator moveValidator) {
+    public void move(MoveValidator moveValidator, AnimalData animalData) {
         int gene = animalData.getGenotype().nextGene();
 
         MapDirection desiredOrientation = animalData.getOrientation().nextN(gene);

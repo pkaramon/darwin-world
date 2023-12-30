@@ -6,10 +6,10 @@ import agh.ics.oop.model.genes.Genotype;
 import java.util.Optional;
 
 public class AnimalCrosser {
-    private final AnimalMatingInfo matingInfo;
+    private final AnimalCrossingInfo crossingInfo;
 
-    public AnimalCrosser(AnimalMatingInfo matingInfo) {
-        this.matingInfo = matingInfo;
+    public AnimalCrosser(AnimalCrossingInfo crossingInfo) {
+        this.crossingInfo = crossingInfo;
     }
 
     public Optional<AnimalData> cross(AnimalData father, AnimalData mother) {
@@ -27,8 +27,8 @@ public class AnimalCrosser {
 
 
     private boolean parentEnergyDeficiency(AnimalData father, AnimalData mother) {
-        return father.getEnergy() < matingInfo.minEnergyToReproduce() ||
-                mother.getEnergy() < matingInfo.minEnergyToReproduce();
+        return father.getEnergy() < crossingInfo.minEnergyToReproduce() ||
+                mother.getEnergy() < crossingInfo.minEnergyToReproduce();
     }
 
     private AnimalData createChild(AnimalData father, AnimalData mother) {
@@ -36,13 +36,13 @@ public class AnimalCrosser {
         Genotype motherGenotype = mother.getGenotype();
 
         Genotype combined = combine(fatherGenotype, father.getEnergy(), motherGenotype, mother.getEnergy());
-        Genotype mutated = combined.applyMutation(matingInfo.mutation());
+        Genotype mutated = combined.applyMutation(crossingInfo.mutation());
 
         return new AnimalData(
-                new Pose(father.getPosition(), matingInfo.getChildOrientation().get()),
+                new Pose(father.getPosition(), crossingInfo.getChildOrientation().get()),
                 mutated,
-                matingInfo.parentEnergyGivenToChild() * 2,
-                matingInfo.getCurrentDay().get()
+                crossingInfo.parentEnergyGivenToChild() * 2,
+                crossingInfo.getCurrentDay().get()
         );
     }
 
@@ -68,7 +68,7 @@ public class AnimalCrosser {
     }
 
     private Genotype getCombinedGenotype(int splitPoint, Genotype stronger, Genotype weaker) {
-        if(matingInfo.rightSideOfGenotypeForStrongerParent().get()) {
+        if(crossingInfo.rightSideOfGenotypeForStrongerParent().get()) {
             var strongerSplit = stronger.splitAt(stronger.length() - splitPoint);
             var weakerSplit = weaker.splitAt(stronger.length() - splitPoint);
             return weakerSplit.left().concat(strongerSplit.right());
@@ -81,7 +81,7 @@ public class AnimalCrosser {
 
 
     private void updateParentsEnergies(AnimalData father, AnimalData mother) {
-        father.useEnergy(matingInfo.parentEnergyGivenToChild());
-        mother.useEnergy(matingInfo.parentEnergyGivenToChild());
+        father.useEnergy(crossingInfo.parentEnergyGivenToChild());
+        mother.useEnergy(crossingInfo.parentEnergyGivenToChild());
     }
 }

@@ -16,6 +16,8 @@ import static org.mockito.Mockito.*;
 class AnimalMoverTest {
     private static final MoveValidator passThroughValidator = (pose) -> pose;
     private static final Supplier<Integer> getCurrentDay = () -> 123;
+    private static AnimalMover mover = new AnimalMover(getCurrentDay);
+
     @Test
     void move_PicksNextGeneRotatesAndTriesToMoveInNewDirection() {
         AnimalData animalData = new AnimalData(
@@ -24,14 +26,12 @@ class AnimalMoverTest {
                 50
         );
 
-        AnimalMover mover = new AnimalMover(animalData, getCurrentDay);
-
-        mover.move(passThroughValidator);
+        mover.move(passThroughValidator, animalData);
 
         assertEquals(new Vector2d(3, 1), animalData.getPosition());
         assertEquals(MapDirection.SOUTHEAST, animalData.getOrientation());
 
-        mover.move(passThroughValidator);
+        mover.move(passThroughValidator, animalData);
 
         assertEquals(new Vector2d(2, 0), animalData.getPosition());
         assertEquals(MapDirection.SOUTHWEST, animalData.getOrientation());
@@ -49,9 +49,7 @@ class AnimalMoverTest {
                 new Pose(new Vector2d(100, 100), MapDirection.NORTH)
         );
 
-        AnimalMover mover = new AnimalMover(animalData, getCurrentDay);
-
-        mover.move(mockValidator);
+        mover.move(mockValidator, animalData);
 
         verify(mockValidator).validate(new Pose(new Vector2d(5, 6), MapDirection.NORTHEAST));
         assertEquals(new Vector2d(100, 100), animalData.getPosition());
@@ -66,9 +64,7 @@ class AnimalMoverTest {
                 50
         );
 
-        AnimalMover mover = new AnimalMover(animalData, getCurrentDay);
-
-        mover.move(passThroughValidator);
+        mover.move(passThroughValidator, animalData);
 
         assertEquals(49, animalData.getEnergy());
     }
@@ -81,9 +77,7 @@ class AnimalMoverTest {
                 1
         );
 
-        AnimalMover mover = new AnimalMover(animalData, getCurrentDay);
-
-        mover.move(passThroughValidator);
+        mover.move(passThroughValidator, animalData);
 
         assertEquals(123, animalData.getDeathDay());
     }

@@ -5,15 +5,13 @@ import agh.ics.oop.model.Grass;
 import java.util.function.Consumer;
 
 public class AnimalFeeder {
-    private final AnimalData animalData;
     private final Consumer<Grass> removeGrass;
 
-    public AnimalFeeder(AnimalData animalData, Consumer<Grass> removeGrass) {
-        this.animalData = animalData;
+    public AnimalFeeder(Consumer<Grass> removeGrass) {
         this.removeGrass = removeGrass;
     }
 
-    public void feedAnimal(Grass grass) {
+    public void feedAnimal(Grass grass, AnimalData animalData) {
         animalData.giveEnergy(grass.getEnergy());
         removeGrass.accept(grass);
         animalData.incrementPlantsEaten();

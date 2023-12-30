@@ -30,8 +30,9 @@ class AnimalFeederTest {
 
     @Test
     void grassGivesAnimalTheSpecifiedEnergy() {
-        AnimalFeeder feeder = new AnimalFeeder(animalData, (g)->{});
-        feeder.feedAnimal(grass);
+        AnimalFeeder feeder = new AnimalFeeder((g)->{});
+
+        feeder.feedAnimal(grass, animalData);
 
         assertEquals(60, animalData.getEnergy());
     }
@@ -40,21 +41,20 @@ class AnimalFeederTest {
     @SuppressWarnings("unchecked")
     void grassIsRemoved() {
         Consumer<Grass> removeGrass = (Consumer<Grass>)mock(Consumer.class);
-        AnimalFeeder feeder = new AnimalFeeder(animalData,removeGrass);
-        feeder.feedAnimal(grass);
+        AnimalFeeder feeder = new AnimalFeeder(removeGrass);
+
+        feeder.feedAnimal(grass, animalData);
 
         verify(removeGrass).accept(grass);
     }
 
     @Test
     void plantsEatenIsIncremented() {
-        AnimalFeeder feeder = new AnimalFeeder(animalData, (g)->{});
-        feeder.feedAnimal(grass);
+        AnimalFeeder feeder = new AnimalFeeder((g)->{});
+
+        feeder.feedAnimal(grass, animalData);
 
         assertEquals(1, animalData.getPlantsEaten());
     }
-
-
-
 
 }

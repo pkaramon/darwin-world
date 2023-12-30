@@ -35,7 +35,7 @@ class AnimalCrosserTest {
 
     @Test
     void cross_NotEnoughEnergy_NoChild() {
-        AnimalMatingInfo info = new AnimalMatingInfo(
+        AnimalCrossingInfo info = new AnimalCrossingInfo(
                 50,
                 10,
                 (genes)-> genes, () -> true, () -> MapDirection.NORTH, () -> 0
@@ -48,7 +48,7 @@ class AnimalCrosserTest {
 
     @Test
     void cross_EnoughEnergy_EnergyFromParentsIsGivenToChild() {
-        AnimalMatingInfo info = new AnimalMatingInfo(
+        AnimalCrossingInfo info = new AnimalCrossingInfo(
                 20,
                 10,
                 (genes)-> genes, () -> true, () -> MapDirection.NORTH, () -> 0
@@ -66,7 +66,7 @@ class AnimalCrosserTest {
 
     @Test
     void cross_EnoughEnergyWeChooseLeftSideOfGenotypeForStrongerParent() {
-        AnimalMatingInfo info = new AnimalMatingInfo(
+        AnimalCrossingInfo info = new AnimalCrossingInfo(
                 20,
                 10,
                 (genes)-> genes, () -> false, () -> MapDirection.NORTH, () -> 0
@@ -83,7 +83,7 @@ class AnimalCrosserTest {
 
     @Test
     void cross_EnoughEnergyWeChooseRightSideOfGenotypeForStrongerParent() {
-        AnimalMatingInfo info = new AnimalMatingInfo(
+        AnimalCrossingInfo info = new AnimalCrossingInfo(
                 20,
                 10,
                 (genes)-> genes, () -> true, () -> MapDirection.NORTH, () -> 0
@@ -99,7 +99,7 @@ class AnimalCrosserTest {
 
     @Test
     void cross_EnoughEnergyWeChooseRightSideOfGenotypeForStrongerParentAndWeHaveUnevenDivision() {
-        AnimalMatingInfo info = new AnimalMatingInfo(
+        AnimalCrossingInfo info = new AnimalCrossingInfo(
                 20,
                 10,
                 (genes)-> genes, () -> true, () -> MapDirection.NORTH, () -> 0
@@ -126,7 +126,7 @@ class AnimalCrosserTest {
 
     @Test
     void cross_EnoughEnergy_ChildHasTheSamePositionAsParent() {
-        AnimalMatingInfo info = new AnimalMatingInfo(
+        AnimalCrossingInfo info = new AnimalCrossingInfo(
                 20,
                 10,
                 (genes)-> genes, () -> true, () -> MapDirection.NORTH, () -> 0
@@ -148,7 +148,7 @@ class AnimalCrosserTest {
             return newGenes;
         });
 
-        AnimalMatingInfo info = new AnimalMatingInfo(
+        AnimalCrossingInfo info = new AnimalCrossingInfo(
                 20,
                 10,
                 changeThirdTo123, () -> true, () -> MapDirection.NORTH, () -> 0
@@ -164,7 +164,7 @@ class AnimalCrosserTest {
 
     @Test
     void child_orientation_is_consulted() {
-        AnimalMatingInfo info = new AnimalMatingInfo(
+        AnimalCrossingInfo info = new AnimalCrossingInfo(
                 20,
                 10,
                 (genes)-> genes, () -> true, () -> MapDirection.SOUTH, () -> 0
@@ -180,7 +180,7 @@ class AnimalCrosserTest {
 
     @Test
     void child_isAddedToBothParents() {
-        AnimalMatingInfo info = new AnimalMatingInfo(
+        AnimalCrossingInfo info = new AnimalCrossingInfo(
                 20,
                 10,
                 (genes)-> genes, () -> true, () -> MapDirection.SOUTH, () -> 0
@@ -198,7 +198,7 @@ class AnimalCrosserTest {
 
     @Test
     void child_BornDayIsProperlySet() {
-    AnimalMatingInfo info = new AnimalMatingInfo(
+    AnimalCrossingInfo info = new AnimalCrossingInfo(
                 20,
                 10,
                 (genes)-> genes, () -> true, () -> MapDirection.SOUTH, () -> 123

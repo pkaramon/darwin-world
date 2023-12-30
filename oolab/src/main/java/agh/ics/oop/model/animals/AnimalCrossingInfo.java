@@ -5,7 +5,7 @@ import agh.ics.oop.model.genes.GeneMutation;
 
 import java.util.function.Supplier;
 
-public record AnimalMatingInfo(
+public record AnimalCrossingInfo(
         int minEnergyToReproduce,
         int parentEnergyGivenToChild,
         GeneMutation mutation,

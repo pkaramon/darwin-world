@@ -10,19 +10,19 @@ import java.util.List;
 
 public class AnimalData {
     private final Genotype genotype;
+    private final List<AnimalData> children = new ArrayList<>();
+    private final int bornDay;
     private Pose pose;
     private int energy;
-    private final List<AnimalData> children = new ArrayList<>();
     private int deathDay = -1;
     private int plantsEaten = 0;
-    private final int bornDay;
 
 
-    public AnimalData(Pose pose, Genotype genotype,int energy) {
+    public AnimalData(Pose pose, Genotype genotype, int energy) {
         this(pose, genotype, energy, 0);
     }
 
-    public AnimalData(Pose pose, Genotype genotype,int energy, int bornDay) {
+    public AnimalData(Pose pose, Genotype genotype, int energy, int bornDay) {
         this.pose = pose;
         this.genotype = genotype;
         this.energy = energy;
@@ -58,7 +58,7 @@ public class AnimalData {
     }
 
     public void useEnergy(int usage) {
-        if(usage > energy) {
+        if (usage > energy) {
             throw new IllegalArgumentException("Not enough energy");
         }
         energy -= usage;
