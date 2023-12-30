@@ -1,6 +1,9 @@
 package agh.ics.oop.model;
 
-@FunctionalInterface
+import agh.ics.oop.model.animals.Animal;
+
 public interface MapChangeListener {
-    void mapChanged(WorldMap worldMap, String message);
+    default void animalPlaced(WorldMap worldMap, Animal animal) {}
+    default void animalDied(WorldMap worldMap, Animal animal) {}
+    default void animalMoved(WorldMap worldMap, Animal animal, Vector2d oldPosition) {}
 }

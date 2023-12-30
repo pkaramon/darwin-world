@@ -20,7 +20,7 @@ public class AnimalMover {
         MapDirection desiredOrientation = animalData.getOrientation().nextN(gene);
         Vector2d desiredPosition = animalData.getPosition().add(desiredOrientation.toUnitVector());
 
-        animalData.setPose(moveValidator.validate(new Pose(desiredPosition, desiredOrientation)));
+        animalData.setPose(moveValidator.validateMove(new Pose(desiredPosition, desiredOrientation)));
         animalData.useEnergy(1);
         animalData.setDeathDay(getCurrentDay.get());
     }

@@ -45,13 +45,13 @@ class AnimalMoverTest {
                 50
         );
         MoveValidator mockValidator = mock(MoveValidator.class);
-        when(mockValidator.validate(any())).thenAnswer(invocation ->
+        when(mockValidator.validateMove(any())).thenAnswer(invocation ->
                 new Pose(new Vector2d(100, 100), MapDirection.NORTH)
         );
 
         mover.move(mockValidator, animalData);
 
-        verify(mockValidator).validate(new Pose(new Vector2d(5, 6), MapDirection.NORTHEAST));
+        verify(mockValidator).validateMove(new Pose(new Vector2d(5, 6), MapDirection.NORTHEAST));
         assertEquals(new Vector2d(100, 100), animalData.getPosition());
         assertEquals(MapDirection.NORTH, animalData.getOrientation());
     }
