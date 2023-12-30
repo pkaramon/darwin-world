@@ -1,4 +1,4 @@
-package agh.ics.oop.model.animal;
+package agh.ics.oop.model.animals;
 
 import agh.ics.oop.model.Pose;
 import agh.ics.oop.model.genes.Genotype;

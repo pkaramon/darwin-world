@@ -1,4 +1,4 @@
-package agh.ics.oop.model.animal;
+package agh.ics.oop.model.animals;
 
 import agh.ics.oop.model.MapDirection;
 import agh.ics.oop.model.Pose;
@@ -64,6 +64,11 @@ public class AnimalData {
         energy -= usage;
     }
 
+    public void giveEnergy(int energy) {
+        this.energy += energy;
+    }
+
+
     public int getBornDay() {
         return bornDay;
     }
@@ -74,5 +79,13 @@ public class AnimalData {
 
     public void setDeathDay(int deathDay) {
         this.deathDay = deathDay;
+    }
+
+    public int getPlantsEaten() {
+        return plantsEaten;
+    }
+
+    public void incrementPlantsEaten() {
+        plantsEaten++;
     }
 }
