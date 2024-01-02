@@ -33,6 +33,18 @@ public class AnimalData {
         return children;
     }
 
+    int getDescendantsCount() {
+        int count = 0;
+        for (AnimalData child : children) {
+            count += 1 + child.getDescendantsCount();
+        }
+        return count;
+    }
+
+    boolean isDead() {
+        return deathDay != -1;
+    }
+
     void addChild(AnimalData child) {
         children.add(child);
     }
@@ -67,7 +79,6 @@ public class AnimalData {
     void giveEnergy(int energy) {
         this.energy += energy;
     }
-
 
     int getBornDay() {
         return bornDay;
