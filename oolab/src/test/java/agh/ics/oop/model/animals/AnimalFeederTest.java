@@ -9,10 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
 
 class AnimalFeederTest {
     AnimalData animalData;
@@ -30,27 +28,17 @@ class AnimalFeederTest {
 
     @Test
     void grassGivesAnimalTheSpecifiedEnergy() {
-        AnimalFeeder feeder = new AnimalFeeder((g)->{});
+        AnimalFeeder feeder = new AnimalFeeder();
 
         feeder.feedAnimal(grass, animalData);
 
         assertEquals(60, animalData.getEnergy());
     }
 
-    @Test
-    @SuppressWarnings("unchecked")
-    void grassIsRemoved() {
-        Consumer<Grass> removeGrass = (Consumer<Grass>)mock(Consumer.class);
-        AnimalFeeder feeder = new AnimalFeeder(removeGrass);
-
-        feeder.feedAnimal(grass, animalData);
-
-        verify(removeGrass).accept(grass);
-    }
 
     @Test
     void plantsEatenIsIncremented() {
-        AnimalFeeder feeder = new AnimalFeeder((g)->{});
+        AnimalFeeder feeder = new AnimalFeeder();
 
         feeder.feedAnimal(grass, animalData);
 

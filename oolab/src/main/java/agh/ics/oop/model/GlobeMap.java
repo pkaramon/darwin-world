@@ -2,6 +2,7 @@ package agh.ics.oop.model;
 
 import agh.ics.oop.model.animals.Animal;
 
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -11,9 +12,9 @@ public class GlobeMap implements WorldMap {
     private final MapField[][] fields;
     private final int width;
 
-    GlobeMap(int width, int height, MapField[][] fields) {
-        this.width = width;
-        this.height = height;
+    public GlobeMap(MapField[][] fields) {
+        this.width = fields.length;
+        this.height = fields[0].length;
         this.fields = fields;
     }
 
@@ -106,5 +107,10 @@ public class GlobeMap implements WorldMap {
     @Override
     public Boundary getBoundary() {
         return new Boundary(new Vector2d(0, 0), new Vector2d(width - 1, height - 1));
+    }
+
+    @Override
+    public Iterator<MapField> iterator() {
+        return new GlobeMapIterator(fields);
     }
 }

@@ -3,20 +3,23 @@ package agh.ics.oop.model;
 import agh.ics.oop.model.animals.Animal;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static agh.ics.oop.model.MapDirection.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class GlobeMapTest {
     private WorldMap createGlobeMap(int width, int height) {
         MapField[][] fields = new MapField[width][height];
         for (int i = 0; i < width; i++) {
-            for (int j = 0 ; j < height; j++) {
+            for (int j = 0; j < height; j++) {
                 fields[i][j] = new GrassMapField(new Vector2d(i, j));
             }
         }
 
-        return new GlobeMap(width, height, fields);
+        return new GlobeMap(fields);
     }
 
 
@@ -41,7 +44,7 @@ class GlobeMapTest {
 
 
         newPose = globeMap.validateMove(new Pose(new Vector2d(5, 0), SOUTHEAST));
-        assertEquals(new Pose(new Vector2d(0,  0), SOUTHEAST), newPose);
+        assertEquals(new Pose(new Vector2d(0, 0), SOUTHEAST), newPose);
     }
 
 
@@ -52,7 +55,7 @@ class GlobeMapTest {
         Pose newPose = globeMap.validateMove(new Pose(new Vector2d(2, 3), NORTH));
         assertEquals(new Pose(new Vector2d(2, 2), SOUTH), newPose);
 
-        newPose = globeMap.validateMove(new Pose(new Vector2d(2, -1 ), SOUTH));
+        newPose = globeMap.validateMove(new Pose(new Vector2d(2, -1), SOUTH));
         assertEquals(new Pose(new Vector2d(2, 0), NORTH), newPose);
 
 
@@ -163,5 +166,19 @@ class GlobeMapTest {
 
         assertEquals(new Vector2d(0, 0), boundary.lowerLeft());
         assertEquals(new Vector2d(2, 3), boundary.upperRight());
+    }
+
+    @Test
+    void iteratingGoesRowByRow() {
+        var map = createGlobeMap(2, 2);
+
+        assertIterableEquals(
+                map,
+                List.of(map.mapFieldAt(new Vector2d(0, 0)),
+                        map.mapFieldAt(new Vector2d(1, 0)),
+                        map.mapFieldAt(new Vector2d(0, 1)),
+                        map.mapFieldAt(new Vector2d(1, 1)))
+        );
+
     }
 }

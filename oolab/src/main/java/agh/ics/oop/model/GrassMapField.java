@@ -48,7 +48,7 @@ public class GrassMapField implements MapField {
 
     @Override
     public List<Animal> getOrderedAnimals() {
-        return animals;
+        return animals.stream().sorted(Animal::compareTo).toList();
     }
 
 }

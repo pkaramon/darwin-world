@@ -3,7 +3,7 @@ package agh.ics.oop.model;
 
 import agh.ics.oop.model.animals.Animal;
 
-public interface WorldMap extends MoveValidator {
+public interface WorldMap extends MoveValidator, Iterable<MapField> {
     void addAnimal(Animal animal);
     void removeAnimal(Animal animal);
     void addGrass(Grass grass);

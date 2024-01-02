@@ -26,6 +26,10 @@ public class Animal implements WorldElement, Comparable<Animal> {
         feeder.feedAnimal(grass, this.data);
     }
 
+    public boolean isDead() {
+        return data.getDeathDay() == -1;
+    }
+
     public void move(MoveValidator moveValidator) {
         mover.move(moveValidator, this.data);
     }
@@ -40,9 +44,12 @@ public class Animal implements WorldElement, Comparable<Animal> {
         return data.getPosition();
     }
 
-
     @Override
     public int compareTo(Animal o) {
         return comparator.compare(this.data, o.data);
     }
+
+
+
+
 }

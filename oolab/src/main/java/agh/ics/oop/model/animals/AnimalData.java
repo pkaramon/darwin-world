@@ -41,10 +41,6 @@ public class AnimalData {
         return count;
     }
 
-    boolean isDead() {
-        return deathDay != -1;
-    }
-
     void addChild(AnimalData child) {
         children.add(child);
     }
