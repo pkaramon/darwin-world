@@ -1,16 +1,17 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.animals.Animal;
+
 import java.util.Optional;
-import java.util.Vector;
 import java.util.stream.Stream;
 
-public class GlobeMap<T extends MapField> implements WorldMap<T> {
+public class GlobeMap implements WorldMap {
 
     private final int height;
-    private final T[][] fields;
+    private final MapField[][] fields;
     private final int width;
 
-    GlobeMap(int width, int height, T[][] fields) {
+    GlobeMap(int width, int height, MapField[][] fields) {
         this.width = width;
         this.height = height;
         this.fields = fields;
@@ -70,29 +71,36 @@ public class GlobeMap<T extends MapField> implements WorldMap<T> {
 
 
     @Override
-    public void place(WorldElement element) {
-        mapFieldAt(element.getPosition()).addElement(element);
+    public void addAnimal(Animal animal) {
+        mapFieldAt(animal.getPosition()).addAnimal(animal);
     }
 
     @Override
-    public void remove(WorldElement element) {
-        mapFieldAt(element.getPosition()).removeElement(element);
+    public void removeAnimal(Animal animal) {
+        mapFieldAt(animal.getPosition()).removeAnimal(animal);
+
     }
 
     @Override
-    public T mapFieldAt(Vector2d position) {
+    public void addGrass(Grass grass) {
+        mapFieldAt(grass.getPosition()).addGrass(grass);
+    }
+
+    @Override
+    public void removeGrass(Grass grass) {
+        mapFieldAt(grass.getPosition()).removeGrass(grass);
+    }
+
+    @Override
+    public MapField mapFieldAt(Vector2d position) {
         return fields[position.getX()][position.getY()];
     }
 
     @Override
-    public void move(MoveableWorldElement element) {
-        Vector2d oldPosition = element.getPosition();
-        mapFieldAt(oldPosition).removeElement(element);
-
-        element.move(this);
-        Vector2d newPosition = element.getPosition();
-
-        mapFieldAt(newPosition).addElement(element);
+    public void move(Animal animal) {
+        mapFieldAt(animal.getPosition()).removeAnimal(animal);
+        animal.move(this);
+        mapFieldAt(animal.getPosition()).addAnimal(animal);
     }
 
     @Override

@@ -1,10 +1,14 @@
 package agh.ics.oop.model;
 
 
-public interface WorldMap<T extends MapField> extends MoveValidator {
-    void place(WorldElement element);
-    void remove(WorldElement element);
-    T mapFieldAt(Vector2d position);
-    void move(MoveableWorldElement element);
+import agh.ics.oop.model.animals.Animal;
+
+public interface WorldMap extends MoveValidator {
+    void addAnimal(Animal animal);
+    void removeAnimal(Animal animal);
+    void addGrass(Grass grass);
+    void removeGrass(Grass grass);
+    MapField mapFieldAt(Vector2d position);
+    void move(Animal animal);
     Boundary getBoundary();
 }
