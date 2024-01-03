@@ -27,7 +27,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
     }
 
     public boolean isDead() {
-        return data.getDeathDay() == -1;
+        return data.getDeathDay() != -1;
     }
 
     public void move(MoveValidator moveValidator) {
@@ -49,7 +49,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
         return comparator.compare(this.data, o.data);
     }
 
-
-
-
+    public int getEnergy() {
+        return data.getEnergy();
+    }
 }

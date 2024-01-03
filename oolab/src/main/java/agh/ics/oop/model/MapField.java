@@ -12,6 +12,10 @@ public interface MapField {
     Optional<Grass> getGrass();
     void addGrass(Grass grass);
     void removeGrass(Grass grass);
-
     List<Animal> getOrderedAnimals();
+
+    default boolean isGrassed() {
+        return getGrass().isPresent();
+    }
+
 }
