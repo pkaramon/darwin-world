@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.Optional;
 
 public class Simulation {
+    private final List<Animal> deadAnimals = new ArrayList<>();
     private WorldMap map;
     private GrassGenerator grassGenerator;
     private List<Animal> animals;
-    private final List<Animal> deadAnimals = new ArrayList<>();
     private int currentDay = 0;
 
 
@@ -49,6 +49,68 @@ public class Simulation {
 
     }
 
+    private List<Animal> handleDeadAnimals() {
+        List<Animal> deadOnThisDay = animals.stream().filter(Animal::isDead).toList();
+        deadOnThisDay.forEach(a -> {
+            map.removeAnimal(a);
+            animals.remove(a);
+        });
+        deadAnimals.addAll(deadOnThisDay);
+        return deadOnThisDay;
+    }
+
+
+    private List<Animal> handleCrossing() {
+        List<Animal> animalsBornToday = new ArrayList<>();
+
+        for (MapField field : map) {
+            List<Animal> fieldAnimals = field.getOrderedAnimals();
+            if (fieldAnimals.size() < 2) {
+                continue;
+            }
+
+            Animal strongest = fieldAnimals.get(fieldAnimals.size() - 1);
+            Animal secondStrongest = fieldAnimals.get(fieldAnimals.size() - 2);
+            Optional<Animal> child = strongest.crossWith(secondStrongest);
+
+            child.ifPresent(c -> {
+                map.addAnimal(c);
+                animals.add(c);
+                animalsBornToday.add(c);
+            });
+
+        }
+        return animalsBornToday;
+    }
+
+    private void moveAnimals() {
+        for (Animal animal : animals) {
+            map.move(animal);
+        }
+    }
+
+    private void handleEating() {
+        for (MapField field : map) {
+            if (field.isGrassed()) {
+                List<Animal> fieldAnimals = field.getOrderedAnimals();
+                if (fieldAnimals.isEmpty() || field.getGrass().isEmpty()) {
+                    continue;
+                }
+
+                Grass grass = field.getGrass().get();
+                Animal strongest = fieldAnimals.get(fieldAnimals.size() - 1);
+                strongest.feed(grass);
+
+                map.removeGrass(grass);
+            }
+        }
+    }
+
+    private void growFood() {
+        grassGenerator.generateGrassForDay().forEach(map::addGrass);
+    }
+
+
     private SimulationStatistics calculateStatistics(List<Animal> deadOnThisDay, List<Animal> animalsBornToday) {
         currentDay++;
         SimulationStatistics stats = new SimulationStatistics();
@@ -62,70 +124,10 @@ public class Simulation {
         return stats;
     }
 
-    private List<Animal> handleCrossing() {
-        List<Animal> animalsBornToday = new ArrayList<>();
-
-        for (MapField field: map) {
-            List<Animal> fieldAnimals = field.getOrderedAnimals();
-            if(fieldAnimals.size() < 2) {
-                continue;
-            }
-
-            Animal strongest = fieldAnimals.get(fieldAnimals.size()-1);
-            Animal secondStrongest = fieldAnimals.get(fieldAnimals.size()-2);
-            Optional<Animal> child = strongest.crossWith(secondStrongest);
-
-            child.ifPresent(c -> {
-                map.addAnimal(c);
-                animals.add(c);
-                animalsBornToday.add(c);
-            });
-
-        }
-        return animalsBornToday;
-    }
-
-    private void growFood() {
-        grassGenerator.generateGrassForDay().forEach(map::addGrass);
-    }
-
-    private void handleEating() {
-        for (MapField field : map) {
-            if(field.isGrassed()) {
-                List<Animal> fieldAnimals = field.getOrderedAnimals();
-                if(fieldAnimals.isEmpty() || field.getGrass().isEmpty()) {
-                    continue;
-                }
-
-                Grass grass = field.getGrass().get();
-                Animal strongest = fieldAnimals.get(fieldAnimals.size()-1);
-                strongest.feed(grass);
-
-                map.removeGrass(grass);
-            }
-        }
-    }
-
-    private void moveAnimals() {
-        for (Animal animal : animals) {
-            map.move(animal);
-        }
-    }
-
-    private List<Animal> handleDeadAnimals() {
-        List<Animal> deadOnThisDay = animals.stream().filter(Animal::isDead).toList();
-        deadOnThisDay.forEach(a -> {
-            map.removeAnimal(a);
-            animals.remove(a);
-        });
-        deadAnimals.addAll(deadOnThisDay);
-        return deadOnThisDay;
-    }
-
     private int calculateNumberOfGrassOnMap() {
         int grassOnMap = 0;
         for (MapField field : map) {
-            if(field.isGrassed()) {
+            if (field.isGrassed()) {
                 grassOnMap++;
             }
         }
@@ -133,7 +135,7 @@ public class Simulation {
     }
 
     private void addInitialGrassIfFirstDay() {
-        if(currentDay == 0) {
+        if (currentDay == 0) {
             grassGenerator.generateInitialGrass().forEach(map::addGrass);
         }
     }
@@ -141,7 +143,7 @@ public class Simulation {
     private int calculateNumberOfFreeFields() {
         int freeFields = 0;
         for (MapField field : map) {
-            if(!field.isGrassed() && field.getOrderedAnimals().isEmpty()) {
+            if (!field.isGrassed() && field.getOrderedAnimals().isEmpty()) {
                 freeFields++;
             }
         }

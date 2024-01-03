@@ -71,21 +71,6 @@ public class SimulationStatistics {
         this.grassOnMap = plantsGrows;
     }
 
-    public SimulationStatistics copy() {
-        SimulationStatistics copy =  new SimulationStatistics();
-
-        copy.setAnimalsAlive(this.getAnimalsAlive());
-        copy.setAnimalsBornOnLastDay(this.getAnimalsBornOnLastDay());
-        copy.setAnimalsDeadOnLastDay(this.getAnimalsDeadOnLastDay());
-        copy.setAnimalsDeadOverall(this.getAnimalsDeadOverall());
-        copy.setAverageLifetimeForDeadAnimals(this.getAverageLifetimeForDeadAnimals());
-        copy.setDominantGenotype(this.getDominantGenotype());
-        copy.setGrassOnMap(this.getGrassOnMap());
-        copy.setFreeFields(this.getFreeFields());
-        copy.setCurrentDay(this.getCurrentDay());
-
-        return copy;
-    }
 
     public int getFreeFields() {
         return freeFields;
