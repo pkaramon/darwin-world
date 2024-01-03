@@ -30,7 +30,6 @@ public class Simulation {
         this.animals = new ArrayList<>(animals);
     }
 
-
     public int getCurrentDay() {
         return currentDay;
     }
@@ -38,27 +37,51 @@ public class Simulation {
 
     public SimulationStatistics run() {
         addInitialGrassIfFirstDay();
+        currentDay++;
 
-        List<Animal> deadOnThisDay = handleDeadAnimals();
+        cleanUpAnimalsThatDiedDayBefore();
         moveAnimals();
         handleEating();
         growFood();
         List<Animal> animalsBornToday = handleCrossing();
 
-        return calculateStatistics(deadOnThisDay, animalsBornToday);
+        return calculateStatistics(animalsBornToday);
 
     }
 
-    private List<Animal> handleDeadAnimals() {
-        List<Animal> deadOnThisDay = animals.stream().filter(Animal::isDead).toList();
-        deadOnThisDay.forEach(a -> {
+    private void addInitialGrassIfFirstDay() {
+        if (currentDay == 0) {
+            grassGenerator.generateInitialGrass().forEach(map::addGrass);
+        }
+    }
+
+    private void cleanUpAnimalsThatDiedDayBefore() {
+        List<Animal> deadLastDay = animals.stream().filter(Animal::isDead).toList();
+        deadLastDay.forEach(a -> {
             map.removeAnimal(a);
             animals.remove(a);
         });
-        deadAnimals.addAll(deadOnThisDay);
-        return deadOnThisDay;
+        deadAnimals.addAll(deadLastDay);
     }
 
+    private void moveAnimals() {
+        for (Animal animal : animals) {
+            map.move(animal);
+        }
+    }
+
+
+    private void handleEating() {
+        for (MapField field : map) {
+            List<Animal> fieldAnimals = field.getOrderedAnimals();
+            if (field.getGrass().isPresent() && !fieldAnimals.isEmpty()) {
+                Grass grass = field.getGrass().get();
+                Animal strongest = fieldAnimals.get(fieldAnimals.size() - 1);
+                strongest.feed(grass);
+                map.removeGrass(grass);
+            }
+        }
+    }
 
     private List<Animal> handleCrossing() {
         List<Animal> animalsBornToday = new ArrayList<>();
@@ -83,45 +106,57 @@ public class Simulation {
         return animalsBornToday;
     }
 
-    private void moveAnimals() {
-        for (Animal animal : animals) {
-            map.move(animal);
-        }
-    }
-
-    private void handleEating() {
-        for (MapField field : map) {
-            if (field.isGrassed()) {
-                List<Animal> fieldAnimals = field.getOrderedAnimals();
-                if (fieldAnimals.isEmpty() || field.getGrass().isEmpty()) {
-                    continue;
-                }
-
-                Grass grass = field.getGrass().get();
-                Animal strongest = fieldAnimals.get(fieldAnimals.size() - 1);
-                strongest.feed(grass);
-
-                map.removeGrass(grass);
-            }
-        }
-    }
-
     private void growFood() {
         grassGenerator.generateGrassForDay().forEach(map::addGrass);
     }
 
 
-    private SimulationStatistics calculateStatistics(List<Animal> deadOnThisDay, List<Animal> animalsBornToday) {
-        currentDay++;
+    private SimulationStatistics calculateStatistics(List<Animal> animalsBornToday) {
         SimulationStatistics stats = new SimulationStatistics();
-        stats.setAnimalsAlive(animals.size());
-        stats.setAnimalsDeadOnLastDay(deadOnThisDay.size());
-        stats.setAnimalsDeadOverall(deadAnimals.size());
-        stats.setFreeFields(calculateNumberOfFreeFields());
+
+        stats.setAnimalsAlive(calculateAnimalsThatAreAlive());
         stats.setGrassOnMap(calculateNumberOfGrassOnMap());
         stats.setCurrentDay(currentDay);
         stats.setAnimalsBornOnLastDay(animalsBornToday.size());
+        stats.setAverageLifetimeForDeadAnimals(calculateAverageLifetimeForDeadAnimals());
+
+
+        int animalsDiedToday = calculateAnimalsThatDiedToday();
+        stats.setAnimalsDeadOnLastDay(animalsDiedToday);
+        stats.setAnimalsDeadOverall(deadAnimals.size() + animalsDiedToday);
+
+        stats.setFreeFields(calculateNumberOfFreeFields());
+        stats.setIsRunning(!animals.isEmpty());
+
         return stats;
+    }
+
+    private int calculateAnimalsThatAreAlive() {
+        return animals
+                .stream()
+                .filter(a -> !a.isDead())
+                .toList()
+                .size();
+    }
+
+    private int calculateAnimalsThatDiedToday() {
+        return animals
+                .stream()
+                .filter(a -> a.getDeathDay() == currentDay)
+                .toList()
+                .size();
+    }
+
+    private double calculateAverageLifetimeForDeadAnimals() {
+        return deadAnimals
+                .stream()
+                .map(a -> a.getDeathDay() - a.getBirthDay())
+                .reduce(Integer::sum)
+                .map(sum -> {
+                    System.out.println(sum);
+                    return (double) sum / deadAnimals.size();
+                })
+                .orElse(-1.0);
     }
 
     private int calculateNumberOfGrassOnMap() {
@@ -134,11 +169,6 @@ public class Simulation {
         return grassOnMap;
     }
 
-    private void addInitialGrassIfFirstDay() {
-        if (currentDay == 0) {
-            grassGenerator.generateInitialGrass().forEach(map::addGrass);
-        }
-    }
 
     private int calculateNumberOfFreeFields() {
         int freeFields = 0;

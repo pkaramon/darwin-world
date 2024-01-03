@@ -11,7 +11,7 @@ import java.util.List;
 public class AnimalData {
     private final Genotype genotype;
     private final List<AnimalData> children = new ArrayList<>();
-    private final int bornDay;
+    private final int birthDay;
     private Pose pose;
     private int energy;
     private int deathDay = -1;
@@ -22,11 +22,11 @@ public class AnimalData {
         this(pose, genotype, energy, 0);
     }
 
-    public AnimalData(Pose pose, Genotype genotype, int energy, int bornDay) {
+    public AnimalData(Pose pose, Genotype genotype, int energy, int birthDay) {
         this.pose = pose;
         this.genotype = genotype;
         this.energy = energy;
-        this.bornDay = bornDay;
+        this.birthDay = birthDay;
     }
 
     List<AnimalData> getChildren() {
@@ -76,8 +76,8 @@ public class AnimalData {
         this.energy += energy;
     }
 
-    int getBornDay() {
-        return bornDay;
+    int getBirthDay() {
+        return birthDay;
     }
 
     int getDeathDay() {

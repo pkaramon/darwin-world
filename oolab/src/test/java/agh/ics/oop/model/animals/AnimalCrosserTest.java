@@ -210,7 +210,7 @@ class AnimalCrosserTest {
 
         AnimalData offspring = child.get();
 
-        assertEquals(123, offspring.getBornDay());
+        assertEquals(123, offspring.getBirthDay());
 
     }
 

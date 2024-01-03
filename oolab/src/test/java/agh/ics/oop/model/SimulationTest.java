@@ -128,13 +128,19 @@ class SimulationTest {
         );
         simulation.setInitialAnimals(initialAnimals);
 
-        simulation.run();
         SimulationStatistics stats = simulation.run();
-
         assertEquals(1, stats.getAnimalsAlive());
         assertEquals(1, stats.getAnimalsDeadOverall());
         assertEquals(1, stats.getAnimalsDeadOnLastDay());
-        assertEquals(5 * 5 -1, stats.getFreeFields());
+        assertEquals(5 * 5 - 2, stats.getFreeFields());
+
+
+        stats = simulation.run();
+
+        assertEquals(1, stats.getAnimalsAlive());
+        assertEquals(1, stats.getAnimalsDeadOverall());
+        assertEquals(0, stats.getAnimalsDeadOnLastDay());
+        assertEquals(5*5 - 1, stats.getFreeFields());
 
         assertTrue(initialAnimals.get(0).isDead());
         assertFalse(initialAnimals.get(1).isDead());
@@ -162,15 +168,9 @@ class SimulationTest {
         simulation.run();
         SimulationStatistics stats = simulation.run();
 
-        assertEquals(1, stats.getAnimalsAlive());
-        assertEquals(1, stats.getAnimalsDeadOnLastDay());
-        assertEquals(1, stats.getAnimalsDeadOverall());
-
-        stats = simulation.run();
-
         assertEquals(0, stats.getAnimalsAlive());
-        assertEquals(2, stats.getAnimalsDeadOverall());
         assertEquals(1, stats.getAnimalsDeadOnLastDay());
+        assertEquals(2, stats.getAnimalsDeadOverall());
 
         assertTrue(initialAnimals.get(0).isDead());
         assertTrue(initialAnimals.get(1).isDead());
@@ -289,5 +289,72 @@ class SimulationTest {
         assertEquals(4, stats.getAnimalsAlive());
     }
 
+    @Test
+    void averageLifespanForDeadAnimals() {
+        WorldMap map = createWorldMap(3, 3);
+        GrassGenerator grassGenerator = mock(GrassGenerator.class);
+        when(grassGenerator.generateInitialGrass())
+                .thenReturn(List.of(new Grass(new Vector2d(1, 1), 10)));
+        when(grassGenerator.generateGrassForDay()).thenReturn(List.of());
+        Simulation simulation = new Simulation();
+        simulation.setWorldMap(map);
+        simulation.setGrassGenerator(grassGenerator);
+        List<Animal> initialAnimals = createInitialAnimals(
+                simulation,
+                List.of(
+                        new Pose(new Vector2d(0, 0), MapDirection.NORTH),
+                        new Pose(new Vector2d(0, 1), MapDirection.NORTH),
+                        new Pose(new Vector2d(0, 2), MapDirection.NORTH)
+                ),
+                List.of(
+                        new Genotype(List.of(0)),
+                        new Genotype(List.of(0)),
+                        new Genotype(List.of(0))
+                ),
+                List.of(1, 2, 3)
+        );
+        simulation.setInitialAnimals(initialAnimals);
+
+        SimulationStatistics stats = simulation.run();
+        assertEquals(-1, stats.getAverageLifetimeForDeadAnimals());
+
+        stats = simulation.run();
+        assertEquals(1, stats.getAverageLifetimeForDeadAnimals());
+
+        stats = simulation.run();
+        assertEquals(1.5, stats.getAverageLifetimeForDeadAnimals());
+
+        stats = simulation.run();
+        assertEquals( 2, stats.getAverageLifetimeForDeadAnimals());
+    }
+
+    @Test
+    void simulationStopsWhenAllAnimalsAreDead() {
+        Simulation simulation = new Simulation();
+        simulation.setWorldMap(createWorldMap(5, 5));
+        simulation.setGrassGenerator(getEmptyGrassGenerator());
+        List<Animal> initialAnimals = createInitialAnimals(
+                simulation,
+                List.of(new Pose(new Vector2d(0, 0), MapDirection.NORTH),
+                        new Pose(new Vector2d(0, 2), MapDirection.NORTH)),
+                List.of(new Genotype(List.of(0)),
+                        new Genotype(List.of(0))),
+                List.of(1, 2)
+        );
+        simulation.setInitialAnimals(initialAnimals);
+
+        SimulationStatistics stats = simulation.run();
+
+        assertTrue(stats.getIsRunning());
+
+        stats = simulation.run();
+
+        // there are still dead animals present on map
+        assertTrue(stats.getIsRunning());
+
+        stats = simulation.run();
+
+        assertFalse(stats.getIsRunning());
+    }
 
 }

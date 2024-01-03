@@ -52,4 +52,12 @@ public class Animal implements WorldElement, Comparable<Animal> {
     public int getEnergy() {
         return data.getEnergy();
     }
+
+    public int getDeathDay() {
+        return data.getDeathDay();
+    }
+
+    public int getBirthDay() {
+        return data.getBirthDay();
+    }
 }

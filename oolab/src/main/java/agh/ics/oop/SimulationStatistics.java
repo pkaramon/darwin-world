@@ -7,11 +7,12 @@ public class SimulationStatistics {
     private int animalsDeadOverall = 0;
     private int animalsDeadOnLastDay = 0;
     private int animalsBornOnLastDay = 0;
-    private double averageLifetimeForDeadAnimals = 0;
+    private double averageLifetimeForDeadAnimals = -1;
     private Genotype dominantGenotype = null;
     private int grassOnMap = 0;
     private int freeFields = 0;
     private int currentDay = 0;
+    private boolean isRunning = true;
 
 
 
@@ -71,7 +72,6 @@ public class SimulationStatistics {
         this.grassOnMap = plantsGrows;
     }
 
-
     public int getFreeFields() {
         return freeFields;
     }
@@ -86,5 +86,13 @@ public class SimulationStatistics {
 
     public void setCurrentDay(int currentDay) {
         this.currentDay = currentDay;
+    }
+
+    public boolean getIsRunning() {
+        return isRunning;
+    }
+
+    public void setIsRunning(boolean isRunning) {
+        this.isRunning = isRunning;
     }
 }
