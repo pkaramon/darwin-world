@@ -1,8 +1,17 @@
 package agh.ics.oop.presenter;
 
+import agh.ics.oop.model.animals.Animal;
+import agh.ics.oop.model.generator.DeadAnimalsGrassGenerator;
+import agh.ics.oop.model.generator.GrassGenerator;
+import agh.ics.oop.model.maps.GlobeMap;
+import agh.ics.oop.model.maps.WorldMap;
+import agh.ics.oop.simulations.Simulation;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class SimulationPresenter {
@@ -74,11 +83,45 @@ public class SimulationPresenter {
         });
     }
 
+    private Simulation simulation;
     @FXML
     private void onSimulationStartClicked() {
-        startSimulation();
+        int mapHeight = mapHeightField.getValue();
+        int maxWidth = maxWidthField.getValue();
+        int jungleWidth = jungleWidthField.getValue();
+        int jungleHeight = jungleHeightField.getValue();
+        int grassEnergyProfit = grassEnergyProfitField.getValue();
+        int minEnergyCopulation = minEnergyCopulationField.getValue();
+        int animalStartEnergy = animalStartEnergyField.getValue();
+        int dailyEnergyCost = dailyEnergyCostField.getValue();
+        int animalsSpawningStart = animalsSpawningStartField.getValue();
+        int grassSpawnedDay = grassSpawnedDayField.getValue();
+        int realRefreshTime = realRefreshTimeField.getValue();
+
+        // Tworzenie mapy świata
+        WorldMap worldMap = new GlobeMap(/* parametry konfiguracyjne mapy */);
+
+        // Tworzenie generatora trawy
+        GrassGenerator grassGenerator = new DeadAnimalsGrassGenerator(/* parametry konfiguracyjne generatora */);
+
+        // Tworzenie początkowych zwierząt
+        List<Animal> initialAnimals = createInitialAnimals(/* parametry konfiguracyjne zwierząt */);
+
+        // Inicjalizacja symulacji
+        simulation = new Simulation();
+        simulation.setWorldMap(worldMap);
+        simulation.setGrassGenerator(grassGenerator);
+        simulation.setInitialAnimals(initialAnimals);
+
+        // Uruchomienie symulacji
+        // Tutaj powinieneś uruchomić symulację, np. wyświetlając SimulationCanvas
+        // i przekazując do niego stan symulacji
     }
 
+    private List<Animal> createInitialAnimals(/* parametry */) {
+        List<Animal> initialAnimals = new ArrayList<>();
+        return initialAnimals;
+    }
     private void startSimulation() {
     }
 

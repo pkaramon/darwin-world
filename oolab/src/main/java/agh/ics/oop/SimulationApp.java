@@ -19,7 +19,8 @@ public class SimulationApp extends Application {
         BorderPane viewRoot = loader.load();
 
         initializeSimulation();
-        simulationCanvas = new SimulationCanvas(800, 600, simulation.getWorldMap());
+        simulationCanvas = new SimulationCanvas(800, 600, simulation.getSimulationState(), simulation.getWorldMap());
+
         viewRoot.setCenter(simulationCanvas);
 
         configureStage(primaryStage, viewRoot);

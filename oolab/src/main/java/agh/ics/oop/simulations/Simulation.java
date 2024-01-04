@@ -45,6 +45,12 @@ public class Simulation {
     public WorldMap getWorldMap() {
         return this.map;
     }
+    public SimulationState getSimulationState() {
+        List<Animal> allAnimals = new ArrayList<>(animals);
+        allAnimals.addAll(removedFromMapAnimals);
+        return new SimulationState(currentDay, !animals.isEmpty(), allAnimals);
+    }
+
 
     public SimulationState run() {
         initializeIfFirstLaunch();
