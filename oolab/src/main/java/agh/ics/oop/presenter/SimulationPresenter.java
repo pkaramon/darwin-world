@@ -1,12 +1,20 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.model.animals.Animal;
+import agh.ics.oop.SimulationCanvas;
+import agh.ics.oop.model.MapDirection;
+import agh.ics.oop.model.Pose;
+import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.animals.*;
 import agh.ics.oop.model.generator.DeadAnimalsGrassGenerator;
 import agh.ics.oop.model.generator.GrassGenerator;
+import agh.ics.oop.model.generator.GrassGeneratorInfo;
+import agh.ics.oop.model.genes.Genotype;
 import agh.ics.oop.model.maps.GlobeMap;
 import agh.ics.oop.model.maps.MapField;
 import agh.ics.oop.model.maps.WorldMap;
+import agh.ics.oop.model.util.RandomNumbersGenerator;
 import agh.ics.oop.simulations.Simulation;
+import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -84,6 +92,30 @@ public class SimulationPresenter {
         });
     }
 
+    private List<Animal> createInitialAnimals(int mapWidth, int mapHeight, int animalCount, int startEnergy) {
+        List<Animal> initialAnimals = new ArrayList<>();
+        List<Integer> randomX = RandomNumbersGenerator.generate(animalCount, 0, mapWidth);
+        List<Integer> randomY = RandomNumbersGenerator.generate(animalCount, 0, mapHeight);
+
+        Genotype defaultGenotype = new Genotype(); // Przykładowy genotyp
+        MapDirection defaultDirection = MapDirection.NORTH; // Przykładowa orientacja
+
+        for (int i = 0; i < animalCount; i++) {
+            Vector2d position = new Vector2d(randomX.get(i), randomY.get(i));
+            Pose pose = new Pose(position, defaultDirection);
+            AnimalData animalData = new AnimalData(pose, defaultGenotype, startEnergy);
+
+            // Używamy domyślnych lub konfigurowalnych parametrów
+            AnimalFeeder feeder = new AnimalFeeder(/* domyślne lub konfigurowalne parametry */);
+            AnimalMover mover = new AnimalMover(/* domyślne lub konfigurowalne parametry */);
+            AnimalCrosser crosser = new AnimalCrosser(/* domyślne lub konfigurowalne parametry */);
+
+            initialAnimals.add(new Animal(animalData, feeder, mover, crosser));
+        }
+
+        return initialAnimals;
+    }
+
     private Simulation simulation;
     @FXML
     private void onSimulationStartClicked() {
@@ -103,28 +135,47 @@ public class SimulationPresenter {
         WorldMap worldMap = new GlobeMap(new MapField[maxWidth][mapHeight]);
 
         // Tworzenie generatora trawy
-        GrassGenerator grassGenerator = new DeadAnimalsGrassGenerator(grassEnergyProfitField.getValue());
+        GrassGeneratorInfo grassGeneratorInfo = new GrassGeneratorInfo(grassEnergyProfit);
+        GrassGenerator grassGenerator = new DeadAnimalsGrassGenerator(grassGeneratorInfo, worldMap, simulation::getCurrentDay);
 
-        // Tworzenie początkowych zwierząt
-        List<Animal> initialAnimals = createInitialAnimals(/* parametry konfiguracyjne zwierząt */);
+        int animalCount = animalsSpawningStartField.getValue();
+        int startEnergy = animalStartEnergyField.getValue();
 
-        // Inicjalizacja symulacji
+        List<Animal> initialAnimals = createInitialAnimals(maxWidth, mapHeight, animalCount, startEnergy);
+
         simulation = new Simulation();
         simulation.setWorldMap(worldMap);
         simulation.setGrassGenerator(grassGenerator);
         simulation.setInitialAnimals(initialAnimals);
 
-        // Uruchomienie symulacji
-        // Tutaj powinieneś uruchomić symulację, np. wyświetlając SimulationCanvas
-        // i przekazując do niego stan symulacji
+        startSimulation();
     }
 
     private List<Animal> createInitialAnimals(/* parametry */) {
         List<Animal> initialAnimals = new ArrayList<>();
         return initialAnimals;
     }
-    private void startSimulation() {
-    }
 
+    private void startSimulation() {
+        // Tworzenie instancji SimulationCanvas
+        SimulationCanvas simulationCanvas = new SimulationCanvas(
+                maxWidthField.getValue(),
+                mapHeightField.getValue(),
+                simulation.getSimulationState(),
+                simulation.getWorldMap()
+        );
+
+        // Dodanie SimulationCanvas do interfejsu użytkownika
+        mapGrid.getChildren().add(simulationCanvas);
+
+        // Uruchomienie pętli animacji
+        new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                simulation.run(); // Aktualizacja stanu symulacji
+                simulationCanvas.updateAndDraw(); // Rysowanie symulacji
+            }
+        }.start();
+    }
 }
 
