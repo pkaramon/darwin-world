@@ -8,7 +8,6 @@ import agh.ics.oop.model.animals.*;
 import agh.ics.oop.model.generator.DeadAnimalsGrassGenerator;
 import agh.ics.oop.model.generator.GrassGenerator;
 import agh.ics.oop.model.generator.GrassGeneratorInfo;
-import agh.ics.oop.model.genes.GeneMutation;
 import agh.ics.oop.model.genes.Genotype;
 import agh.ics.oop.model.genes.GenotypeInfo;
 import agh.ics.oop.model.maps.GlobeMap;
@@ -23,12 +22,9 @@ import javafx.scene.layout.GridPane;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 
 public class SimulationPresenter {
-    @FXML
-    public Label moveInfoLabel;
     @FXML
     public Button startButton;
     @FXML

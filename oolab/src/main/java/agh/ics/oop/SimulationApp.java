@@ -1,5 +1,12 @@
 package agh.ics.oop;
 
+import agh.ics.oop.model.animals.Animal;
+import agh.ics.oop.model.generator.DeadAnimalsGrassGenerator;
+import agh.ics.oop.model.generator.GrassGenerator;
+import agh.ics.oop.model.generator.GrassGeneratorInfo;
+import agh.ics.oop.model.maps.GlobeMap;
+import agh.ics.oop.model.maps.MapField;
+import agh.ics.oop.model.maps.WorldMap;
 import agh.ics.oop.simulations.Simulation;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -8,9 +15,11 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+import java.util.List;
+
 public class SimulationApp extends Application {
     private SimulationCanvas simulationCanvas;
-    private Simulation simulation; // Załóżmy, że masz klasę Simulation
+    private Simulation simulation;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -31,9 +40,28 @@ public class SimulationApp extends Application {
 
 
     private void initializeSimulation() {
+        // Przykładowe wymiary mapy
+        int mapWidth = 100;
+        int mapHeight = 100;
+
+        // Tworzenie mapy świata
+        WorldMap worldMap = new GlobeMap(new MapField[mapWidth][mapHeight]);
+
+        // Tworzenie generatora trawy
+        GrassGeneratorInfo grassGeneratorInfo = new GrassGeneratorInfo(5, 10, 50);
+        GrassGenerator grassGenerator = new DeadAnimalsGrassGenerator(grassGeneratorInfo, worldMap, () -> simulation.getCurrentDay());
+
+        // Tworzenie początkowych zwierząt
+        List<Animal> initialAnimals = createInitialAnimals(mapWidth, mapHeight, 10, 50); // Przykładowe wartości
+
+        // Inicjalizacja symulacji
         simulation = new Simulation();
-        // Konfiguracja symulacji...
+        simulation.setWorldMap(worldMap);
+        simulation.setGrassGenerator(grassGenerator);
+        simulation.setInitialAnimals(initialAnimals);
     }
+
+
 
     private void startSimulationLoop() {
 
