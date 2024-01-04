@@ -42,6 +42,10 @@ public class Simulation {
     }
 
 
+    public WorldMap getWorldMap() {
+        return this.map;
+    }
+
     public SimulationState run() {
         initializeIfFirstLaunch();
 
