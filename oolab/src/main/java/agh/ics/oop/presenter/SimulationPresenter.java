@@ -9,6 +9,7 @@ import agh.ics.oop.model.generator.DeadAnimalsGrassGenerator;
 import agh.ics.oop.model.generator.GrassGenerator;
 import agh.ics.oop.model.generator.GrassGeneratorInfo;
 import agh.ics.oop.model.genes.Genotype;
+import agh.ics.oop.model.genes.GenotypeInfo;
 import agh.ics.oop.model.maps.GlobeMap;
 import agh.ics.oop.model.maps.MapField;
 import agh.ics.oop.model.maps.WorldMap;
@@ -96,25 +97,30 @@ public class SimulationPresenter {
         List<Animal> initialAnimals = new ArrayList<>();
         List<Integer> randomX = RandomNumbersGenerator.generate(animalCount, 0, mapWidth);
         List<Integer> randomY = RandomNumbersGenerator.generate(animalCount, 0, mapHeight);
-
-        Genotype defaultGenotype = new Genotype(); // Przykładowy genotyp
-        MapDirection defaultDirection = MapDirection.NORTH; // Przykładowa orientacja
+        MapDirection defaultDirection = MapDirection.NORTH;
 
         for (int i = 0; i < animalCount; i++) {
             Vector2d position = new Vector2d(randomX.get(i), randomY.get(i));
             Pose pose = new Pose(position, defaultDirection);
-            AnimalData animalData = new AnimalData(pose, defaultGenotype, startEnergy);
+            Genotype genotype = generateRandomGenotype();
 
-            // Używamy domyślnych lub konfigurowalnych parametrów
-            AnimalFeeder feeder = new AnimalFeeder(/* domyślne lub konfigurowalne parametry */);
-            AnimalMover mover = new AnimalMover(/* domyślne lub konfigurowalne parametry */);
-            AnimalCrosser crosser = new AnimalCrosser(/* domyślne lub konfigurowalne parametry */);
+            AnimalData animalData = new AnimalData(pose, genotype, startEnergy);
+            AnimalFeeder feeder = new AnimalFeeder();
+            AnimalMover mover = new AnimalMover(simulation::getCurrentDay);
+            AnimalCrossingInfo crossingInfo = new AnimalCrossingInfo(/* parametry konfiguracyjne */);
+            AnimalCrosser crosser = new AnimalCrosser(crossingInfo);
 
             initialAnimals.add(new Animal(animalData, feeder, mover, crosser));
         }
 
         return initialAnimals;
     }
+
+    private Genotype generateRandomGenotype() {
+        GenotypeInfo info = new GenotypeInfo(5, 0, 8, 2, 4);
+        return Genotype.generateRandom(info);
+    }
+
 
     private Simulation simulation;
     @FXML
@@ -151,7 +157,7 @@ public class SimulationPresenter {
         startSimulation();
     }
 
-    private List<Animal> createInitialAnimals(/* parametry */) {
+    private List<Animal> createInitialAnimals(int mapWidth, int mapHeight, int animalCount){
         List<Animal> initialAnimals = new ArrayList<>();
         return initialAnimals;
     }
@@ -165,15 +171,15 @@ public class SimulationPresenter {
                 simulation.getWorldMap()
         );
 
-        // Dodanie SimulationCanvas do interfejsu użytkownika
+
         mapGrid.getChildren().add(simulationCanvas);
 
-        // Uruchomienie pętli animacji
+
         new AnimationTimer() {
             @Override
             public void handle(long now) {
-                simulation.run(); // Aktualizacja stanu symulacji
-                simulationCanvas.updateAndDraw(); // Rysowanie symulacji
+                simulation.run();
+                simulationCanvas.updateAndDraw();
             }
         }.start();
     }
