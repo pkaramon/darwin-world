@@ -1,5 +1,10 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.maps.GlobeMap;
+import agh.ics.oop.model.maps.GrassMapField;
+import agh.ics.oop.model.maps.MapField;
+import agh.ics.oop.model.maps.WorldMap;
+
 public class WordMapCreator {
     private WordMapCreator() {}
 

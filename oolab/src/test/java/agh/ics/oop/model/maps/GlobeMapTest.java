@@ -1,5 +1,8 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.maps;
 
+import agh.ics.oop.model.Grass;
+import agh.ics.oop.model.Pose;
+import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.animals.Animal;
 import org.junit.jupiter.api.Test;
 

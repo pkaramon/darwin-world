@@ -1,6 +1,8 @@
 package agh.ics.oop.model.animals;
 
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.genes.Genotype;
+import agh.ics.oop.model.maps.MoveValidator;
 
 import java.util.Optional;
 
@@ -59,5 +61,13 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
     public int getBirthDay() {
         return data.getBirthDay();
+    }
+
+    public Genotype getGenotype() {
+        return this.data.getGenotype();
+    }
+
+    public MapDirection getOrientation() {
+        return this.data.getOrientation();
     }
 }

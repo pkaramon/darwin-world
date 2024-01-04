@@ -1,7 +1,7 @@
 package agh.ics.oop.model.animals;
 
 import agh.ics.oop.model.MapDirection;
-import agh.ics.oop.model.MoveValidator;
+import agh.ics.oop.model.maps.MoveValidator;
 import agh.ics.oop.model.Pose;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.genes.Genotype;

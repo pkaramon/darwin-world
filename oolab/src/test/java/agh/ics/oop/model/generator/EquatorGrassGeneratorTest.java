@@ -1,6 +1,7 @@
 package agh.ics.oop.model.generator;
 
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.maps.WorldMap;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

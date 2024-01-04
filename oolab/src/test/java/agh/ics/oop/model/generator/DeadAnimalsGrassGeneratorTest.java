@@ -2,7 +2,7 @@ package agh.ics.oop.model.generator;
 
 import agh.ics.oop.model.Grass;
 import agh.ics.oop.model.Vector2d;
-import agh.ics.oop.model.WorldMap;
+import agh.ics.oop.model.maps.WorldMap;
 import agh.ics.oop.model.animals.Animal;
 import org.junit.jupiter.api.Test;
 
@@ -71,10 +71,10 @@ class DeadAnimalsGrassGeneratorTest {
         when(d.getPosition()).thenReturn(new Vector2d(1, 2));
 
 
-        generator.animalDied(map, a);
-        generator.animalDied(map, b);
-        generator.animalDied(map, c);
-        generator.animalDied(map, d);
+        generator.onAnimalDied(map, a);
+        generator.onAnimalDied(map, b);
+        generator.onAnimalDied(map, c);
+        generator.onAnimalDied(map, d);
 
 
         List<Grass> grasses = generator.generateGrassForDay();

@@ -1,8 +1,8 @@
 package agh.ics.oop.model.generator;
 
-import agh.ics.oop.model.MapChangeListener;
+import agh.ics.oop.simulations.SimulationListener;
 import agh.ics.oop.model.Vector2d;
-import agh.ics.oop.model.WorldMap;
+import agh.ics.oop.model.maps.WorldMap;
 import agh.ics.oop.model.animals.Animal;
 
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class DeadAnimalsGrassGenerator extends AbstractGrassGenerator implements MapChangeListener {
+public class DeadAnimalsGrassGenerator extends AbstractGrassGenerator implements SimulationListener {
     private static final int ANIMAL_BODY_DECOMPOSITION_DAYS = 5;
     private final Supplier<Integer> getCurrentDay;
 
@@ -42,8 +42,7 @@ public class DeadAnimalsGrassGenerator extends AbstractGrassGenerator implements
 
 
     @Override
-    public void animalDied(WorldMap worldMap, Animal animal) {
-        MapChangeListener.super.animalDied(worldMap, animal);
+    public void onAnimalDied(WorldMap worldMap, Animal animal) {
         deadAnimalEntries.add(new DeadAnimalEntry(animal.getPosition(), getCurrentDay.get()));
     }
 

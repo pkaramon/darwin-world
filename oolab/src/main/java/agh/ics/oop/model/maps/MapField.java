@@ -1,5 +1,7 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.maps;
 
+import agh.ics.oop.model.Grass;
+import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.animals.Animal;
 
 import java.util.List;
@@ -18,4 +20,7 @@ public interface MapField {
         return getGrass().isPresent();
     }
 
+    default int amountOfAnimals() {
+        return getOrderedAnimals().size();
+    }
 }
