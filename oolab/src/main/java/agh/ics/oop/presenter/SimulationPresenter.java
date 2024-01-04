@@ -8,6 +8,7 @@ import agh.ics.oop.model.animals.*;
 import agh.ics.oop.model.generator.DeadAnimalsGrassGenerator;
 import agh.ics.oop.model.generator.GrassGenerator;
 import agh.ics.oop.model.generator.GrassGeneratorInfo;
+import agh.ics.oop.model.genes.GeneMutation;
 import agh.ics.oop.model.genes.Genotype;
 import agh.ics.oop.model.genes.GenotypeInfo;
 import agh.ics.oop.model.maps.GlobeMap;
@@ -22,6 +23,7 @@ import javafx.scene.layout.GridPane;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 
 public class SimulationPresenter {
@@ -93,6 +95,8 @@ public class SimulationPresenter {
         });
     }
 
+
+
     private List<Animal> createInitialAnimals(int mapWidth, int mapHeight, int animalCount, int startEnergy) {
         List<Animal> initialAnimals = new ArrayList<>();
         List<Integer> randomX = RandomNumbersGenerator.generate(animalCount, 0, mapWidth);
@@ -107,7 +111,11 @@ public class SimulationPresenter {
             AnimalData animalData = new AnimalData(pose, genotype, startEnergy);
             AnimalFeeder feeder = new AnimalFeeder();
             AnimalMover mover = new AnimalMover(simulation::getCurrentDay);
-            AnimalCrossingInfo crossingInfo = new AnimalCrossingInfo(/* parametry konfiguracyjne */);
+            AnimalCrossingInfo crossingInfo = new AnimalCrossingInfo(
+                    20,
+                    10,
+                    (genes)-> genes, () -> true, () -> MapDirection.NORTH, () -> 0
+            );
             AnimalCrosser crosser = new AnimalCrosser(crossingInfo);
 
             initialAnimals.add(new Animal(animalData, feeder, mover, crosser));
@@ -136,12 +144,15 @@ public class SimulationPresenter {
         int animalsSpawningStart = animalsSpawningStartField.getValue();
         int grassSpawnedDay = grassSpawnedDayField.getValue();
         int realRefreshTime = realRefreshTimeField.getValue();
+        int numberOfGrassInitially = 5;
 
-        // Tworzenie mapy świata
         WorldMap worldMap = new GlobeMap(new MapField[maxWidth][mapHeight]);
 
-        // Tworzenie generatora trawy
-        GrassGeneratorInfo grassGeneratorInfo = new GrassGeneratorInfo(grassEnergyProfit);
+        GrassGeneratorInfo grassGeneratorInfo = new GrassGeneratorInfo(
+                grassSpawnedDay,
+                grassEnergyProfit,
+                numberOfGrassInitially
+        );
         GrassGenerator grassGenerator = new DeadAnimalsGrassGenerator(grassGeneratorInfo, worldMap, simulation::getCurrentDay);
 
         int animalCount = animalsSpawningStartField.getValue();
