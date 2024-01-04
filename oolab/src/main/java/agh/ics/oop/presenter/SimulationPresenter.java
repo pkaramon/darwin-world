@@ -4,6 +4,7 @@ import agh.ics.oop.model.animals.Animal;
 import agh.ics.oop.model.generator.DeadAnimalsGrassGenerator;
 import agh.ics.oop.model.generator.GrassGenerator;
 import agh.ics.oop.model.maps.GlobeMap;
+import agh.ics.oop.model.maps.MapField;
 import agh.ics.oop.model.maps.WorldMap;
 import agh.ics.oop.simulations.Simulation;
 import javafx.fxml.FXML;
@@ -99,10 +100,10 @@ public class SimulationPresenter {
         int realRefreshTime = realRefreshTimeField.getValue();
 
         // Tworzenie mapy świata
-        WorldMap worldMap = new GlobeMap(/* parametry konfiguracyjne mapy */);
+        WorldMap worldMap = new GlobeMap(new MapField[maxWidth][mapHeight]);
 
         // Tworzenie generatora trawy
-        GrassGenerator grassGenerator = new DeadAnimalsGrassGenerator(/* parametry konfiguracyjne generatora */);
+        GrassGenerator grassGenerator = new DeadAnimalsGrassGenerator(grassEnergyProfitField.getValue());
 
         // Tworzenie początkowych zwierząt
         List<Animal> initialAnimals = createInitialAnimals(/* parametry konfiguracyjne zwierząt */);

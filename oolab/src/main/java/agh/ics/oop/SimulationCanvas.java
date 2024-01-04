@@ -13,9 +13,9 @@ import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.maps.WorldMap;
 
 public class SimulationCanvas extends Canvas {
-    private SimulationState simulationState; // Stan symulacji
-    private WorldMap worldMap; // Mapa świata symulacji
-    private final int cellSize = 10; // Rozmiar komórki na mapie
+    private SimulationState simulationState;
+    private WorldMap worldMap;
+    private final int cellSize = 10;
 
     public SimulationCanvas(double width, double height, SimulationState simulationState, WorldMap worldMap) {
         super(width, height);
