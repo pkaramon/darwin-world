@@ -5,5 +5,5 @@ public record GenotypeInfo(int length,
                            int maxGene,
                            int minNumberOfMutations,
                            int maxNumberOfMutations
-                           ) {
+) {
 }
