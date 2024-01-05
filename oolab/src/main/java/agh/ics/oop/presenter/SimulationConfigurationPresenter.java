@@ -12,12 +12,14 @@ import agh.ics.oop.simulations.SimulationParameters;
 import agh.ics.oop.simulations.SimulationState;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -140,32 +142,21 @@ public class SimulationConfigurationPresenter {
     }
 
     private void startSimulation(Simulation simulation) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/simulationMap.fxml"));
+            StackPane root = loader.load();
+            SimulationPresenter simulationPresenter = loader.getController();
+            simulationPresenter.initializeSimulation(simulation);
 
-
-        SimulationCanvas simulationCanvas = new SimulationCanvas(
-                parameters.mapWidth(),
-                parameters.mapHeight()
-        );
-
-        // dodaj ładowanie layout etc z .fxml
-        Stage secondStage = new Stage();
-        secondStage.setTitle("Second Window");
-        StackPane secondRoot = new StackPane();
-        secondRoot.getChildren().add(simulationCanvas);
-        Scene secondScene = new Scene(secondRoot, 1000, 1000);
-        secondStage.setScene(secondScene);
-        secondStage.show();
-
-            new AnimationTimer() {
-                @Override
-                public void handle(long now) {
-                    SimulationState state = simulation.run();
-                    simulationCanvas.updateAndDraw(state); // Aktualizacja widoku symulacji
-                    System.out.println(Thread.currentThread().getId());
-                }
-            }.start();
-
+            Stage stage = new Stage();
+            stage.setTitle("Simulation Map");
+            stage.setScene(new Scene(root, 800, 600));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
 
 }
 
