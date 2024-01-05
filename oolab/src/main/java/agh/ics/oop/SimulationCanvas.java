@@ -24,7 +24,6 @@ public class SimulationCanvas extends Canvas {
         drawPlants(state, gc);
     }
 
-
     private void clearCanvas(GraphicsContext gc) {
         gc.setFill(Color.WHITE);
         gc.fillRect(0, 0, getWidth(), getHeight());

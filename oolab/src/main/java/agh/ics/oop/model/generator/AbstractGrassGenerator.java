@@ -3,6 +3,7 @@ package agh.ics.oop.model.generator;
 import agh.ics.oop.model.maps.Boundary;
 import agh.ics.oop.model.Grass;
 import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.maps.MapField;
 import agh.ics.oop.model.maps.WorldMap;
 import agh.ics.oop.model.util.RandomNumbersGenerator;
 
@@ -51,6 +52,7 @@ public abstract class AbstractGrassGenerator implements GrassGenerator {
                 .map(position -> new Grass(position, info.grassEnergy()))
                 .toList();
     }
+
 
     private static GrassQuantities getGrassQuantities(int amountOfGrasses,
                                                       Set<Vector2d> preferredPositions,
@@ -104,7 +106,9 @@ public abstract class AbstractGrassGenerator implements GrassGenerator {
 
 
     protected boolean isNonGrassed(Vector2d position) {
-        return worldMap.mapFieldAt(position).getGrass().isEmpty();
+        MapField mapField = worldMap.mapFieldAt(position);
+        return mapField != null && mapField.getGrass().isEmpty();
     }
+
 
 }

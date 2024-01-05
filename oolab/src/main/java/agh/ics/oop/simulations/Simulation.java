@@ -70,11 +70,13 @@ public class Simulation {
 
     private void initializeIfFirstLaunch() {
         if (currentDay == 0) {
-            grassGenerator.generateInitialGrass().forEach(map::addGrass);
-            animals.forEach(a -> {
-                map.addAnimal(a);
+            if (map != null && grassGenerator != null) {
+                grassGenerator.generateInitialGrass().forEach(map::addGrass);
+                animals.forEach(a -> {
+                    map.addAnimal(a);
                 listeners.forEach(l -> l.onAnimalPlaced(map, a));
-            });
+                });
+            }
         }
     }
 

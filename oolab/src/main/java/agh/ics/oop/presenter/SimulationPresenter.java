@@ -122,16 +122,17 @@ public class SimulationPresenter {
 
     public void initializeSimulationWithParameters(SimulationParameters parameters) {
         this.parameters = parameters;
+
         WorldMap worldMap = new GlobeMap(new MapField[parameters.getMapWidth()][parameters.getMapHeight()]);
         GrassGeneratorInfo grassGeneratorInfo = new GrassGeneratorInfo(parameters.getPlantsPerDay(), parameters.getPlantEnergy(), parameters.getInitialNumberOfPlants());
-        GrassGenerator grassGenerator = new DeadAnimalsGrassGenerator(grassGeneratorInfo, worldMap, simulation::getCurrentDay);
+        GrassGenerator grassGenerator = new DeadAnimalsGrassGenerator(grassGeneratorInfo, worldMap, () -> simulation.getCurrentDay());
 
         List<Animal> initialAnimals = AnimalFactory.createInitialAnimals(
                 parameters.getMapWidth(),
                 parameters.getMapHeight(),
                 parameters.getInitialNumberOfAnimals(),
                 parameters.getAnimalStartEnergy(),
-                simulation::getCurrentDay
+                () -> simulation.getCurrentDay()
         );
 
         simulation = new Simulation();
@@ -148,15 +149,22 @@ public class SimulationPresenter {
                 parameters.getMapHeight()
         );
 
-        mapGrid.getChildren().add(simulationCanvas);
+        if (mapGrid != null) {
+            mapGrid.getChildren().clear();
+            mapGrid.getChildren().add(simulationCanvas);
+        } else {
+            System.err.println("Error: mapGrid is null in SimulationPresenter");
+        }
 
+        // Uruchomienie pętli animacji
         new AnimationTimer() {
             @Override
             public void handle(long now) {
                 SimulationState state = simulation.run();
-                simulationCanvas.updateAndDraw(state);
+                simulationCanvas.updateAndDraw(state); // Aktualizacja widoku symulacji
             }
         }.start();
     }
+
 }
 

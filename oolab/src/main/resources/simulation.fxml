@@ -11,6 +11,7 @@
             minHeight="550.0" minWidth="550.0"
             fx:controller="agh.ics.oop.presenter.SimulationPresenter">
     <center>
+        <GridPane fx:id="mapGrid">
         <VBox spacing="10" alignment="TOP_CENTER">
             <padding>
                 <Insets top="50" right="50" bottom="50" left="50"/>
@@ -136,5 +137,6 @@
                 <Button fx:id="startButton" text="Start Simulation" onAction="#onSimulationStartClicked"/>
             </HBox>
         </VBox>
+        </GridPane>
     </center>
 </BorderPane>
