@@ -98,33 +98,20 @@ public class SimulationPresenter {
         int grassEnergyProfit = grassEnergyProfitField.getValue();
         int minEnergyCopulation = minEnergyCopulationField.getValue();
         int animalStartEnergy = animalStartEnergyField.getValue();
-//        int dailyEnergyCost = dailyEnergyCostField.getValue();
         int animalsSpawningStart = animalsSpawningStartField.getValue();
         int grassSpawnedDay = grassSpawnedDayField.getValue();
-//        int realRefreshTime = realRefreshTimeField.getValue();
         int numberOfGrassInitially = 5;
         String plantGrowthVariant = "random";
         String mutationVariant = "random";
         int parentEnergyGivenToChild = 50;
-        int minMutations = 1;
+        int minMutations = 1;);
         int maxMutations = 20;
         int genomeLength = 32;
 
         SimulationParameters parameters = new SimulationParameters(
-                maxWidth,
-                mapHeight,
-                numberOfGrassInitially,
-                grassEnergyProfit,
-                grassSpawnedDay,
-                plantGrowthVariant,
-                animalsSpawningStart,
-                animalStartEnergy,
-                minEnergyCopulation,
-                parentEnergyGivenToChild,
-                minMutations,
-                maxMutations,
-                mutationVariant,
-                genomeLength
+                maxWidth, mapHeight, numberOfGrassInitially, grassEnergyProfit, grassSpawnedDay,
+                plantGrowthVariant, animalsSpawningStart, animalStartEnergy, minEnergyCopulation,
+                parentEnergyGivenToChild, minMutations, maxMutations, mutationVariant, genomeLength
         );
 
         WorldMap worldMap = new GlobeMap(new MapField[maxWidth][mapHeight]);
@@ -132,11 +119,6 @@ public class SimulationPresenter {
         GrassGenerator grassGenerator = new DeadAnimalsGrassGenerator(grassGeneratorInfo, worldMap, simulation::getCurrentDay);
 
         List<Animal> initialAnimals = createInitialAnimals(parameters);
-
-//        List<Animal> initialAnimals = AnimalFactory.createInitialAnimals(
-//                maxWidth, mapHeight, animalsSpawningStart, animalStartEnergy, simulation::getCurrentDay
-//        );
-
 
         simulation = new Simulation();
         simulation.setWorldMap(worldMap);
