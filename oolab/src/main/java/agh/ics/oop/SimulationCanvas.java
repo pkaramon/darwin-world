@@ -1,33 +1,27 @@
 package agh.ics.oop;
 
-import agh.ics.oop.model.maps.Boundary;
-import agh.ics.oop.model.maps.GrassMapField;
-import agh.ics.oop.model.maps.MapField;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import agh.ics.oop.simulations.SimulationState;
 import agh.ics.oop.model.animals.Animal;
-import agh.ics.oop.model.Grass;
 import agh.ics.oop.model.Vector2d;
-import agh.ics.oop.model.maps.WorldMap;
+import agh.ics.oop.model.maps.MapField;
 
 public class SimulationCanvas extends Canvas {
-    private SimulationState simulationState;
-    private WorldMap worldMap;
-    private final int cellSize = 10;
+    private static final int CELL_SIZE = 10;
+    private final int mapHeight;
 
-    public SimulationCanvas(double width, double height, SimulationState simulationState, WorldMap worldMap) {
-        super(width, height);
-        this.simulationState = simulationState;
-        this.worldMap = worldMap;
+    public SimulationCanvas(int mapWidth, int mapHeight) {
+        super(mapWidth*CELL_SIZE, mapHeight*CELL_SIZE);
+        this.mapHeight = mapHeight;
     }
 
-    public void updateAndDraw() {
+    public void updateAndDraw(SimulationState state) {
         GraphicsContext gc = getGraphicsContext2D();
         clearCanvas(gc);
-        drawAnimals(gc);
-        drawPlants(gc);
+        drawAnimals(state, gc);
+        drawPlants(state, gc);
     }
 
 
@@ -36,36 +30,34 @@ public class SimulationCanvas extends Canvas {
         gc.fillRect(0, 0, getWidth(), getHeight());
     }
 
-    private void drawAnimals(GraphicsContext gc) {
-        for (Animal animal : simulationState.allAnimals()) {
+    private void drawAnimals(SimulationState state, GraphicsContext gc) {
+        for (Animal animal : state.animalsOnMap()) {
             Vector2d position = animal.getPosition();
-            gc.setFill(getAnimalColor(animal));
-            gc.fillOval(position.getX() * cellSize, position.getY() * cellSize, cellSize, cellSize);
+            drawRectangle(gc, position, getAnimalColor(animal));
         }
     }
 
-    private void drawPlants(GraphicsContext gc) {
-        Boundary boundary = worldMap.getBoundary();
-        for (int x = boundary.lowerLeft().getX(); x <= boundary.upperRight().getX(); x++) {
-            for (int y = boundary.lowerLeft().getY(); y <= boundary.upperRight().getY(); y++) {
-                Vector2d position = new Vector2d(x, y);
-                MapField field = worldMap.mapFieldAt(position);
-                if (field instanceof GrassMapField) {
-                    GrassMapField grassField = (GrassMapField) field;
-                    if (grassField.getGrass().isPresent()) {
-                        gc.setFill(Color.GREEN);
-                        gc.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
-                    }
-                }
+    private void drawPlants(SimulationState state, GraphicsContext gc) {
+        for (MapField field: state.map()) {
+            Vector2d position = field.getPosition();
+            if (field.isGrassed()) {
+                drawRectangle(gc, position, Color.GREEN);
             }
         }
     }
 
+    private void drawRectangle(GraphicsContext gc, Vector2d position, Color color) {
+        gc.setFill(color);
+        Vector2d mapped = convertToGraphicsContextCoordinateSystem(position);
+        gc.fillRect(mapped.getX() * CELL_SIZE, mapped.getY() * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+    }
 
+    private Vector2d convertToGraphicsContextCoordinateSystem(Vector2d position) {
+        return new Vector2d(position.getX(), mapHeight - position.getY() - 1);
+    }
 
 
     private Color getAnimalColor(Animal animal) {
-        // Zwraca kolor zwierzęcia w zależności od jego stanu, np. energii
         return animal.getEnergy() > 50 ? Color.BLUE : Color.RED;
     }
 }

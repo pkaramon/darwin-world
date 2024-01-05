@@ -1,26 +1,21 @@
 package agh.ics.oop.presenter;
 
 import agh.ics.oop.SimulationCanvas;
-import agh.ics.oop.model.MapDirection;
-import agh.ics.oop.model.Pose;
-import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.animals.*;
 import agh.ics.oop.model.generator.DeadAnimalsGrassGenerator;
 import agh.ics.oop.model.generator.GrassGenerator;
 import agh.ics.oop.model.generator.GrassGeneratorInfo;
-import agh.ics.oop.model.genes.Genotype;
-import agh.ics.oop.model.genes.GenotypeInfo;
+import agh.ics.oop.model.maps.Boundary;
 import agh.ics.oop.model.maps.GlobeMap;
 import agh.ics.oop.model.maps.MapField;
 import agh.ics.oop.model.maps.WorldMap;
-import agh.ics.oop.model.util.RandomNumbersGenerator;
 import agh.ics.oop.simulations.Simulation;
+import agh.ics.oop.simulations.SimulationState;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -126,23 +121,16 @@ public class SimulationPresenter {
     }
 
     private void startSimulation() {
-        // Tworzenie instancji SimulationCanvas
-        SimulationCanvas simulationCanvas = new SimulationCanvas(
-                maxWidthField.getValue(),
-                mapHeightField.getValue(),
-                simulation.getSimulationState(),
-                simulation.getWorldMap()
-        );
-
+        Boundary boundary = simulation.getWorldMap().getBoundary();
+        SimulationCanvas simulationCanvas = new SimulationCanvas(boundary.width(), boundary.height());
 
         mapGrid.getChildren().add(simulationCanvas);
-
 
         new AnimationTimer() {
             @Override
             public void handle(long now) {
-                simulation.run();
-                simulationCanvas.updateAndDraw();
+                SimulationState state = simulation.run();
+                simulationCanvas.updateAndDraw(state);
             }
         }.start();
     }

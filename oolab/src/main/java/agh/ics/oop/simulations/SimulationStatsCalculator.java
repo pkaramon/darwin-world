@@ -21,7 +21,7 @@ public class SimulationStatsCalculator {
         this.currentDay = currentDay;
 
         this.aliveAnimals = allAnimals.stream().filter(a -> !a.isDead()).toList();
-        this.deadAnimals = allAnimals.stream().filter(a -> !a.isDead()).toList();
+        this.deadAnimals = allAnimals.stream().filter(Animal::isDead).toList();
     }
 
     public int getNumberOfAnimalsAlive() {

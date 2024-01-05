@@ -1,18 +1,19 @@
 package agh.ics.oop;
 
+import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.animals.Animal;
 import agh.ics.oop.model.animals.AnimalFactory;
 import agh.ics.oop.model.generator.DeadAnimalsGrassGenerator;
 import agh.ics.oop.model.generator.GrassGenerator;
 import agh.ics.oop.model.generator.GrassGeneratorInfo;
-import agh.ics.oop.model.maps.GlobeMap;
-import agh.ics.oop.model.maps.MapField;
-import agh.ics.oop.model.maps.WorldMap;
+import agh.ics.oop.model.maps.*;
 import agh.ics.oop.simulations.Simulation;
+import agh.ics.oop.simulations.SimulationState;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -22,6 +23,10 @@ public class SimulationApp extends Application {
     private SimulationCanvas simulationCanvas;
     private Simulation simulation;
 
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader();
@@ -29,7 +34,8 @@ public class SimulationApp extends Application {
         BorderPane viewRoot = loader.load();
 
         initializeSimulation();
-        simulationCanvas = new SimulationCanvas(800, 600, simulation.getSimulationState(), simulation.getWorldMap());
+        Boundary mapBoundary = simulation.getWorldMap().getBoundary();
+        simulationCanvas = new SimulationCanvas(mapBoundary.width(), mapBoundary.height());
 
         viewRoot.setCenter(simulationCanvas);
 
@@ -39,42 +45,57 @@ public class SimulationApp extends Application {
         startSimulationLoop();
     }
 
-
     private void initializeSimulation() {
-        // Przykładowe wymiary mapy
-        int mapWidth = 100;
-        int mapHeight = 100;
+        int mapWidth = 50;
+        int mapHeight = 50;
 
-        // Tworzenie mapy świata
-        WorldMap worldMap = new GlobeMap(new MapField[mapWidth][mapHeight]);
-
-        // Tworzenie generatora trawy
-        GrassGeneratorInfo grassGeneratorInfo = new GrassGeneratorInfo(5, 10, 50);
-        GrassGenerator grassGenerator = new DeadAnimalsGrassGenerator(grassGeneratorInfo, worldMap, () -> simulation.getCurrentDay());
-
-        // Tworzenie początkowych zwierząt
-        List<Animal> initialAnimals = AnimalFactory.createInitialAnimals(
-                mapWidth, mapHeight, 50, 10, simulation::getCurrentDay
-        );
-
-
-
-        // Inicjalizacja symulacji
         simulation = new Simulation();
+
+        WorldMap worldMap = createWorldMap(mapWidth, mapHeight);
         simulation.setWorldMap(worldMap);
+
+        GrassGenerator grassGenerator = createGrassGenerator(worldMap);
         simulation.setGrassGenerator(grassGenerator);
+
+        List<Animal> initialAnimals = AnimalFactory.createInitialAnimals(
+                mapWidth, mapHeight, 50, 20, simulation::getCurrentDay
+        );
         simulation.setInitialAnimals(initialAnimals);
     }
 
+    private WorldMap createWorldMap(int mapWidth, int mapHeight) {
+        MapField[][] fields = new MapField[mapWidth][mapHeight];
+        for (int x = 0; x < mapWidth; x++) {
+            for (int y = 0; y < mapHeight; y++)
+                fields[x][y] = new GrassMapField(new Vector2d(x, y));
+        }
 
+        return new GlobeMap(fields);
+    }
+
+    private GrassGenerator createGrassGenerator(WorldMap worldMap) {
+        GrassGeneratorInfo grassGeneratorInfo = new GrassGeneratorInfo(2, 10, 50);
+        DeadAnimalsGrassGenerator grassGenerator = new DeadAnimalsGrassGenerator(grassGeneratorInfo, worldMap, () -> simulation.getCurrentDay());
+        simulation.addListener(grassGenerator);
+        return new DeadAnimalsGrassGenerator(grassGeneratorInfo, worldMap, simulation::getCurrentDay);
+
+    }
 
     private void startSimulationLoop() {
-
         new AnimationTimer() {
             @Override
             public void handle(long now) {
-                simulation.run();
-                simulationCanvas.updateAndDraw();
+                SimulationState state = simulation.run();
+                if (!state.isRunning()) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("KONIEC");
+                    alert.setContentText("Symulacja zakończona");
+                    alert.show();
+                    this.stop();
+
+                }
+
+                simulationCanvas.updateAndDraw(state);
             }
         }.start();
     }
@@ -85,9 +106,5 @@ public class SimulationApp extends Application {
         primaryStage.setTitle("Simulation app");
         primaryStage.minHeightProperty().bind(viewRoot.minHeightProperty());
         primaryStage.minWidthProperty().bind(viewRoot.minWidthProperty());
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }

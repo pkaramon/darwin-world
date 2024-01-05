@@ -35,7 +35,7 @@ public class DeadAnimalsGrassGenerator extends AbstractGrassGenerator implements
         deadAnimalEntries = deadAnimalEntries
                 .stream()
                 .filter(entry -> currentDay - entry.dayOfDeath() <= ANIMAL_BODY_DECOMPOSITION_DAYS)
-                .toList();
+                .collect(Collectors.toList());
 
         return deadAnimalEntries.stream().map(DeadAnimalEntry::position).collect(Collectors.toSet());
     }
