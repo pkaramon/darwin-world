@@ -1,14 +1,12 @@
 package agh.ics.oop.presenter;
 
 import agh.ics.oop.SimulationCanvas;
+import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.animals.*;
 import agh.ics.oop.model.generator.DeadAnimalsGrassGenerator;
 import agh.ics.oop.model.generator.GrassGenerator;
 import agh.ics.oop.model.generator.GrassGeneratorInfo;
-import agh.ics.oop.model.maps.Boundary;
-import agh.ics.oop.model.maps.GlobeMap;
-import agh.ics.oop.model.maps.MapField;
-import agh.ics.oop.model.maps.WorldMap;
+import agh.ics.oop.model.maps.*;
 import agh.ics.oop.simulations.Simulation;
 import agh.ics.oop.simulations.SimulationParameters;
 import agh.ics.oop.simulations.SimulationState;
@@ -123,7 +121,14 @@ public class SimulationPresenter {
     public void initializeSimulationWithParameters(SimulationParameters parameters) {
         this.parameters = parameters;
 
-        WorldMap worldMap = new GlobeMap(new MapField[parameters.getMapWidth()][parameters.getMapHeight()]);
+        MapField[][] mapFields = new MapField[parameters.getMapWidth()][parameters.getMapHeight()];
+        for (int x = 0; x < parameters.getMapWidth(); x++) {
+            for (int y = 0; y < parameters.getMapHeight(); y++) {
+                mapFields[x][y] = new GrassMapField(new Vector2d(x, y));
+            }
+        }
+
+        WorldMap worldMap = new GlobeMap(mapFields);
         GrassGeneratorInfo grassGeneratorInfo = new GrassGeneratorInfo(parameters.getPlantsPerDay(), parameters.getPlantEnergy(), parameters.getInitialNumberOfPlants());
         GrassGenerator grassGenerator = new DeadAnimalsGrassGenerator(grassGeneratorInfo, worldMap, () -> simulation.getCurrentDay());
 
