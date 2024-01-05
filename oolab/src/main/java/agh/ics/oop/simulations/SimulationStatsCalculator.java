@@ -1,61 +1,111 @@
 package agh.ics.oop.simulations;
 
-import agh.ics.oop.model.maps.MapField;
-import agh.ics.oop.model.maps.WorldMap;
 import agh.ics.oop.model.animals.Animal;
 import agh.ics.oop.model.genes.Genotype;
+import agh.ics.oop.model.maps.Boundary;
+import agh.ics.oop.model.maps.MapField;
+import agh.ics.oop.model.maps.WorldMap;
 
 import java.util.*;
 
 
 public class SimulationStatsCalculator {
-    private final WorldMap map;
+    record AnimalStatsInfo(
+            boolean isDead,
+            int deathDay,
+            int birthDay,
+            int energy,
+            Genotype genotype) {}
+
+    record MapFieldStatsInfo(int numberOfAnimals, boolean isGrassed) {}
+
     private final int currentDay;
-    private final List<Animal> aliveAnimals;
-    private final List<Animal> deadAnimals;
+    private final MapFieldStatsInfo[][] fieldsStats;
 
-    public SimulationStatsCalculator(Collection<Animal> allAnimals,
-                                     WorldMap map,
-                                     int currentDay) {
-        this.map = map;
+    private final List<AnimalStatsInfo> aliveAnimalStats;
+    private final List<AnimalStatsInfo> deadAnimalStats;
+
+    SimulationStatsCalculator(int currentDay,
+                                     Collection<AnimalStatsInfo> allAnimalsStats,
+                                     MapFieldStatsInfo[][] fieldsStats) {
+        this.aliveAnimalStats = allAnimalsStats.stream().filter(a -> !a.isDead()).toList();
+        this.deadAnimalStats = allAnimalsStats.stream().filter(AnimalStatsInfo::isDead).toList();
         this.currentDay = currentDay;
-
-        this.aliveAnimals = allAnimals.stream().filter(a -> !a.isDead()).toList();
-        this.deadAnimals = allAnimals.stream().filter(Animal::isDead).toList();
+        this.fieldsStats = fieldsStats;
     }
 
-    public int getNumberOfAnimalsAlive() {
-        return aliveAnimals.size();
+    public SimulationStatsCalculator(int currentDay, Collection<Animal> allAnimals, WorldMap map) {
+        this(
+                currentDay,
+                getAllAnimalsStats(allAnimals),
+                getMapFieldStatsInfos(map)
+        );
     }
 
-    public int getNumberOfAnimalsDeadOverall() {
-        return deadAnimals.size();
+    private static List<AnimalStatsInfo> getAllAnimalsStats(Collection<Animal> allAnimals) {
+        return allAnimals.stream().map(a -> new AnimalStatsInfo(
+                a.isDead(),
+                a.getDeathDay(),
+                a.getBirthDay(),
+                a.getEnergy(),
+                a.getGenotype()
+        )).toList();
     }
 
-    public int getAnimalsDeadOnLastDay() {
-        return deadAnimals.stream().filter(a -> a.getDeathDay() == currentDay).toList().size();
+    private static MapFieldStatsInfo[][] getMapFieldStatsInfos(WorldMap map) {
+        Boundary boundary = map.getBoundary();
+        MapFieldStatsInfo[][] fieldsStats = new MapFieldStatsInfo[boundary.width()][boundary.height()];
+
+        for (MapField field: map) {
+            int x = field.getPosition().x();
+            int y = field.getPosition().y();
+            fieldsStats[x][y] = new MapFieldStatsInfo(field.amountOfAnimals(), field.isGrassed());
+        }
+        return fieldsStats;
     }
 
-    public int getAnimalsBornOnLastDay() {
-        return aliveAnimals.stream().filter(a -> a.getBirthDay() == currentDay).toList().size();
-    }
-
-    public double getAverageLifetimeForDeadAnimals() {
-        return deadAnimals
+    public double getAverageEnergy() {
+        return aliveAnimalStats
                 .stream()
-                .mapToInt(a -> a.getDeathDay() - a.getBirthDay())
+                .filter(a -> !a.isDead())
+                .mapToInt(AnimalStatsInfo::energy)
                 .average()
                 .orElse(-1);
     }
 
+    public int getNumberOfAnimalsAlive() {
+        return aliveAnimalStats.size();
+    }
+
+    public int getNumberOfDeadAnimalsOverall() {
+        return deadAnimalStats.size();
+    }
+
+    public int getNumberOfAnimalsDeadOnLastDay() {
+        return deadAnimalStats
+                .stream()
+                .filter(a -> a.deathDay() == currentDay)
+                .toList()
+                .size();
+    }
+
+    public double getAverageLifetimeForDeadAnimals() {
+        return deadAnimalStats
+                .stream()
+                .mapToInt(a -> a.deathDay() - a.birthDay())
+                .average()
+                .orElse(-1);
+    }
 
     public Optional<Genotype> getDominantGenotype() {
         Map<Genotype, Integer> counter = new HashMap<>();
 
-        aliveAnimals
-            .stream()
-            .map(Animal::getGenotype)
-            .forEach(g -> counter.put(g, counter.getOrDefault(g, 0) + 1));
+        aliveAnimalStats
+                .stream()
+                .map(AnimalStatsInfo::genotype)
+                .forEach(g ->
+                    counter.put(g, counter.getOrDefault(g, 0) + 1)
+                );
 
         return counter
                 .entrySet()
@@ -64,25 +114,21 @@ public class SimulationStatsCalculator {
                 .map(Map.Entry::getKey);
     }
 
-
-    public int getAmountOfGrassOnMap() {
-        int grassOnMap = 0;
-        for (MapField field: map) {
-            if (field.isGrassed()) {
-                grassOnMap++;
-            }
-        }
-        return grassOnMap;
+    public int getNumberOfGrassOnMap() {
+        return Arrays.stream(fieldsStats)
+                .flatMap(Arrays::stream)
+                .mapToInt(f -> f.isGrassed() ? 1 : 0)
+                .sum();
     }
 
 
-    public int getFreeFields() {
-        int freeFields = 0;
-        for (MapField field: map) {
-            if (!field.isGrassed() && field.amountOfAnimals() == 0) {
-                freeFields++;
-            }
-        }
-        return freeFields;
+
+    public int getNumberOfFreeFields() {
+        return Arrays.stream(fieldsStats)
+                .flatMap(Arrays::stream)
+                .mapToInt(f -> !f.isGrassed() && f.numberOfAnimals() == 0 ? 1 : 0)
+                .sum();
     }
+
+
 }
