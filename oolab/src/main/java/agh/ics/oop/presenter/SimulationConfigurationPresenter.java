@@ -31,10 +31,6 @@ public class SimulationConfigurationPresenter {
     @FXML
     private Spinner<Integer> maxWidthField;
     @FXML
-    private Spinner<Integer> jungleWidthField;
-    @FXML
-    private Spinner<Integer> jungleHeightField;
-    @FXML
     private Spinner<Integer> grassEnergyProfitField;
     @FXML
     private Spinner<Integer> minEnergyCopulationField;
@@ -46,8 +42,6 @@ public class SimulationConfigurationPresenter {
     private Spinner<Integer> animalsSpawningStartField;
     @FXML
     private Spinner<Integer> grassSpawnedDayField;
-    @FXML
-    private Spinner<Integer> realRefreshTimeField;
 
     private SimulationParameters parameters;
 
@@ -55,15 +49,12 @@ public class SimulationConfigurationPresenter {
     public void initialize() {
         setupSpinner(mapHeightField, 1, 1000, 100);
         setupSpinner(maxWidthField, 1, 1000, 100);
-        setupSpinner(jungleWidthField, 1, 1000, 1);
-        setupSpinner(jungleHeightField, 1, 1000, 1);
         setupSpinner(grassEnergyProfitField, 1, 1000, 10);
         setupSpinner(minEnergyCopulationField, 1, 1000, 20);
         setupSpinner(animalStartEnergyField, 1, 1000, 100);
         setupSpinner(dailyEnergyCostField, 1, 1000, 1);
         setupSpinner(animalsSpawningStartField, 1, 1000, 2);
         setupSpinner(grassSpawnedDayField, 1, 1000, 20);
-        setupSpinner(realRefreshTimeField, 1, 1000, 1);
     }
 
     private void setupSpinner(Spinner<Integer> spinner, int min, int max, int initialValue) {
