@@ -10,6 +10,7 @@ import agh.ics.oop.model.maps.GlobeMap;
 import agh.ics.oop.model.maps.MapField;
 import agh.ics.oop.model.maps.WorldMap;
 import agh.ics.oop.simulations.Simulation;
+import agh.ics.oop.simulations.SimulationParameters;
 import agh.ics.oop.simulations.SimulationState;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
@@ -92,20 +93,45 @@ public class SimulationPresenter {
     private void onSimulationStartClicked() {
         int mapHeight = mapHeightField.getValue();
         int maxWidth = maxWidthField.getValue();
-        int jungleWidth = jungleWidthField.getValue();
-        int jungleHeight = jungleHeightField.getValue();
         int grassEnergyProfit = grassEnergyProfitField.getValue();
         int minEnergyCopulation = minEnergyCopulationField.getValue();
         int animalStartEnergy = animalStartEnergyField.getValue();
-        int dailyEnergyCost = dailyEnergyCostField.getValue();
+//        int dailyEnergyCost = dailyEnergyCostField.getValue();
         int animalsSpawningStart = animalsSpawningStartField.getValue();
         int grassSpawnedDay = grassSpawnedDayField.getValue();
-        int realRefreshTime = realRefreshTimeField.getValue();
+//        int realRefreshTime = realRefreshTimeField.getValue();
         int numberOfGrassInitially = 5;
+        String plantGrowthVariant = "random";
+        String mutationVariant = "random";
+        int parentEnergyGivenToChild = 50;
+        int minMutations = 1;
+        int maxMutations = 20;
+        int genomeLength = 32;
+
+        SimulationParameters parameters = new SimulationParameters(
+                maxWidth,
+                mapHeight,
+                numberOfGrassInitially,
+                grassEnergyProfit,
+                grassSpawnedDay,
+                plantGrowthVariant,
+                animalsSpawningStart,
+                animalStartEnergy,
+                minEnergyCopulation,
+                parentEnergyGivenToChild,
+                minMutations,
+                maxMutations,
+                mutationVariant,
+                genomeLength
+        );
 
         WorldMap worldMap = new GlobeMap(new MapField[maxWidth][mapHeight]);
         GrassGeneratorInfo grassGeneratorInfo = new GrassGeneratorInfo(grassSpawnedDay, grassEnergyProfit, numberOfGrassInitially);
         GrassGenerator grassGenerator = new DeadAnimalsGrassGenerator(grassGeneratorInfo, worldMap, simulation::getCurrentDay);
+
+        WorldMap worldMap = GlobeMapFactory.createMap(parameters);
+        GrassGenerator grassGenerator = GrassGeneratorFactory.createGrassGenerator(parameters);
+        List<Animal> initialAnimals = AnimalFactory.createInitialAnimals(parameters);
 
         List<Animal> initialAnimals = AnimalFactory.createInitialAnimals(
                 maxWidth, mapHeight, animalsSpawningStart, animalStartEnergy, simulation::getCurrentDay
