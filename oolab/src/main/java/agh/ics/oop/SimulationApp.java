@@ -33,17 +33,10 @@ public class SimulationApp extends Application {
         loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
         BorderPane viewRoot = loader.load();
 
-        initializeSimulation();
-        Boundary mapBoundary = simulation.getWorldMap().getBoundary();
-        simulationCanvas = new SimulationCanvas(mapBoundary.width(), mapBoundary.height());
-
-        viewRoot.setCenter(simulationCanvas);
-
         configureStage(primaryStage, viewRoot);
         primaryStage.show();
-
-        startSimulationLoop();
     }
+
 
     private void initializeSimulation() {
         int mapWidth = 50;
@@ -101,9 +94,9 @@ public class SimulationApp extends Application {
     }
 
     private void configureStage(Stage primaryStage, BorderPane viewRoot) {
-        var scene = new Scene(viewRoot);
+        Scene scene = new Scene(viewRoot);
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Simulation app");
+        primaryStage.setTitle("Simulation App");
         primaryStage.minHeightProperty().bind(viewRoot.minHeightProperty());
         primaryStage.minWidthProperty().bind(viewRoot.minWidthProperty());
     }
