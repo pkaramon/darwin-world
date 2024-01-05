@@ -21,7 +21,7 @@ import javafx.stage.Stage;
 import java.util.List;
 
 
-public class SimulationPresenter {
+public class SimulationConfigurationPresenter {
     @FXML
     public Button startButton;
     @FXML
