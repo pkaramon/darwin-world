@@ -19,6 +19,8 @@ import javafx.scene.layout.GridPane;
 
 import java.util.List;
 
+import static agh.ics.oop.model.animals.AnimalFactory.createInitialAnimals;
+
 
 public class SimulationPresenter {
     @FXML
@@ -129,13 +131,11 @@ public class SimulationPresenter {
         GrassGeneratorInfo grassGeneratorInfo = new GrassGeneratorInfo(grassSpawnedDay, grassEnergyProfit, numberOfGrassInitially);
         GrassGenerator grassGenerator = new DeadAnimalsGrassGenerator(grassGeneratorInfo, worldMap, simulation::getCurrentDay);
 
-        WorldMap worldMap = GlobeMapFactory.createMap(parameters);
-        GrassGenerator grassGenerator = GrassGeneratorFactory.createGrassGenerator(parameters);
-        List<Animal> initialAnimals = AnimalFactory.createInitialAnimals(parameters);
+        List<Animal> initialAnimals = createInitialAnimals(parameters);
 
-        List<Animal> initialAnimals = AnimalFactory.createInitialAnimals(
-                maxWidth, mapHeight, animalsSpawningStart, animalStartEnergy, simulation::getCurrentDay
-        );
+//        List<Animal> initialAnimals = AnimalFactory.createInitialAnimals(
+//                maxWidth, mapHeight, animalsSpawningStart, animalStartEnergy, simulation::getCurrentDay
+//        );
 
 
         simulation = new Simulation();
