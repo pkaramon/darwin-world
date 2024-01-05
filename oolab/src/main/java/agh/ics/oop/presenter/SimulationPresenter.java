@@ -22,6 +22,7 @@ import java.util.List;
 import static agh.ics.oop.model.animals.AnimalFactory.createInitialAnimals;
 
 
+
 public class SimulationPresenter {
     @FXML
     public Button startButton;
@@ -114,18 +115,22 @@ public class SimulationPresenter {
                 parentEnergyGivenToChild, minMutations, maxMutations, mutationVariant, genomeLength
         );
 
-        WorldMap worldMap = new GlobeMap(new MapField[maxWidth][mapHeight]);
-        GrassGeneratorInfo grassGeneratorInfo = new GrassGeneratorInfo(grassSpawnedDay, grassEnergyProfit, numberOfGrassInitially);
+        initializeSimulationWithParameters(parameters);
+    }
+
+
+    public void initializeSimulationWithParameters(SimulationParameters parameters) {
+        WorldMap worldMap = new GlobeMap(new MapField[parameters.getMapWidth()][parameters.getMapHeight()]);
+        GrassGeneratorInfo grassGeneratorInfo = new GrassGeneratorInfo(parameters.getPlantsPerDay(), parameters.getPlantEnergy(), parameters.getInitialNumberOfPlants());
         GrassGenerator grassGenerator = new DeadAnimalsGrassGenerator(grassGeneratorInfo, worldMap, simulation::getCurrentDay);
 
-        List<Animal> initialAnimals = createInitialAnimals(
+        List<Animal> initialAnimals = AnimalFactory.createInitialAnimals(
                 parameters.getMapWidth(),
                 parameters.getMapHeight(),
                 parameters.getInitialNumberOfAnimals(),
                 parameters.getAnimalStartEnergy(),
                 simulation::getCurrentDay
         );
-
 
         simulation = new Simulation();
         simulation.setWorldMap(worldMap);
@@ -136,18 +141,23 @@ public class SimulationPresenter {
     }
 
     private void startSimulation() {
-        Boundary boundary = simulation.getWorldMap().getBoundary();
-        SimulationCanvas simulationCanvas = new SimulationCanvas(boundary.width(), boundary.height());
+        SimulationCanvas simulationCanvas = new SimulationCanvas(
+                parameters.getMapWidth(),
+                parameters.getMapHeight(),
+                simulation.getSimulationState(),
+                simulation.getWorldMap()
+        );
 
         mapGrid.getChildren().add(simulationCanvas);
 
         new AnimationTimer() {
             @Override
             public void handle(long now) {
-                SimulationState state = simulation.run();
-                simulationCanvas.updateAndDraw(state);
+                simulation.run();
+                simulationCanvas.updateAndDraw(); // Rysowanie symulacji
             }
         }.start();
     }
+
 }
 
