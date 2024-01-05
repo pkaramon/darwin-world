@@ -132,4 +132,15 @@ public class Simulation {
     private void growFood() {
         grassGenerator.generateGrassForDay().forEach(map::addGrass);
     }
+
+    public SimulationState getSimulationState() {
+        return new SimulationState(
+                currentDay,
+                !animals.isEmpty(),
+                new HashSet<>(animals),
+                new HashSet<>(removedFromMapAnimals),
+                map
+        );
+    }
+
 }

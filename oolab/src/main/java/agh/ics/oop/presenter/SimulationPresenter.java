@@ -52,6 +52,7 @@ public class SimulationPresenter {
     private Spinner<Integer> realRefreshTimeField;
 
     private Simulation simulation;
+    private SimulationParameters parameters;
 
     @FXML
     public void initialize() {
@@ -120,6 +121,7 @@ public class SimulationPresenter {
 
 
     public void initializeSimulationWithParameters(SimulationParameters parameters) {
+        this.parameters = parameters;
         WorldMap worldMap = new GlobeMap(new MapField[parameters.getMapWidth()][parameters.getMapHeight()]);
         GrassGeneratorInfo grassGeneratorInfo = new GrassGeneratorInfo(parameters.getPlantsPerDay(), parameters.getPlantEnergy(), parameters.getInitialNumberOfPlants());
         GrassGenerator grassGenerator = new DeadAnimalsGrassGenerator(grassGeneratorInfo, worldMap, simulation::getCurrentDay);
@@ -143,9 +145,7 @@ public class SimulationPresenter {
     private void startSimulation() {
         SimulationCanvas simulationCanvas = new SimulationCanvas(
                 parameters.getMapWidth(),
-                parameters.getMapHeight(),
-                simulation.getSimulationState(),
-                simulation.getWorldMap()
+                parameters.getMapHeight()
         );
 
         mapGrid.getChildren().add(simulationCanvas);
@@ -153,11 +153,10 @@ public class SimulationPresenter {
         new AnimationTimer() {
             @Override
             public void handle(long now) {
-                simulation.run();
-                simulationCanvas.updateAndDraw(); // Rysowanie symulacji
+                SimulationState state = simulation.run();
+                simulationCanvas.updateAndDraw(state);
             }
         }.start();
     }
-
 }
 
