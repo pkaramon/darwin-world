@@ -12,13 +12,13 @@ import agh.ics.oop.simulations.SimulationParameters;
 import agh.ics.oop.simulations.SimulationState;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
 import java.util.List;
-
-import static agh.ics.oop.model.animals.AnimalFactory.createInitialAnimals;
-
 
 
 public class SimulationPresenter {
@@ -49,21 +49,20 @@ public class SimulationPresenter {
     @FXML
     private Spinner<Integer> realRefreshTimeField;
 
-    private Simulation simulation;
     private SimulationParameters parameters;
 
     @FXML
     public void initialize() {
-        setupSpinner(mapHeightField, 1, 1000, 1);
-        setupSpinner(maxWidthField, 1, 1000, 1);
+        setupSpinner(mapHeightField, 1, 1000, 100);
+        setupSpinner(maxWidthField, 1, 1000, 100);
         setupSpinner(jungleWidthField, 1, 1000, 1);
         setupSpinner(jungleHeightField, 1, 1000, 1);
-        setupSpinner(grassEnergyProfitField, 1, 1000, 1);
-        setupSpinner(minEnergyCopulationField, 1, 1000, 1);
-        setupSpinner(animalStartEnergyField, 1, 1000, 1);
+        setupSpinner(grassEnergyProfitField, 1, 1000, 10);
+        setupSpinner(minEnergyCopulationField, 1, 1000, 20);
+        setupSpinner(animalStartEnergyField, 1, 1000, 100);
         setupSpinner(dailyEnergyCostField, 1, 1000, 1);
-        setupSpinner(animalsSpawningStartField, 1, 1000, 1);
-        setupSpinner(grassSpawnedDayField, 1, 1000, 1);
+        setupSpinner(animalsSpawningStartField, 1, 1000, 2);
+        setupSpinner(grassSpawnedDayField, 1, 1000, 20);
         setupSpinner(realRefreshTimeField, 1, 1000, 1);
     }
 
@@ -120,55 +119,61 @@ public class SimulationPresenter {
 
     public void initializeSimulationWithParameters(SimulationParameters parameters) {
         this.parameters = parameters;
+        Simulation simulation = new Simulation();
 
-        MapField[][] mapFields = new MapField[parameters.getMapWidth()][parameters.getMapHeight()];
-        for (int x = 0; x < parameters.getMapWidth(); x++) {
-            for (int y = 0; y < parameters.getMapHeight(); y++) {
+        MapField[][] mapFields = new MapField[parameters.mapWidth()][parameters.mapHeight()];
+        for (int x = 0; x < parameters.mapWidth(); x++) {
+            for (int y = 0; y < parameters.mapHeight(); y++) {
                 mapFields[x][y] = new GrassMapField(new Vector2d(x, y));
             }
         }
-
         WorldMap worldMap = new GlobeMap(mapFields);
-        GrassGeneratorInfo grassGeneratorInfo = new GrassGeneratorInfo(parameters.getPlantsPerDay(), parameters.getPlantEnergy(), parameters.getInitialNumberOfPlants());
-        GrassGenerator grassGenerator = new DeadAnimalsGrassGenerator(grassGeneratorInfo, worldMap, () -> simulation.getCurrentDay());
+        simulation.setWorldMap(worldMap);
+
+        GrassGeneratorInfo grassGeneratorInfo = new GrassGeneratorInfo(parameters.plantsPerDay(), parameters.plantEnergy(), parameters.initialNumberOfPlants());
+        GrassGenerator grassGenerator = new DeadAnimalsGrassGenerator(grassGeneratorInfo, worldMap, simulation::getCurrentDay);
 
         List<Animal> initialAnimals = AnimalFactory.createInitialAnimals(
-                parameters.getMapWidth(),
-                parameters.getMapHeight(),
-                parameters.getInitialNumberOfAnimals(),
-                parameters.getAnimalStartEnergy(),
-                () -> simulation.getCurrentDay()
+                parameters.mapWidth(),
+                parameters.mapHeight(),
+                parameters.initialNumberOfAnimals(),
+                parameters.animalStartEnergy(),
+                simulation::getCurrentDay
         );
 
-        simulation = new Simulation();
-        simulation.setWorldMap(worldMap);
+
         simulation.setGrassGenerator(grassGenerator);
         simulation.setInitialAnimals(initialAnimals);
 
-        startSimulation();
+        startSimulation(simulation);
     }
 
-    private void startSimulation() {
+    private void startSimulation(Simulation simulation) {
+
+
         SimulationCanvas simulationCanvas = new SimulationCanvas(
-                parameters.getMapWidth(),
-                parameters.getMapHeight()
+                parameters.mapWidth(),
+                parameters.mapHeight()
         );
 
-        if (mapGrid != null) {
-            mapGrid.getChildren().clear();
-            mapGrid.getChildren().add(simulationCanvas);
-        } else {
-            System.err.println("Error: mapGrid is null in SimulationPresenter");
-        }
+        // dodaj ładowanie layout etc z .fxml
+        Stage secondStage = new Stage();
+        secondStage.setTitle("Second Window");
+        StackPane secondRoot = new StackPane();
+        secondRoot.getChildren().add(simulationCanvas);
+        Scene secondScene = new Scene(secondRoot, 1000, 1000);
+        secondStage.setScene(secondScene);
+        secondStage.show();
 
-        // Uruchomienie pętli animacji
-        new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                SimulationState state = simulation.run();
-                simulationCanvas.updateAndDraw(state); // Aktualizacja widoku symulacji
-            }
-        }.start();
+            new AnimationTimer() {
+                @Override
+                public void handle(long now) {
+                    SimulationState state = simulation.run();
+                    simulationCanvas.updateAndDraw(state); // Aktualizacja widoku symulacji
+                    System.out.println(Thread.currentThread().getId());
+                }
+            }.start();
+
     }
 
 }
