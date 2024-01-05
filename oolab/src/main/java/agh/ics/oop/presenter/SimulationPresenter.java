@@ -104,7 +104,7 @@ public class SimulationPresenter {
         String plantGrowthVariant = "random";
         String mutationVariant = "random";
         int parentEnergyGivenToChild = 50;
-        int minMutations = 1;);
+        int minMutations = 1;
         int maxMutations = 20;
         int genomeLength = 32;
 
@@ -118,7 +118,14 @@ public class SimulationPresenter {
         GrassGeneratorInfo grassGeneratorInfo = new GrassGeneratorInfo(grassSpawnedDay, grassEnergyProfit, numberOfGrassInitially);
         GrassGenerator grassGenerator = new DeadAnimalsGrassGenerator(grassGeneratorInfo, worldMap, simulation::getCurrentDay);
 
-        List<Animal> initialAnimals = createInitialAnimals(parameters);
+        List<Animal> initialAnimals = createInitialAnimals(
+                parameters.getMapWidth(),
+                parameters.getMapHeight(),
+                parameters.getInitialNumberOfAnimals(),
+                parameters.getAnimalStartEnergy(),
+                simulation::getCurrentDay
+        );
+
 
         simulation = new Simulation();
         simulation.setWorldMap(worldMap);
