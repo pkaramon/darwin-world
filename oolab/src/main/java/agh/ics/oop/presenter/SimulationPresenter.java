@@ -52,6 +52,7 @@ public class SimulationPresenter {
     @FXML
     private Spinner<Integer> realRefreshTimeField;
 
+    private Simulation simulation;
 
     @FXML
     public void initialize() {
@@ -92,41 +93,6 @@ public class SimulationPresenter {
     }
 
 
-
-    private List<Animal> createInitialAnimals(int mapWidth, int mapHeight, int animalCount, int startEnergy) {
-        List<Animal> initialAnimals = new ArrayList<>();
-        List<Integer> randomX = RandomNumbersGenerator.generate(animalCount, 0, mapWidth);
-        List<Integer> randomY = RandomNumbersGenerator.generate(animalCount, 0, mapHeight);
-        MapDirection defaultDirection = MapDirection.NORTH;
-
-        for (int i = 0; i < animalCount; i++) {
-            Vector2d position = new Vector2d(randomX.get(i), randomY.get(i));
-            Pose pose = new Pose(position, defaultDirection);
-            Genotype genotype = generateRandomGenotype();
-
-            AnimalData animalData = new AnimalData(pose, genotype, startEnergy);
-            AnimalFeeder feeder = new AnimalFeeder();
-            AnimalMover mover = new AnimalMover(simulation::getCurrentDay);
-            AnimalCrossingInfo crossingInfo = new AnimalCrossingInfo(
-                    20,
-                    10,
-                    (genes)-> genes, () -> true, () -> MapDirection.NORTH, () -> 0
-            );
-            AnimalCrosser crosser = new AnimalCrosser(crossingInfo);
-
-            initialAnimals.add(new Animal(animalData, feeder, mover, crosser));
-        }
-
-        return initialAnimals;
-    }
-
-    private Genotype generateRandomGenotype() {
-        GenotypeInfo info = new GenotypeInfo(5, 0, 8, 2, 4);
-        return Genotype.generateRandom(info);
-    }
-
-
-    private Simulation simulation;
     @FXML
     private void onSimulationStartClicked() {
         int mapHeight = mapHeightField.getValue();
@@ -143,18 +109,13 @@ public class SimulationPresenter {
         int numberOfGrassInitially = 5;
 
         WorldMap worldMap = new GlobeMap(new MapField[maxWidth][mapHeight]);
-
-        GrassGeneratorInfo grassGeneratorInfo = new GrassGeneratorInfo(
-                grassSpawnedDay,
-                grassEnergyProfit,
-                numberOfGrassInitially
-        );
+        GrassGeneratorInfo grassGeneratorInfo = new GrassGeneratorInfo(grassSpawnedDay, grassEnergyProfit, numberOfGrassInitially);
         GrassGenerator grassGenerator = new DeadAnimalsGrassGenerator(grassGeneratorInfo, worldMap, simulation::getCurrentDay);
 
-        int animalCount = animalsSpawningStartField.getValue();
-        int startEnergy = animalStartEnergyField.getValue();
+        List<Animal> initialAnimals = AnimalFactory.createInitialAnimals(
+                maxWidth, mapHeight, animalsSpawningStart, animalStartEnergy, simulation::getCurrentDay
+        );
 
-        List<Animal> initialAnimals = createInitialAnimals(maxWidth, mapHeight, animalCount, startEnergy);
 
         simulation = new Simulation();
         simulation.setWorldMap(worldMap);
@@ -162,11 +123,6 @@ public class SimulationPresenter {
         simulation.setInitialAnimals(initialAnimals);
 
         startSimulation();
-    }
-
-    private List<Animal> createInitialAnimals(int mapWidth, int mapHeight, int animalCount){
-        List<Animal> initialAnimals = new ArrayList<>();
-        return initialAnimals;
     }
 
     private void startSimulation() {

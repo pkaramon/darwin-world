@@ -1,6 +1,7 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.animals.Animal;
+import agh.ics.oop.model.animals.AnimalFactory;
 import agh.ics.oop.model.generator.DeadAnimalsGrassGenerator;
 import agh.ics.oop.model.generator.GrassGenerator;
 import agh.ics.oop.model.generator.GrassGeneratorInfo;
@@ -52,7 +53,11 @@ public class SimulationApp extends Application {
         GrassGenerator grassGenerator = new DeadAnimalsGrassGenerator(grassGeneratorInfo, worldMap, () -> simulation.getCurrentDay());
 
         // Tworzenie początkowych zwierząt
-        List<Animal> initialAnimals = createInitialAnimals(mapWidth, mapHeight, 10, 50); // Przykładowe wartości
+        List<Animal> initialAnimals = AnimalFactory.createInitialAnimals(
+                mapWidth, mapHeight, 50, 10, simulation::getCurrentDay
+        );
+
+
 
         // Inicjalizacja symulacji
         simulation = new Simulation();
