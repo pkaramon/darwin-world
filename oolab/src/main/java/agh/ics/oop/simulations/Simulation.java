@@ -5,6 +5,8 @@ import agh.ics.oop.model.animals.Animal;
 import agh.ics.oop.model.generator.GrassGenerator;
 import agh.ics.oop.model.maps.MapField;
 import agh.ics.oop.model.maps.WorldMap;
+import agh.ics.oop.presenter.SimulationPresenter;
+import javafx.application.Platform;
 
 import java.util.*;
 
@@ -41,11 +43,11 @@ public class Simulation {
         return currentDay;
     }
 
-
     public WorldMap getWorldMap() {
         return this.map;
     }
 
+    private SimulationPresenter presenter;
 
     public SimulationState run() {
         initializeIfFirstLaunch();
@@ -59,13 +61,18 @@ public class Simulation {
         growFood();
 
 
-        return new SimulationState(
+
+        SimulationState currentState = new SimulationState(
                 currentDay,
                 !animals.isEmpty(),
                 animals,
                 removedFromMapAnimals,
                 map
         );
+
+        Platform.runLater(() -> presenter.updateCharts(currentState));
+
+        return currentState;
     }
 
     private void initializeIfFirstLaunch() {

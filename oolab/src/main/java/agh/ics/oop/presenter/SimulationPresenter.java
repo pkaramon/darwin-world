@@ -4,10 +4,20 @@ import agh.ics.oop.simulations.Simulation;
 import agh.ics.oop.simulations.SimulationState;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 
 public class SimulationPresenter {
+    @FXML
+    private LineChart<Number, Number> animalCountChart;
+    private XYChart.Series<Number, Number> animalCountSeries = new XYChart.Series<>();
+
+    @FXML
+    public void initialize() {
+        animalCountChart.getData().add(animalCountSeries);
+    }
     @FXML
     private StackPane mapContainer;
     @FXML
@@ -45,8 +55,6 @@ public class SimulationPresenter {
         }
     }
 
-
-
     private void startAnimationLoop(SimulationCanvas simulationCanvas) {
         animationTimer = new AnimationTimer() {
             @Override
@@ -56,5 +64,13 @@ public class SimulationPresenter {
             }
         };
         animationTimer.start();
+    }
+
+    public void updateCharts(SimulationState state) {
+        int currentDay = state.currentDay();
+        int animalCount = state.animalsOnMap().size();
+
+        animalCountSeries.getData().add(new XYChart.Data<>(currentDay, animalCount));
+
     }
 }

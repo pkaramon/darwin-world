@@ -124,7 +124,31 @@ public class ConfiguratorPresenter {
                 genomeLengthField.getValue()
         );
 
+        int minEnergyCopulation = minEnergyCopulationField.getValue();
+        int parentEnergyGivenToChild = parentEnergyGivenToChildField.getValue();
+        int minMutations = minMutationsField.getValue();
+        int maxMutations = maxMutationsField.getValue();
+        int genomeLength = genomeLengthField.getValue();
+
+        if (minEnergyCopulation <= parentEnergyGivenToChild) {
+            showAlert("Validation Error", "Minimum energy to copulation must be greater than parent energy given to child.");
+            return;
+        }
+
+        if (minMutations >= genomeLength || maxMutations >= genomeLength) {
+            showAlert("Validation Error", "Min and max mutations must be less than genome length.");
+            return;
+        }
+
         initializeSimulationWithParameters(parameters);
+    }
+
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     public void initializeSimulationWithParameters(SimulationParameters parameters) {
