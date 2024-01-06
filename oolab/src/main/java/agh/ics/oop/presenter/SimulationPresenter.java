@@ -61,10 +61,12 @@ public class SimulationPresenter {
             public void handle(long now) {
                 SimulationState state = simulation.run();
                 simulationCanvas.updateAndDraw(state);
+                updateCharts(state);
             }
         };
         animationTimer.start();
     }
+
 
     public void updateCharts(SimulationState state) {
         int currentDay = state.currentDay();

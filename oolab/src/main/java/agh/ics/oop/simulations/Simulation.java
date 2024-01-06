@@ -49,6 +49,10 @@ public class Simulation {
 
     private SimulationPresenter presenter;
 
+    public void setPresenter(SimulationPresenter presenter) {
+        this.presenter = presenter;
+    }
+
     public SimulationState run() {
         initializeIfFirstLaunch();
 
