@@ -44,6 +44,16 @@ public class SimulationConfigurationPresenter {
     private Spinner<Integer> animalsSpawningStartField;
     @FXML
     private Spinner<Integer> grassSpawnedDayField;
+    @FXML
+    private Spinner<Integer> initialPlantsField;
+    @FXML
+    private Spinner<Integer> parentEnergyGivenToChildField;
+    @FXML
+    private Spinner<Integer> minMutationsField;
+    @FXML
+    private Spinner<Integer> maxMutationsField;
+    @FXML
+    private Spinner<Integer> genomeLengthField;
 
     private SimulationParameters parameters;
 
@@ -57,6 +67,11 @@ public class SimulationConfigurationPresenter {
         setupSpinner(dailyEnergyCostField, 1, 1000, 1);
         setupSpinner(animalsSpawningStartField, 1, 1000, 2);
         setupSpinner(grassSpawnedDayField, 1, 1000, 20);
+        setupSpinner(initialPlantsField, 1, 1000, 5);
+        setupSpinner(parentEnergyGivenToChildField, 1, 1000, 50);
+        setupSpinner(minMutationsField, 1, 1000, 1);
+        setupSpinner(maxMutationsField, 1, 1000, 20);
+        setupSpinner(genomeLengthField, 1, 1000, 10);
     }
 
     private void setupSpinner(Spinner<Integer> spinner, int min, int max, int initialValue) {
@@ -145,7 +160,7 @@ public class SimulationConfigurationPresenter {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/simulationMap.fxml"));
             StackPane root = loader.load();
-            SimulationPresenter simulationPresenter = loader.getController();
+            SimulationMapPresenter simulationPresenter = loader.getController();
             simulationPresenter.initializeSimulation(simulation);
 
             Stage stage = new Stage();
@@ -156,7 +171,5 @@ public class SimulationConfigurationPresenter {
             e.printStackTrace();
         }
     }
-
-
 }
 

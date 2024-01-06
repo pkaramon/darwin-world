@@ -9,22 +9,35 @@ import javafx.scene.layout.StackPane;
 
 public class SimulationMapPresenter {
     @FXML
-    private StackPane simulationContainer;
+    private StackPane mapContainer;
+
+    private Simulation simulation;
 
     public void initializeSimulation(Simulation simulation) {
-        SimulationCanvas simulationCanvas = new SimulationCanvas(
-                simulation.getWorldMap().getWidth(),
-                simulation.getWorldMap().getHeight()
-        );
+        this.simulation = simulation;
+        setupSimulationCanvas();
+    }
 
-        simulationContainer.getChildren().add(simulationCanvas);
+    private void setupSimulationCanvas() {
+        if (simulation != null && simulation.getWorldMap() != null) {
+            int mapWidth = simulation.getWorldMap().getWidth();
+            int mapHeight = simulation.getWorldMap().getHeight();
+            SimulationCanvas simulationCanvas = new SimulationCanvas(mapWidth, mapHeight);
 
-        // Uruchomienie pętli animacji
+            mapContainer.getChildren().add(simulationCanvas);
+            startAnimationLoop(simulationCanvas);
+        }
+    }
+
+
+
+    private void startAnimationLoop(SimulationCanvas simulationCanvas) {
         new AnimationTimer() {
             @Override
             public void handle(long now) {
                 SimulationState state = simulation.run();
-                simulationCanvas.updateAndDraw(state); // Aktualizacja widoku symulacji
+
+                simulationCanvas.updateAndDraw(state);
             }
         }.start();
     }

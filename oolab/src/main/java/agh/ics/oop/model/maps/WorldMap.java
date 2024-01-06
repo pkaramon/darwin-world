@@ -12,4 +12,6 @@ public interface WorldMap extends MoveValidator, Iterable<MapField> {
     MapField mapFieldAt(Vector2d position);
     void move(Animal animal);
     Boundary getBoundary();
+    int getHeight();
+    int getWidth();
 }

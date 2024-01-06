@@ -117,4 +117,14 @@ public class GlobeMap implements WorldMap {
     public Iterator<MapField> iterator() {
         return new GlobeMapIterator(fields);
     }
+    @Override
+    public int getHeight() {
+        return height;
+    }
+
+    @Override
+    public int getWidth() {
+        return width;
+    }
+
 }
