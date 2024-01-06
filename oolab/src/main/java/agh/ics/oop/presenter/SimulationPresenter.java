@@ -1,6 +1,5 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.SimulationCanvas;
 import agh.ics.oop.simulations.Simulation;
 import agh.ics.oop.simulations.SimulationState;
 import javafx.animation.AnimationTimer;
@@ -8,7 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 
-public class SimulationMapPresenter {
+public class SimulationPresenter {
     @FXML
     private StackPane mapContainer;
     @FXML

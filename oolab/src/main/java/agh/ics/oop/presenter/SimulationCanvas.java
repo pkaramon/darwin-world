@@ -1,4 +1,4 @@
-package agh.ics.oop;
+package agh.ics.oop.presenter;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -20,8 +20,8 @@ public class SimulationCanvas extends Canvas {
     public void updateAndDraw(SimulationState state) {
         GraphicsContext gc = getGraphicsContext2D();
         clearCanvas(gc);
-        drawAnimals(state, gc);
         drawPlants(state, gc);
+        drawAnimals(state, gc);
     }
 
     private void clearCanvas(GraphicsContext gc) {
@@ -48,11 +48,11 @@ public class SimulationCanvas extends Canvas {
     private void drawRectangle(GraphicsContext gc, Vector2d position, Color color) {
         gc.setFill(color);
         Vector2d mapped = convertToGraphicsContextCoordinateSystem(position);
-        gc.fillRect(mapped.getX() * CELL_SIZE, mapped.getY() * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        gc.fillRect(mapped.x() * CELL_SIZE, mapped.y() * CELL_SIZE, CELL_SIZE, CELL_SIZE);
     }
 
     private Vector2d convertToGraphicsContextCoordinateSystem(Vector2d position) {
-        return new Vector2d(position.getX(), mapHeight - position.getY() - 1);
+        return new Vector2d(position.x(), mapHeight - position.y() - 1);
     }
 
 

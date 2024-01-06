@@ -1,16 +1,18 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.SimulationCanvas;
 import agh.ics.oop.model.Vector2d;
-import agh.ics.oop.model.animals.*;
+import agh.ics.oop.model.animals.Animal;
+import agh.ics.oop.model.animals.AnimalFactory;
 import agh.ics.oop.model.generator.DeadAnimalsGrassGenerator;
+import agh.ics.oop.model.generator.EquatorGrassGenerator;
 import agh.ics.oop.model.generator.GrassGenerator;
 import agh.ics.oop.model.generator.GrassGeneratorInfo;
-import agh.ics.oop.model.maps.*;
+import agh.ics.oop.model.maps.GlobeMap;
+import agh.ics.oop.model.maps.GrassMapField;
+import agh.ics.oop.model.maps.MapField;
+import agh.ics.oop.model.maps.WorldMap;
 import agh.ics.oop.simulations.Simulation;
 import agh.ics.oop.simulations.SimulationParameters;
-import agh.ics.oop.simulations.SimulationState;
-import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -21,9 +23,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Supplier;
 
-
-public class SimulationConfigurationPresenter {
+public class ConfiguratorPresenter {
     @FXML
     public Button startButton;
     @FXML
@@ -38,8 +40,6 @@ public class SimulationConfigurationPresenter {
     private Spinner<Integer> minEnergyCopulationField;
     @FXML
     private Spinner<Integer> animalStartEnergyField;
-    @FXML
-    private Spinner<Integer> dailyEnergyCostField;
     @FXML
     private Spinner<Integer> animalsSpawningStartField;
     @FXML
@@ -60,26 +60,25 @@ public class SimulationConfigurationPresenter {
     @FXML
     private ComboBox<String> mutationVariantField;
 
-    private SimulationParameters parameters;
 
     @FXML
     public void initialize() {
         setupSpinner(mapHeightField, 1, 1000, 50);
         setupSpinner(maxWidthField, 1, 1000, 50);
         setupSpinner(grassEnergyProfitField, 1, 1000, 20);
-        setupSpinner(minEnergyCopulationField, 1, 1000, 5);
+        setupSpinner(minEnergyCopulationField, 1, 1000, 30);
         setupSpinner(animalStartEnergyField, 1, 1000, 100);
-        setupSpinner(dailyEnergyCostField, 1, 1000, 1);
         setupSpinner(animalsSpawningStartField, 1, 1000, 20);
         setupSpinner(grassSpawnedDayField, 1, 1000, 20);
         setupSpinner(initialPlantsField, 1, 1000, 5);
-        setupSpinner(parentEnergyGivenToChildField, 1, 1000, 50);
+        setupSpinner(parentEnergyGivenToChildField, 1, 1000, 10);
         setupSpinner(minMutationsField, 1, 1000, 1);
-        setupSpinner(maxMutationsField, 1, 1000, 20);
-        setupSpinner(genomeLengthField, 1, 1000, 10);
-        plantGrowthVariantField.getItems().addAll("Equatorial Forests", "Other Option");
+        setupSpinner(maxMutationsField, 1, 1000, 5);
+        setupSpinner(genomeLengthField, 1, 1000, 20);
+
+        plantGrowthVariantField.getItems().addAll("Equatorial Forests", "Life-giving Carcasses");
         plantGrowthVariantField.setValue("Equatorial Forests");
-        mutationVariantField.getItems().addAll("Full Randomness", "Other Option");
+        mutationVariantField.getItems().addAll("Full Randomness", "Small Correction");
         mutationVariantField.setValue("Full Randomness");
     }
 
@@ -106,70 +105,80 @@ public class SimulationConfigurationPresenter {
         });
     }
 
-
     @FXML
     private void onSimulationStartClicked() {
-        int mapHeight = mapHeightField.getValue();
-        int maxWidth = maxWidthField.getValue();
-        int grassEnergyProfit = grassEnergyProfitField.getValue();
-        int minEnergyCopulation = minEnergyCopulationField.getValue();
-        int animalStartEnergy = animalStartEnergyField.getValue();
-        int animalsSpawningStart = animalsSpawningStartField.getValue();
-        int grassSpawnedDay = grassSpawnedDayField.getValue();
-        int numberOfGrassInitially = 5;
-        String plantGrowthVariant = "Equatorial Forests";
-        String mutationVariant = "Full Randomness";
-        int parentEnergyGivenToChild = 50;
-        int minMutations = 1;
-        int maxMutations = 20;
-        int genomeLength = 32;
-
         SimulationParameters parameters = new SimulationParameters(
-                maxWidth, mapHeight, numberOfGrassInitially, grassEnergyProfit, grassSpawnedDay,
-                plantGrowthVariant, animalsSpawningStart, animalStartEnergy, minEnergyCopulation,
-                parentEnergyGivenToChild, minMutations, maxMutations, mutationVariant, genomeLength
+                maxWidthField.getValue(),
+                mapHeightField.getValue(),
+                initialPlantsField.getValue(),
+                grassEnergyProfitField.getValue(),
+                grassSpawnedDayField.getValue(),
+                plantGrowthVariantField.getValue(),
+                animalsSpawningStartField.getValue(),
+                animalStartEnergyField.getValue(),
+                minEnergyCopulationField.getValue(),
+                parentEnergyGivenToChildField.getValue(),
+                minMutationsField.getValue(),
+                maxMutationsField.getValue(),
+                mutationVariantField.getValue(),
+                genomeLengthField.getValue()
         );
 
         initializeSimulationWithParameters(parameters);
     }
 
-
     public void initializeSimulationWithParameters(SimulationParameters parameters) {
-        this.parameters = parameters;
         Simulation simulation = new Simulation();
 
+        WorldMap worldMap = createWorldMap(parameters);
+        simulation.setWorldMap(worldMap);
+
+        GrassGenerator grassGenerator = createGrassGenerator(parameters, worldMap, simulation::getCurrentDay);
+        simulation.setGrassGenerator(grassGenerator);
+
+        List<Animal> initialAnimals = createInitialAnimals(parameters, simulation);
+        simulation.setInitialAnimals(initialAnimals);
+
+        startSimulation(simulation);
+    }
+
+    private static WorldMap createWorldMap(SimulationParameters parameters) {
         MapField[][] mapFields = new MapField[parameters.mapWidth()][parameters.mapHeight()];
         for (int x = 0; x < parameters.mapWidth(); x++) {
             for (int y = 0; y < parameters.mapHeight(); y++) {
                 mapFields[x][y] = new GrassMapField(new Vector2d(x, y));
             }
         }
-        WorldMap worldMap = new GlobeMap(mapFields);
-        simulation.setWorldMap(worldMap);
+        return new GlobeMap(mapFields);
+    }
 
-        GrassGeneratorInfo grassGeneratorInfo = new GrassGeneratorInfo(parameters.plantsPerDay(), parameters.plantEnergy(), parameters.initialNumberOfPlants());
-        GrassGenerator grassGenerator = new DeadAnimalsGrassGenerator(grassGeneratorInfo, worldMap, simulation::getCurrentDay);
-
-        List<Animal> initialAnimals = AnimalFactory.createInitialAnimals(
-                parameters.mapWidth(),
-                parameters.mapHeight(),
-                parameters.initialNumberOfAnimals(),
-                parameters.animalStartEnergy(),
-                simulation::getCurrentDay
+    private static GrassGenerator createGrassGenerator(SimulationParameters parameters, WorldMap worldMap, Supplier<Integer> getCurrentDay) {
+        GrassGeneratorInfo growthInfo = new GrassGeneratorInfo(
+                parameters.plantsPerDay(),
+                parameters.plantEnergy(),
+                parameters.initialNumberOfPlants()
         );
 
+        return switch (parameters.plantGrowthVariant()) {
+            case "Life-giving Carcasses" -> new DeadAnimalsGrassGenerator(growthInfo, worldMap, getCurrentDay);
+            case "Equatorial Forests" -> new EquatorGrassGenerator(growthInfo, worldMap);
+            default ->
+                    throw new IllegalArgumentException("Unknown plant growth variant: " + parameters.plantGrowthVariant());
+        };
+    }
 
-        simulation.setGrassGenerator(grassGenerator);
-        simulation.setInitialAnimals(initialAnimals);
-
-        startSimulation(simulation);
+    private static List<Animal> createInitialAnimals(SimulationParameters parameters, Simulation simulation) {
+        return AnimalFactory.createInitialAnimals(
+                parameters,
+                simulation::getCurrentDay
+        );
     }
 
     private void startSimulation(Simulation simulation) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/simulationMap.fxml"));
             StackPane root = loader.load();
-            SimulationMapPresenter simulationPresenter = loader.getController();
+            SimulationPresenter simulationPresenter = loader.getController();
             simulationPresenter.initializeSimulation(simulation);
 
             Stage stage = new Stage();
@@ -177,7 +186,11 @@ public class SimulationConfigurationPresenter {
             stage.setScene(new Scene(root, 800, 600));
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+
+            alert.setHeaderText("Error while loading simulation map");
+            alert.setContentText("Display for map could not be loaded. Please try again.");
+            alert.show();
         }
     }
 }

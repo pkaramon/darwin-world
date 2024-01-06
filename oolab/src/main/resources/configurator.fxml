@@ -5,11 +5,10 @@
 <?import javafx.geometry.Insets?>
 
 <?import javafx.collections.FXCollections?>
-<?import java.lang.String?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             minHeight="400.0" minWidth="400.0"
-            fx:controller="agh.ics.oop.presenter.SimulationConfigurationPresenter">
+            fx:controller="agh.ics.oop.presenter.ConfiguratorPresenter">
     <center>
         <GridPane fx:id="mapGrid">
         <VBox spacing="10" alignment="TOP_CENTER">
@@ -44,10 +43,6 @@
                         <Label text="Animal Start Energy:" minWidth="100"/>
                         <Spinner  fx:id="animalStartEnergyField" maxWidth="120" editable="true"/>
                     </HBox>
-                    <HBox alignment="CENTER" spacing="10" maxWidth="Infinity">
-                        <Label text="Daily Energy Cost:" minWidth="100"/>
-                        <Spinner  fx:id="dailyEnergyCostField" maxWidth="120" editable="true"/>
-                    </HBox>
                 </VBox>
             </TitledPane>
 
@@ -74,10 +69,7 @@
                         <Label text="Plant Growth Variant:" minWidth="100"/>
                         <ComboBox fx:id="plantGrowthVariantField">
                             <items>
-                                <FXCollections fx:factory="observableArrayList">
-                                    <String fx:value="Equatorial Forests"/>
-                                    <String fx:value="Life-giving Carcasses"/>
-                                </FXCollections>
+                                <FXCollections fx:factory="observableArrayList"/>
                             </items>
                         </ComboBox>
                     </HBox>
@@ -102,10 +94,7 @@
                         <Label text="Mutation Variant:" minWidth="100"/>
                         <ComboBox fx:id="mutationVariantField">
                             <items>
-                                <FXCollections fx:factory="observableArrayList">
-                                    <String fx:value="Full Randomness"/>
-                                    <String fx:value="Step Gene Mutation"/>
-                                </FXCollections>
+                                <FXCollections fx:factory="observableArrayList"/>
                             </items>
                         </ComboBox>
                     </HBox>

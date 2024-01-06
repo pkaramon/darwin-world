@@ -26,10 +26,6 @@ public enum MapDirection {
         return indicator;
     }
 
-    public String indicator() {
-        return indicator;
-    }
-
     public MapDirection next() {
         return nextN(1);
     }

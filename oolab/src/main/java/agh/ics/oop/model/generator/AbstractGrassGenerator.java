@@ -91,8 +91,8 @@ public abstract class AbstractGrassGenerator implements GrassGenerator {
         Boundary mapBoundary = worldMap.getBoundary();
 
         Set<Vector2d> nonGrassedPositions = new HashSet<>();
-        for (int x = mapBoundary.lowerLeft().getX(); x <= mapBoundary.upperRight().getX(); x++) {
-            for (int y = 0; y <= mapBoundary.upperRight().getY(); y++) {
+        for (int x = mapBoundary.lowerLeft().x(); x <= mapBoundary.upperRight().x(); x++) {
+            for (int y = 0; y <= mapBoundary.upperRight().y(); y++) {
                 Vector2d position = new Vector2d(x, y);
                 if(!preferred.contains(position) && isNonGrassed(position)) {
                     nonGrassedPositions.add(position);

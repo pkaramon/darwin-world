@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <StackPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-           fx:controller="agh.ics.oop.presenter.SimulationMapPresenter" fx:id="mapContainer">
+           fx:controller="agh.ics.oop.presenter.SimulationPresenter" fx:id="mapContainer">
     <VBox alignment="BOTTOM_CENTER" spacing="10">
         <Button fx:id="toggleAnimationButton" text="Pause" onAction="#toggleAnimation"/>
     </VBox>

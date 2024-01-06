@@ -24,8 +24,8 @@ public class GlobeMap implements WorldMap {
 
     @Override
     public Pose validateMove(Pose desired) {
-        int desiredX = desired.position().getX();
-        int desiredY = desired.position().getY();
+        int desiredX = desired.position().x();
+        int desiredY = desired.position().y();
         MapDirection desiredOrientation = desired.orientation();
 
         return Stream.of(
@@ -98,7 +98,7 @@ public class GlobeMap implements WorldMap {
 
     @Override
     public MapField mapFieldAt(Vector2d position) {
-        return fields[position.getX()][position.getY()];
+        return fields[position.x()][position.y()];
     }
 
     @Override

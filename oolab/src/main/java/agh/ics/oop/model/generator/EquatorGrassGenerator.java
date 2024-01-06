@@ -17,7 +17,7 @@ public class EquatorGrassGenerator extends AbstractGrassGenerator {
     protected Set<Vector2d> getPreferredPositions() {
         Boundary mapBoundary = worldMap.getBoundary();
         int equatorHeight = (int) (mapBoundary.height() * EQUATORIAL_REGION_PERCENTAGE);
-        int yStart = mapBoundary.lowerLeft().getY() + (mapBoundary.height() - equatorHeight) / 2;
+        int yStart = mapBoundary.lowerLeft().y() + (mapBoundary.height() - equatorHeight) / 2;
         int yEnd = yStart + equatorHeight -1;
 
         return generateEquatorPositions(yStart, yEnd);
@@ -28,7 +28,7 @@ public class EquatorGrassGenerator extends AbstractGrassGenerator {
         Boundary mapBoundary = worldMap.getBoundary();
         Set<Vector2d> equatorPositions = new HashSet<>();
 
-        for (int x = mapBoundary.lowerLeft().getX(); x <= mapBoundary.upperRight().getX(); x++) {
+        for (int x = mapBoundary.lowerLeft().x(); x <= mapBoundary.upperRight().x(); x++) {
             for (int y = equatorYStart; y <= equatorYEnd; y++) {
                 Vector2d position = new Vector2d(x, y);
                 if (isNonGrassed(position)) {

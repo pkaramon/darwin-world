@@ -50,14 +50,12 @@ public class SimulationStatsCalculator {
 
 
     public Optional<Genotype> getDominantGenotype() {
-        Map<Genotype, Integer> counter = new HashMap<Genotype, Integer>();
+        Map<Genotype, Integer> counter = new HashMap<>();
 
         aliveAnimals
             .stream()
             .map(Animal::getGenotype)
-            .forEach(g -> {
-                counter.put(g, counter.getOrDefault(g, 0) + 1);
-            });
+            .forEach(g -> counter.put(g, counter.getOrDefault(g, 0) + 1));
 
         return counter
                 .entrySet()
