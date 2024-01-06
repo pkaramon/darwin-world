@@ -49,13 +49,13 @@ public class SimulationMapPresenter {
 
 
     private void startAnimationLoop(SimulationCanvas simulationCanvas) {
-        new AnimationTimer() {
+        animationTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 SimulationState state = simulation.run();
-
                 simulationCanvas.updateAndDraw(state);
             }
-        }.start();
+        };
+        animationTimer.start();
     }
 }

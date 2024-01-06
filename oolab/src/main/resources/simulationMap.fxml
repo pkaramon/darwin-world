@@ -8,5 +8,5 @@
     <VBox alignment="BOTTOM_CENTER" spacing="10">
         <Button fx:id="toggleAnimationButton" text="Pause" onAction="#toggleAnimation"/>
     </VBox>
-    <!-- Tutaj możesz dodać Canvas lub inne elementy interfejsu użytkownika -->
+
 </StackPane>
