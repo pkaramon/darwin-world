@@ -55,23 +55,32 @@ public class SimulationConfigurationPresenter {
     @FXML
     private Spinner<Integer> genomeLengthField;
 
+    @FXML
+    private ComboBox<String> plantGrowthVariantField;
+    @FXML
+    private ComboBox<String> mutationVariantField;
+
     private SimulationParameters parameters;
 
     @FXML
     public void initialize() {
-        setupSpinner(mapHeightField, 1, 1000, 100);
-        setupSpinner(maxWidthField, 1, 1000, 100);
-        setupSpinner(grassEnergyProfitField, 1, 1000, 10);
-        setupSpinner(minEnergyCopulationField, 1, 1000, 20);
+        setupSpinner(mapHeightField, 1, 1000, 50);
+        setupSpinner(maxWidthField, 1, 1000, 50);
+        setupSpinner(grassEnergyProfitField, 1, 1000, 20);
+        setupSpinner(minEnergyCopulationField, 1, 1000, 5);
         setupSpinner(animalStartEnergyField, 1, 1000, 100);
         setupSpinner(dailyEnergyCostField, 1, 1000, 1);
-        setupSpinner(animalsSpawningStartField, 1, 1000, 2);
+        setupSpinner(animalsSpawningStartField, 1, 1000, 20);
         setupSpinner(grassSpawnedDayField, 1, 1000, 20);
         setupSpinner(initialPlantsField, 1, 1000, 5);
         setupSpinner(parentEnergyGivenToChildField, 1, 1000, 50);
         setupSpinner(minMutationsField, 1, 1000, 1);
         setupSpinner(maxMutationsField, 1, 1000, 20);
         setupSpinner(genomeLengthField, 1, 1000, 10);
+        plantGrowthVariantField.getItems().addAll("Equatorial Forests", "Other Option");
+        plantGrowthVariantField.setValue("Equatorial Forests");
+        mutationVariantField.getItems().addAll("Full Randomness", "Other Option");
+        mutationVariantField.setValue("Full Randomness");
     }
 
     private void setupSpinner(Spinner<Integer> spinner, int min, int max, int initialValue) {
@@ -108,8 +117,8 @@ public class SimulationConfigurationPresenter {
         int animalsSpawningStart = animalsSpawningStartField.getValue();
         int grassSpawnedDay = grassSpawnedDayField.getValue();
         int numberOfGrassInitially = 5;
-        String plantGrowthVariant = "random";
-        String mutationVariant = "random";
+        String plantGrowthVariant = "Equatorial Forests";
+        String mutationVariant = "Full Randomness";
         int parentEnergyGivenToChild = 50;
         int minMutations = 1;
         int maxMutations = 20;
