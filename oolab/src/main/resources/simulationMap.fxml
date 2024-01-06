@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.canvas.Canvas?>
-
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.VBox?>
+
 <StackPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
            fx:controller="agh.ics.oop.presenter.SimulationMapPresenter" fx:id="mapContainer">
-    <Button fx:id="toggleAnimationButton" text="Pause" onAction="#toggleAnimation"/>
-
+    <VBox alignment="BOTTOM_CENTER" spacing="10">
+        <Button fx:id="toggleAnimationButton" text="Pause" onAction="#toggleAnimation"/>
+    </VBox>
+    <!-- Tutaj możesz dodać Canvas lub inne elementy interfejsu użytkownika -->
 </StackPane>
