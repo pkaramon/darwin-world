@@ -50,8 +50,15 @@ public class Simulation {
     private SimulationPresenter presenter;
 
     public void setPresenter(SimulationPresenter presenter) {
+        if (presenter == null) {
+            System.out.println("Presenter jest null!");
+        } else {
+            System.out.println("Presenter został ustawiony.");
+        }
         this.presenter = presenter;
     }
+
+
 
     public SimulationState run() {
         initializeIfFirstLaunch();
@@ -74,7 +81,7 @@ public class Simulation {
                 map
         );
 
-
+//        System.out.println("Dzień symulacji: " + currentDay + ", Liczba zwierząt: " + animals.size());
         if (presenter != null) {
             Platform.runLater(() -> presenter.updateCharts(currentState));
         }

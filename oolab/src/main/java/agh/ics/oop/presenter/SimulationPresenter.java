@@ -30,9 +30,13 @@ public class SimulationPresenter {
     private Simulation simulation;
 
     public void initializeSimulation(Simulation simulation) {
+        if (simulation == null) {
+            throw new IllegalStateException("Symulacja nie została zainicjalizowana.");
+        }
         this.simulation = simulation;
         setupSimulationCanvas();
     }
+
 
     @FXML
     private void toggleAnimation() {
@@ -69,10 +73,14 @@ public class SimulationPresenter {
     }
 
     public void updateCharts(SimulationState state) {
+        System.out.println("Aktualizacja wykresu dla dnia: " + state.currentDay());
         int currentDay = state.currentDay();
         int animalCount = state.animalsOnMap().size();
 
+        if (animalCountSeries.getData().size() > 100) {
+            animalCountSeries.getData().remove(0);
+        }
         animalCountSeries.getData().add(new XYChart.Data<>(currentDay, animalCount));
-
     }
+
 }
