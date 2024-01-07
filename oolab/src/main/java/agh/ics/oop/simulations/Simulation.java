@@ -16,6 +16,8 @@ public class Simulation {
     private WorldMap map;
     private GrassGenerator grassGenerator;
     private int currentDay = 0;
+    private SimulationPresenter presenter;
+    private SimulationStatsCalculator statsCalculator;
 
     private final Set<SimulationListener> listeners = new LinkedHashSet<>();
 
@@ -47,7 +49,7 @@ public class Simulation {
         return this.map;
     }
 
-    private SimulationPresenter presenter;
+
 
     public void setPresenter(SimulationPresenter presenter) {
         if (presenter == null) {
@@ -62,7 +64,7 @@ public class Simulation {
 
     public SimulationState run() {
         initializeIfFirstLaunch();
-
+        statsCalculator = new SimulationStatsCalculator(currentDay, animals, map);
         currentDay++;
 
         cleanUpAnimalsThatDiedDayBefore();
@@ -82,7 +84,7 @@ public class Simulation {
         );
         // System.out.println("Dzień symulacji: " + currentDay + ", Liczba zwierząt: " + animals.size());
         if (presenter != null) {
-            Platform.runLater(() -> presenter.updateCharts(currentState));
+            Platform.runLater(() -> presenter.updateCharts(currentState, statsCalculator));
         }
 
         return currentState;

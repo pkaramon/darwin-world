@@ -4,36 +4,57 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-
 <?import javafx.scene.control.Button?>
+<?import javafx.geometry.Pos?>
+
 <StackPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
            fx:controller="agh.ics.oop.presenter.SimulationPresenter">
-    <HBox>
-        <VBox>
-            <LineChart fx:id="animalCountChart" title="Animal">
-                <xAxis><NumberAxis label="Day"/></xAxis>
-                <yAxis><NumberAxis label="Amount of animals"/></yAxis>
-            </LineChart>
-            <LineChart fx:id="grassCountChart" title="Grass">
-                <xAxis><NumberAxis label="Day"/></xAxis>
-                <yAxis><NumberAxis label="Amount of grass"/></yAxis>
-            </LineChart>
-            <LineChart fx:id="averageEnergyChart" title="Average energy">
-                <xAxis><NumberAxis label="Day"/></xAxis>
-                <yAxis><NumberAxis label="Average energy"/></yAxis>
-            </LineChart>
-            <LineChart fx:id="averageLifeLengthChart" title="Average lifespan">
-                <xAxis><NumberAxis label="Day"/></xAxis>
-                <yAxis><NumberAxis label="Average lifespan"/></yAxis>
-            </LineChart>
-            <LineChart fx:id="averageChildrenCountChart" title="Average children number">
-                <xAxis><NumberAxis label="Day"/></xAxis>
-                <yAxis><NumberAxis label="Average children number"/></yAxis>
-            </LineChart>
-            <Button fx:id="toggleAnimationButton" text="Pause" onAction="#toggleAnimation"/>
-        </VBox>
-        <StackPane fx:id="mapContainer">
+    <VBox>
+        <HBox>
+            <!-- Lewa kolumna wykresów -->
+            <VBox>
+                <LineChart fx:id="animalCountChart" title="Animal">
+                    <xAxis><NumberAxis label="Day"/></xAxis>
+                    <yAxis><NumberAxis label="Amount of animals"/></yAxis>
+                </LineChart>
+                <LineChart fx:id="grassCountChart" title="Grass">
+                    <xAxis><NumberAxis label="Day"/></xAxis>
+                    <yAxis><NumberAxis label="Amount of grass"/></yAxis>
+                </LineChart>
+                <LineChart fx:id="freeFieldsCountChart" title="Free fields">
+                    <xAxis><NumberAxis label="Day"/></xAxis>
+                    <yAxis><NumberAxis label="Amount of free fields"/></yAxis>
+                </LineChart>
+            </VBox>
 
-        </StackPane>
-    </HBox>
+            <!-- Kontener mapy -->
+            <StackPane fx:id="mapContainer">
+            </StackPane>
+
+            <!-- Prawa kolumna wykresów -->
+            <VBox>
+                <LineChart fx:id="dominantGenotypeChart" title="Dominant genotype">
+                    <xAxis><NumberAxis label="Day"/></xAxis>
+                    <yAxis><NumberAxis label="Dominant genotype"/></yAxis>
+                </LineChart>
+                <LineChart fx:id="averageEnergyChart" title="Average energy">
+                    <xAxis><NumberAxis label="Day"/></xAxis>
+                    <yAxis><NumberAxis label="Average energy"/></yAxis>
+                </LineChart>
+                <LineChart fx:id="averageLifetimeChart" title="Average lifetime">
+                    <xAxis><NumberAxis label="Day"/></xAxis>
+                    <yAxis><NumberAxis label="Average lifetime"/></yAxis>
+                </LineChart>
+                <LineChart fx:id="averageChildrenCountChart" title="Average children count">
+                    <xAxis><NumberAxis label="Day"/></xAxis>
+                    <yAxis><NumberAxis label="Average children count"/></yAxis>
+                </LineChart>
+            </VBox>
+        </HBox>
+
+        <!-- Kontener dla przycisku -->
+        <HBox alignment="CENTER">
+            <Button fx:id="toggleAnimationButton" text="Pause" onAction="#toggleAnimation"/>
+        </HBox>
+    </VBox>
 </StackPane>
