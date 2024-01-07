@@ -69,7 +69,6 @@ public class SimulationPresenter {
                 Vector2d position = simulationCanvas.correspondingWorldMapPosition((int) e.getX(), (int) e.getY());
                 WorldMap map = simulation.getWorldMap();
                 List<Animal> animals = map.mapFieldAt(position).getOrderedAnimals();
-                System.out.println(animals);
                 if (!animals.isEmpty()) {
                     watchedAnimal = animals.get(animals.size() - 1);
                 }
@@ -98,8 +97,6 @@ public class SimulationPresenter {
             public void handle(long now) {
                 SimulationState state = simulation.run();
                 simulationCanvas.updateAndDraw(state);
-                System.out.println(state.currentDay());
-
                 SimulationStatsCalculator statsCalculator = new SimulationStatsCalculator(
                         state.currentDay(),
                         state.animalsOnMap(),
