@@ -4,13 +4,16 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Button?>
 
+<?import javafx.scene.control.Label?>
 <StackPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
            fx:controller="agh.ics.oop.presenter.SimulationPresenter">
     <VBox>
         <HBox alignment="CENTER">
             <VBox fx:id="leftColumn"/>
             <StackPane fx:id="mapContainer"/>
-            <VBox fx:id="rightChartColumn"/>
+            <VBox fx:id="rightChartColumn">
+                <Label fx:id="watchedAnimalLabel"/>
+            </VBox>
         </HBox>
         <HBox alignment="CENTER">
             <Button fx:id="toggleAnimationButton" text="Pause" onAction="#toggleAnimation"/>

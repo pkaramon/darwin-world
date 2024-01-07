@@ -4,7 +4,6 @@ import agh.ics.oop.model.MapDirection;
 import agh.ics.oop.model.Pose;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.genes.*;
-import agh.ics.oop.model.util.RandomNumbersGenerator;
 import agh.ics.oop.simulations.SimulationParameters;
 
 import java.util.ArrayList;

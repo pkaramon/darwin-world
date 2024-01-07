@@ -31,6 +31,7 @@ public class SimulationCanvas extends Canvas {
         drawAnimals(state, gc);
     }
 
+
     private void clearCanvas(GraphicsContext gc) {
         gc.setFill(Color.WHITE);
         gc.fillRect(0, 0, getWidth(), getHeight());
@@ -54,12 +55,17 @@ public class SimulationCanvas extends Canvas {
 
     private void drawRectangle(GraphicsContext gc, Vector2d position, Color color) {
         gc.setFill(color);
-        Vector2d mapped = convertToGraphicsContextCoordinateSystem(position);
+        Vector2d mapped = convertToCanvasCoordinateSystem(position);
         gc.fillRect(mapped.x() * cellSize, mapped.y() * cellSize, cellSize, cellSize);
     }
 
-    private Vector2d convertToGraphicsContextCoordinateSystem(Vector2d position) {
+    private Vector2d convertToCanvasCoordinateSystem(Vector2d position) {
         return new Vector2d(position.x(), mapHeight - position.y() - 1);
+    }
+
+    public Vector2d correspondingWorldMapPosition(int canvasX, int canvasY) {
+        return new Vector2d(canvasX/cellSize, -canvasY/cellSize + mapHeight-1);
+
     }
 
 
