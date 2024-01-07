@@ -49,6 +49,10 @@ public class Simulation {
 
     private SimulationPresenter presenter;
 
+    public void setPresenter(SimulationPresenter presenter) {
+        this.presenter = presenter;
+    }
+
     public SimulationState run() {
         initializeIfFirstLaunch();
 
@@ -70,7 +74,10 @@ public class Simulation {
                 map
         );
 
-        Platform.runLater(() -> presenter.updateCharts(currentState));
+
+        if (presenter != null) {
+            Platform.runLater(() -> presenter.updateCharts(currentState));
+        }
 
         return currentState;
     }

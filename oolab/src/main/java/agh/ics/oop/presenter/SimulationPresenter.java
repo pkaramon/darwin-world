@@ -16,6 +16,8 @@ public class SimulationPresenter {
 
     @FXML
     public void initialize() {
+        Simulation simulation = new Simulation();
+        simulation.setPresenter(this);
         animalCountChart.getData().add(animalCountSeries);
     }
     @FXML
