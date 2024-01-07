@@ -80,8 +80,7 @@ public class Simulation {
                 removedFromMapAnimals,
                 map
         );
-
-//        System.out.println("Dzień symulacji: " + currentDay + ", Liczba zwierząt: " + animals.size());
+        // System.out.println("Dzień symulacji: " + currentDay + ", Liczba zwierząt: " + animals.size());
         if (presenter != null) {
             Platform.runLater(() -> presenter.updateCharts(currentState));
         }

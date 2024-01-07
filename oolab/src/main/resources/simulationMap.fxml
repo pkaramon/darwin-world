@@ -5,18 +5,35 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.Button?>
 <StackPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
            fx:controller="agh.ics.oop.presenter.SimulationPresenter">
     <HBox>
         <VBox>
-            <LineChart fx:id="animalCountChart">
-                <xAxis><NumberAxis label="Dzień"/></xAxis>
-                <yAxis><NumberAxis label="Liczba Zwierząt"/></yAxis>
+            <LineChart fx:id="animalCountChart" title="Animal">
+                <xAxis><NumberAxis label="Day"/></xAxis>
+                <yAxis><NumberAxis label="Amount of animals"/></yAxis>
             </LineChart>
-            <!-- Możesz dodać więcej wykresów tutaj -->
+            <LineChart fx:id="grassCountChart" title="Grass">
+                <xAxis><NumberAxis label="Day"/></xAxis>
+                <yAxis><NumberAxis label="Amount of grass"/></yAxis>
+            </LineChart>
+            <LineChart fx:id="averageEnergyChart" title="Average energy">
+                <xAxis><NumberAxis label="Day"/></xAxis>
+                <yAxis><NumberAxis label="Average energy"/></yAxis>
+            </LineChart>
+            <LineChart fx:id="averageLifeLengthChart" title="Average lifespan">
+                <xAxis><NumberAxis label="Day"/></xAxis>
+                <yAxis><NumberAxis label="Average lifespan"/></yAxis>
+            </LineChart>
+            <LineChart fx:id="averageChildrenCountChart" title="Average children number">
+                <xAxis><NumberAxis label="Day"/></xAxis>
+                <yAxis><NumberAxis label="Average children number"/></yAxis>
+            </LineChart>
+            <Button fx:id="toggleAnimationButton" text="Pause" onAction="#toggleAnimation"/>
         </VBox>
         <StackPane fx:id="mapContainer">
-            <!-- Reszta Twojego GUI -->
+
         </StackPane>
     </HBox>
 </StackPane>

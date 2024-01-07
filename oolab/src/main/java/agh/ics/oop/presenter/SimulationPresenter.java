@@ -16,9 +16,13 @@ public class SimulationPresenter {
 
     @FXML
     public void initialize() {
-        Simulation simulation = new Simulation();
-        simulation.setPresenter(this);
+//        animalCountSeries.setName("Liczba zwierzat");
         animalCountChart.getData().add(animalCountSeries);
+
+        animalCountSeries.getNode().lookup(".chart-series-line").setStyle("-fx-stroke-width: 2px; -fx-effect: null;");
+        for (XYChart.Data<Number, Number> data : animalCountSeries.getData()) {
+            data.getNode().setVisible(false);
+        }
     }
     @FXML
     private StackPane mapContainer;
@@ -36,7 +40,6 @@ public class SimulationPresenter {
         this.simulation = simulation;
         setupSimulationCanvas();
     }
-
 
     @FXML
     private void toggleAnimation() {
@@ -75,14 +78,12 @@ public class SimulationPresenter {
 
 
     public void updateCharts(SimulationState state) {
-        System.out.println("Aktualizacja wykresu dla dnia: " + state.currentDay());
         int currentDay = state.currentDay();
         int animalCount = state.animalsOnMap().size();
 
-        if (animalCountSeries.getData().size() > 100) {
-            animalCountSeries.getData().remove(0);
-        }
-        animalCountSeries.getData().add(new XYChart.Data<>(currentDay, animalCount));
+        XYChart.Data<Number, Number> newData = new XYChart.Data<>(currentDay, animalCount);
+        animalCountSeries.getData().add(newData);
+        newData.getNode().setVisible(false);
     }
 
 }

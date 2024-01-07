@@ -19,11 +19,6 @@ public class SimulationApp extends Application {
         loader.setLocation(getClass().getClassLoader().getResource("configurator.fxml"));
         BorderPane viewRoot = loader.load();
 
-        SimulationPresenter presenter = loader.getController();
-        Simulation simulation = new Simulation();
-        simulation.setPresenter(presenter);
-        presenter.initializeSimulation(simulation);
-
         configureStage(primaryStage, viewRoot);
         primaryStage.show();
     }
