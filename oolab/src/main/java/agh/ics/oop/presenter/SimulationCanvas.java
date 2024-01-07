@@ -9,11 +9,18 @@ import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.maps.MapField;
 
 public class SimulationCanvas extends Canvas {
-    private static final int CELL_SIZE = 10;
     private final int mapHeight;
 
+    private final int cellSize;
+    private final static int MAX_DIMENSION = 700;
+
+    private static int getCellSize(int mapWidth, int mapHeight) {
+        return Math.min(MAX_DIMENSION/mapWidth, MAX_DIMENSION/mapHeight);
+    }
+
     public SimulationCanvas(int mapWidth, int mapHeight) {
-        super(mapWidth*CELL_SIZE, mapHeight*CELL_SIZE);
+        super(mapWidth * getCellSize(mapWidth, mapHeight),mapHeight * getCellSize(mapWidth, mapHeight));
+        cellSize = getCellSize(mapWidth, mapHeight);
         this.mapHeight = mapHeight;
     }
 
@@ -48,7 +55,7 @@ public class SimulationCanvas extends Canvas {
     private void drawRectangle(GraphicsContext gc, Vector2d position, Color color) {
         gc.setFill(color);
         Vector2d mapped = convertToGraphicsContextCoordinateSystem(position);
-        gc.fillRect(mapped.x() * CELL_SIZE, mapped.y() * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        gc.fillRect(mapped.x() * cellSize, mapped.y() * cellSize, cellSize, cellSize);
     }
 
     private Vector2d convertToGraphicsContextCoordinateSystem(Vector2d position) {

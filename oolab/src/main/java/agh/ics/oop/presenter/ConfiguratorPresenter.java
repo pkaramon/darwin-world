@@ -207,7 +207,7 @@ public class ConfiguratorPresenter {
 
             Stage stage = new Stage();
             stage.setTitle("Simulation Map");
-            stage.setScene(new Scene(root, 800, 600));
+            stage.setScene(new Scene(root, 1280, 720));
             stage.show();
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
