@@ -5,8 +5,6 @@ import agh.ics.oop.model.animals.Animal;
 import agh.ics.oop.model.generator.GrassGenerator;
 import agh.ics.oop.model.maps.MapField;
 import agh.ics.oop.model.maps.WorldMap;
-import agh.ics.oop.presenter.SimulationPresenter;
-import javafx.application.Platform;
 
 import java.util.*;
 
@@ -16,8 +14,6 @@ public class Simulation {
     private WorldMap map;
     private GrassGenerator grassGenerator;
     private int currentDay = 0;
-    private SimulationPresenter presenter;
-    private SimulationStatsCalculator statsCalculator;
 
     private final Set<SimulationListener> listeners = new LinkedHashSet<>();
 
@@ -50,21 +46,8 @@ public class Simulation {
     }
 
 
-
-    public void setPresenter(SimulationPresenter presenter) {
-        if (presenter == null) {
-            System.out.println("Presenter jest null!");
-        } else {
-            System.out.println("Presenter został ustawiony.");
-        }
-        this.presenter = presenter;
-    }
-
-
-
     public SimulationState run() {
         initializeIfFirstLaunch();
-        statsCalculator = new SimulationStatsCalculator(currentDay, animals, map);
         currentDay++;
 
         cleanUpAnimalsThatDiedDayBefore();
@@ -74,20 +57,13 @@ public class Simulation {
         growFood();
 
 
-
-        SimulationState currentState = new SimulationState(
+        return new SimulationState(
                 currentDay,
                 !animals.isEmpty(),
                 animals,
                 removedFromMapAnimals,
                 map
         );
-        // System.out.println("Dzień symulacji: " + currentDay + ", Liczba zwierząt: " + animals.size());
-        if (presenter != null) {
-            Platform.runLater(() -> presenter.updateCharts(currentState, statsCalculator));
-        }
-
-        return currentState;
     }
 
     private void initializeIfFirstLaunch() {

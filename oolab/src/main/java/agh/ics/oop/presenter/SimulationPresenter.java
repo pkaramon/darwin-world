@@ -10,18 +10,26 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 
+import java.time.Instant;
+
 public class SimulationPresenter {
     @FXML
     private LineChart<Number, Number> animalCountChart, grassCountChart, freeFieldsCountChart, dominantGenotypeChart, averageEnergyChart, averageLifetimeChart, averageChildrenCountChart;
 
-    private XYChart.Series<Number, Number> animalCountSeries = new XYChart.Series<>();
-    private XYChart.Series<Number, Number> grassCountSeries = new XYChart.Series<>();
-    private XYChart.Series<Number, Number> freeFieldsCountSeries = new XYChart.Series<>();
-    private XYChart.Series<Number, Number> dominantGenotypeSeries = new XYChart.Series<>();
-    private XYChart.Series<Number, Number> averageEnergySeries = new XYChart.Series<>();
-    private XYChart.Series<Number, Number> averageLifeLengthSeries = new XYChart.Series<>();
-    private XYChart.Series<Number, Number> averageChildrenCountSeries = new XYChart.Series<>();
-
+    private final XYChart.Series<Number, Number> animalCountSeries = new XYChart.Series<>();
+    private final XYChart.Series<Number, Number> grassCountSeries = new XYChart.Series<>();
+    private final XYChart.Series<Number, Number> freeFieldsCountSeries = new XYChart.Series<>();
+    private final XYChart.Series<Number, Number> dominantGenotypeSeries = new XYChart.Series<>();
+    private final XYChart.Series<Number, Number> averageEnergySeries = new XYChart.Series<>();
+    private final XYChart.Series<Number, Number> averageLifeLengthSeries = new XYChart.Series<>();
+    private final XYChart.Series<Number, Number> averageChildrenCountSeries = new XYChart.Series<>();
+    @FXML
+    private StackPane mapContainer;
+    @FXML
+    private Button toggleAnimationButton;
+    private AnimationTimer animationTimer;
+    private boolean isAnimationRunning = true;
+    private Simulation simulation;
 
     @FXML
     public void initialize() {
@@ -62,14 +70,6 @@ public class SimulationPresenter {
             data.getNode().setVisible(false);
         }
     }
-    @FXML
-    private StackPane mapContainer;
-    @FXML
-    private Button toggleAnimationButton;
-
-    private AnimationTimer animationTimer;
-    private boolean isAnimationRunning = true;
-    private Simulation simulation;
 
     public void initializeSimulation(Simulation simulation) {
         if (simulation == null) {
@@ -106,8 +106,19 @@ public class SimulationPresenter {
         animationTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
+               Instant start = Instant.now();
                 SimulationState state = simulation.run();
+                Instant end = Instant.now();
+                if(state.currentDay()%1000 == 0) {
+                    System.out.println("Sim Run: " + (end.toEpochMilli() - start.toEpochMilli()));
+                }
+
+                start = Instant.now();
                 simulationCanvas.updateAndDraw(state);
+                end = Instant.now();
+                if(state.currentDay()%1000 == 0) {
+                    System.out.println("Drawing: " + (end.toEpochMilli() - start.toEpochMilli()));
+                }
 
                 SimulationStatsCalculator statsCalculator = new SimulationStatsCalculator(
                         state.currentDay(),
@@ -123,23 +134,38 @@ public class SimulationPresenter {
 
 
     public void updateCharts(SimulationState state, SimulationStatsCalculator statsCalculator) {
-        int currentDay = state.currentDay();
-        animalCountSeries.getData().add(new XYChart.Data<>(currentDay, statsCalculator.getNumberOfAnimalsAlive()));
-        grassCountSeries.getData().add(new XYChart.Data<>(currentDay, statsCalculator.getNumberOfGrassOnMap()));
-        freeFieldsCountSeries.getData().add(new XYChart.Data<>(currentDay, statsCalculator.getNumberOfFreeFields()));
-//        dominantGenotypeSeries.getData().add(new XYChart.Data<>(currentDay, statsCalculator.getDominantGenotype()));
-        averageEnergySeries.getData().add(new XYChart.Data<>(currentDay, statsCalculator.getAverageEnergy()));
-        averageLifeLengthSeries.getData().add(new XYChart.Data<>(currentDay, statsCalculator.getAverageLifetimeForDeadAnimals()));
-//        averageChildrenCountSeries.getData().add(new XYChart.Data<>(currentDay, statsCalculator.getAverageChildrenCount()));
+//        int currentDay = state.currentDay();
+//        animalCountSeries.getData().add(new XYChart.Data<>(currentDay, statsCalculator.getNumberOfAnimalsAlive()));
+//        grassCountSeries.getData().add(new XYChart.Data<>(currentDay, statsCalculator.getNumberOfGrassOnMap()));
+//        freeFieldsCountSeries.getData().add(new XYChart.Data<>(currentDay, statsCalculator.getNumberOfFreeFields()));
+////        dominantGenotypeSeries.getData().add(new XYChart.Data<>(currentDay, statsCalculator.getDominantGenotype()));
+//        averageEnergySeries.getData().add(new XYChart.Data<>(currentDay, statsCalculator.getAverageEnergy()));
+//        averageLifeLengthSeries.getData().add(new XYChart.Data<>(currentDay, statsCalculator.getAverageLifetimeForDeadAnimals()));
 
-        hideDataPointSymbols(animalCountSeries);
-        hideDataPointSymbols(grassCountSeries);
-        hideDataPointSymbols(freeFieldsCountSeries);
-        hideDataPointSymbols(dominantGenotypeSeries);
-        hideDataPointSymbols(averageEnergySeries);
-        hideDataPointSymbols(averageLifeLengthSeries);
-        hideDataPointSymbols(averageChildrenCountSeries);
+//         statsCalculator.getAverageChildrenCount();
+        Instant now = Instant.now();
+        statsCalculator.getNumberOfAnimalsAlive();
+        statsCalculator.getNumberOfGrassOnMap();
+        statsCalculator.getNumberOfFreeFields();
+//       statsCalculator.getDominantGenotype()));
+        statsCalculator.getAverageEnergy();
+        statsCalculator.getAverageLifetimeForDeadAnimals();
+        statsCalculator.getDominantGenotype();
+        double avgLiftime = statsCalculator.getAverageLifetimeForDeadAnimals();
+        Instant end = Instant.now();
+        if(state.currentDay()%1000 == 0) {
+            System.out.println("Stats: " + (end.toEpochMilli() - now.toEpochMilli()));
+        }
+
+//        hideDataPointSymbols(animalCountSeries);
+//        hideDataPointSymbols(grassCountSeries);
+//        hideDataPointSymbols(freeFieldsCountSeries);
+//        hideDataPointSymbols(dominantGenotypeSeries);
+//        hideDataPointSymbols(averageEnergySeries);
+//        hideDataPointSymbols(averageLifeLengthSeries);
+//        hideDataPointSymbols(averageChildrenCountSeries);
     }
+
     private void hideDataPointSymbols(XYChart.Series<Number, Number> series) {
         for (XYChart.Data<Number, Number> data : series.getData()) {
             if (data.getNode() != null) {

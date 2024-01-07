@@ -4,38 +4,28 @@ import agh.ics.oop.model.maps.Boundary;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.maps.WorldMap;
 
-import java.util.*;
-
 public class EquatorGrassGenerator extends AbstractGrassGenerator {
     private static final double EQUATORIAL_REGION_PERCENTAGE = 0.2;
+    private int yEquatorStart;
+    private int yEquatorEnd;
 
     public EquatorGrassGenerator(GrassGeneratorInfo info, WorldMap worldMap) {
         super(info, worldMap);
+        Boundary boundary = worldMap.getBoundary();
+
+        calculateEquatorParameters(boundary);
+    }
+
+    private void calculateEquatorParameters(Boundary boundary) {
+        int equatorHeight = (int) (boundary.height() * EQUATORIAL_REGION_PERCENTAGE);
+        yEquatorStart = boundary.lowerLeft().y() + (boundary.height() - equatorHeight) / 2;
+        yEquatorEnd = yEquatorStart + equatorHeight -1;
     }
 
     @Override
-    protected Set<Vector2d> getPreferredPositions() {
-        Boundary mapBoundary = worldMap.getBoundary();
-        int equatorHeight = (int) (mapBoundary.height() * EQUATORIAL_REGION_PERCENTAGE);
-        int yStart = mapBoundary.lowerLeft().y() + (mapBoundary.height() - equatorHeight) / 2;
-        int yEnd = yStart + equatorHeight -1;
-
-        return generateEquatorPositions(yStart, yEnd);
-    }
-
-
-    private Set<Vector2d> generateEquatorPositions(int equatorYStart, int equatorYEnd) {
-        Boundary mapBoundary = worldMap.getBoundary();
-        Set<Vector2d> equatorPositions = new HashSet<>();
-
-        for (int x = mapBoundary.lowerLeft().x(); x <= mapBoundary.upperRight().x(); x++) {
-            for (int y = equatorYStart; y <= equatorYEnd; y++) {
-                Vector2d position = new Vector2d(x, y);
-                if (isNonGrassed(position)) {
-                    equatorPositions.add(position);
-                }
-            }
-        }
-        return equatorPositions;
+    protected boolean isPreferredPosition(Vector2d position) {
+        boolean isOnEquator = position.y()>= yEquatorStart && position.y() <= yEquatorEnd;
+        boolean isNotGrassed = !worldMap.mapFieldAt(position).isGrassed();
+        return isOnEquator && isNotGrassed;
     }
 }
