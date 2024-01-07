@@ -11,13 +11,22 @@ import javafx.scene.layout.StackPane;
 
 public class SimulationPresenter {
     @FXML
-    private LineChart<Number, Number> animalCountChart;
+    private LineChart<Number, Number> animalCountChart, grassCountChart, averageEnergyChart, averageLifeLengthChart, averageChildrenCountChart;
+
     private XYChart.Series<Number, Number> animalCountSeries = new XYChart.Series<>();
+    private XYChart.Series<Number, Number> grassCountSeries = new XYChart.Series<>();
+    private XYChart.Series<Number, Number> averageEnergySeries = new XYChart.Series<>();
+    private XYChart.Series<Number, Number> averageLifeLengthSeries = new XYChart.Series<>();
+    private XYChart.Series<Number, Number> averageChildrenCountSeries = new XYChart.Series<>();
+
 
     @FXML
     public void initialize() {
-//        animalCountSeries.setName("Liczba zwierzat");
         animalCountChart.getData().add(animalCountSeries);
+        grassCountChart.getData().add(grassCountSeries);
+        averageEnergyChart.getData().add(averageEnergySeries);
+        averageLifeLengthChart.getData().add(averageLifeLengthSeries);
+        averageChildrenCountChart.getData().add(averageChildrenCountSeries);
 
         animalCountSeries.getNode().lookup(".chart-series-line").setStyle("-fx-stroke-width: 2px; -fx-effect: null;");
         for (XYChart.Data<Number, Number> data : animalCountSeries.getData()) {
@@ -82,7 +91,12 @@ public class SimulationPresenter {
         int animalCount = state.animalsOnMap().size();
 
         XYChart.Data<Number, Number> newData = new XYChart.Data<>(currentDay, animalCount);
-        animalCountSeries.getData().add(newData);
+        animalCountChart.getData().add(animalCountSeries);
+        grassCountChart.getData().add(grassCountSeries);
+        averageEnergyChart.getData().add(averageEnergySeries);
+        averageLifeLengthChart.getData().add(averageLifeLengthSeries);
+        averageChildrenCountChart.getData().add(averageChildrenCountSeries);
+
         newData.getNode().setVisible(false);
     }
 
