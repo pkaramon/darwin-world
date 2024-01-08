@@ -20,11 +20,6 @@ public class AnimalCrosser {
         return Optional.of(child);
     }
 
-    private void attributeChildToParents(AnimalData child, AnimalData father, AnimalData mother) {
-        father.addChild(child);
-        mother.addChild(child);
-    }
-
 
     private boolean parentEnergyDeficiency(AnimalData father, AnimalData mother) {
         return father.getEnergy() < crossingInfo.minEnergyToReproduce() ||
@@ -44,6 +39,16 @@ public class AnimalCrosser {
                 crossingInfo.parentEnergyGivenToChild() * 2,
                 crossingInfo.getCurrentDay().get()
         );
+    }
+
+    private void updateParentsEnergies(AnimalData father, AnimalData mother) {
+        father.useEnergy(crossingInfo.parentEnergyGivenToChild());
+        mother.useEnergy(crossingInfo.parentEnergyGivenToChild());
+    }
+
+    private void attributeChildToParents(AnimalData child, AnimalData father, AnimalData mother) {
+        father.addChild(child);
+        mother.addChild(child);
     }
 
     private Genotype combine(Genotype a, int aStrength, Genotype b, int bStrength) {
@@ -80,8 +85,4 @@ public class AnimalCrosser {
     }
 
 
-    private void updateParentsEnergies(AnimalData father, AnimalData mother) {
-        father.useEnergy(crossingInfo.parentEnergyGivenToChild());
-        mother.useEnergy(crossingInfo.parentEnergyGivenToChild());
-    }
 }

@@ -1,6 +1,7 @@
 package agh.ics.oop.simulations;
 
-import agh.ics.oop.model.*;
+import agh.ics.oop.model.Grass;
+import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.animals.Animal;
 import agh.ics.oop.model.generator.GrassGenerator;
 import agh.ics.oop.model.maps.MapField;
@@ -10,12 +11,11 @@ import java.util.*;
 
 public class Simulation {
     private final List<Animal> removedFromMapAnimals = new ArrayList<>();
+    private final Set<SimulationListener> listeners = new LinkedHashSet<>();
     private Set<Animal> animals;
     private WorldMap map;
     private GrassGenerator grassGenerator;
     private int currentDay = 0;
-
-    private final Set<SimulationListener> listeners = new LinkedHashSet<>();
 
     public void addListener(SimulationListener listener) {
         listeners.add(listener);
@@ -23,10 +23,6 @@ public class Simulation {
 
     public void removeListener(SimulationListener listener) {
         listeners.remove(listener);
-    }
-
-    public void setWorldMap(WorldMap map) {
-        this.map = map;
     }
 
     public void setGrassGenerator(GrassGenerator generator) {
@@ -45,6 +41,9 @@ public class Simulation {
         return this.map;
     }
 
+    public void setWorldMap(WorldMap map) {
+        this.map = map;
+    }
 
     public SimulationState run() {
         initializeIfFirstLaunch();
@@ -68,13 +67,11 @@ public class Simulation {
 
     private void initializeIfFirstLaunch() {
         if (currentDay == 0) {
-            if (map != null && grassGenerator != null) {
-                grassGenerator.generateInitialGrass().forEach(map::addGrass);
-                animals.forEach(a -> {
-                    map.addAnimal(a);
+            grassGenerator.generateInitialGrass().forEach(map::addGrass);
+            animals.forEach(a -> {
+                map.addAnimal(a);
                 listeners.forEach(l -> l.onAnimalPlaced(map, a));
-                });
-            }
+            });
         }
     }
 

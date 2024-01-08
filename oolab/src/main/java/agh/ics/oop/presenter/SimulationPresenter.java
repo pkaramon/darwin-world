@@ -13,7 +13,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class SimulationPresenter {
 
@@ -97,12 +100,19 @@ public class SimulationPresenter {
             public void handle(long now) {
                 SimulationState state = simulation.run();
                 simulationCanvas.updateAndDraw(state);
+
+                Collection<Animal> allAnimals = Stream
+                        .concat(
+                            state.animalsOnMap().stream(),
+                            state.removedFromMapAnimals().stream()
+                        )
+                        .collect(Collectors.toList());
+
                 SimulationStatsCalculator statsCalculator = new SimulationStatsCalculator(
                         state.currentDay(),
-                        state.animalsOnMap(),
+                        allAnimals,
                         state.map()
                 );
-
                 updateCharts(state, statsCalculator);
                 updateWatchedAnimalLabel();
             }
