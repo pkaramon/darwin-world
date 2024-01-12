@@ -46,6 +46,7 @@ public class AnimalFactory {
                 currentDaySupplier
         );
         AnimalCrosser crosser = new AnimalCrosser(crossingInfo);
+        AnimalComparator comparator = new AnimalComparator(()-> random.nextBoolean()? 1: -1);
 
 
         for (int i = 0; i < params.initialNumberOfAnimals(); i++) {
@@ -54,7 +55,8 @@ public class AnimalFactory {
             genotype.setCurrentGeneIndex(random.nextInt(params.genomeLength()));
 
             AnimalData animalData = new AnimalData(pose, genotype, params.animalStartEnergy());
-            initialAnimals.add(new Animal(animalData, feeder, mover, crosser));
+
+            initialAnimals.add(new Animal(animalData, feeder, mover, crosser, comparator));
         }
 
         return initialAnimals;

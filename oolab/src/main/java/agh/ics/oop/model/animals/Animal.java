@@ -11,17 +11,20 @@ public class Animal implements WorldElement, Comparable<Animal> {
     private final AnimalFeeder feeder;
     private final AnimalMover mover;
     private final AnimalCrosser crosser;
-    private final AnimalComparator comparator = new AnimalComparator();
+    private final AnimalComparator comparator;
 
     public Animal(AnimalData data,
                   AnimalFeeder feeder,
                   AnimalMover mover,
-                  AnimalCrosser crosser)
+                  AnimalCrosser crosser,
+                  AnimalComparator comparator
+    )
     {
         this.data = data;
         this.feeder = feeder;
         this.mover = mover;
         this.crosser = crosser;
+        this.comparator = comparator;
     }
 
     public void feed(Grass grass) {
@@ -38,7 +41,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
     public Optional<Animal> crossWith(Animal other) {
         Optional<AnimalData> childData = crosser.cross(this.data, other.data);
-        return childData.map((data)-> new Animal(data, feeder, mover, crosser));
+        return childData.map((data)-> new Animal(data, feeder, mover, crosser, comparator));
     }
 
     @Override

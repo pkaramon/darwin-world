@@ -32,7 +32,9 @@ class SimulationTest {
                                         poses.get(i),
                                         genotypes.get(i),
                                         energies.get(i)
-                                ), feeder, mover, crosser
+                                ),
+                                feeder, mover, crosser,
+                                new AnimalComparator(()-> 1)
                         )
                 ).toList()
         );
