@@ -6,11 +6,11 @@ public class CompletelyRandomGeneMutation extends AbstractGeneMutation {
     public CompletelyRandomGeneMutation(GenotypeInfo info) {
         super(info);
     }
+    private static final Random rand  = new Random();
 
     @Override
     protected int mutateGene(GenotypeInfo info, int gene) {
-        Random rand = new Random();
-        int result = info.minGene() + rand.nextInt(info.maxGene() - info.minGene());
+        int result = info.minGene() + rand.nextInt(info.maxGene() - info.minGene()); // Generate a random number in [a, b-1]
         if (result >= gene) {
             result++;
         }
