@@ -70,7 +70,7 @@ public class ConfiguratorPresenter {
         setupSpinner(animalStartEnergyField, 1, 1000, 100);
         setupSpinner(animalsSpawningStartField, 1, 1000, 20);
         setupSpinner(grassSpawnedDayField, 1, 1000, 20);
-        setupSpinner(initialPlantsField, 1, 1000, 5);
+        setupSpinner(initialPlantsField, 1, 100000, 5);
         setupSpinner(parentEnergyGivenToChildField, 1, 1000, 10);
         setupSpinner(minMutationsField, 1, 1000, 1);
         setupSpinner(maxMutationsField, 1, 1000, 5);

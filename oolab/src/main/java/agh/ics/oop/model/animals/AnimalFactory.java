@@ -51,6 +51,7 @@ public class AnimalFactory {
         for (int i = 0; i < params.initialNumberOfAnimals(); i++) {
             Pose pose = new Pose(positions.get(i), getRandomDirection());
             Genotype genotype = Genotype.generateRandom(info);
+            genotype.setCurrentGeneIndex(random.nextInt(params.genomeLength()));
 
             AnimalData animalData = new AnimalData(pose, genotype, params.animalStartEnergy());
             initialAnimals.add(new Animal(animalData, feeder, mover, crosser));
