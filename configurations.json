@@ -1,13 +1,13 @@
 [ {
-  "name" : "2",
+  "name" : "test1",
   "parameters" : {
     "mapWidth" : 50,
     "mapHeight" : 50,
     "initialNumberOfPlants" : 5,
-    "plantEnergy" : 25,
+    "plantEnergy" : 20,
     "plantsPerDay" : 20,
     "plantGrowthVariant" : "Equatorial Forests",
-    "initialNumberOfAnimals" : 26,
+    "initialNumberOfAnimals" : 20,
     "animalStartEnergy" : 100,
     "energyToReproduce" : 30,
     "parentEnergyGivenToChild" : 10,

@@ -86,12 +86,7 @@ public class ConfiguratorPresenter {
         plantGrowthVariantField.setValue("Equatorial Forests");
         mutationVariantField.getItems().addAll("Full Randomness", "Small Correction");
         mutationVariantField.setValue("Full Randomness");
-        loadConfigurations();
-    }
-
-    private void loadConfigurations() {
-        // Tutaj logika ładowania nazw konfiguracji z pliku JSON
-        // Przykład: configurationsComboBox.getItems().addAll(loadedConfigurationNames);
+        loadConfigurationNames();
     }
 
     private void setupSpinner(Spinner<Integer> spinner, int min, int max, int initialValue) {
@@ -128,11 +123,19 @@ public class ConfiguratorPresenter {
     }
 
     private void saveConfiguration(String configurationName) {
-        SimulationParameters parameters = getCurrentSimulationParameters();
-        SimulationConfiguration simConfig = new SimulationConfiguration(configurationName, parameters);
-
         List<SimulationConfiguration> configurations = loadConfigurationNames();
-        configurations.add(simConfig);
+
+        // Sprawdź, czy konfiguracja o tej samej nazwie już istnieje
+        for (SimulationConfiguration config : configurations) {
+            if (config.getName().equals(configurationName)) {
+                showAlert("Błąd zapisu", "Konfiguracja o nazwie '" + configurationName + "' już istnieje.");
+                return;
+            }
+        }
+
+        SimulationParameters parameters = getCurrentSimulationParameters();
+        SimulationConfiguration newConfig = new SimulationConfiguration(configurationName, parameters);
+        configurations.add(newConfig);
         JsonUtil.serialize(configurations, "configurations.json");
     }
 
