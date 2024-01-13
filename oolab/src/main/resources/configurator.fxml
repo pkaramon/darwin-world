@@ -13,9 +13,12 @@
         <GridPane fx:id="mapGrid">
         <VBox spacing="10" alignment="TOP_CENTER">
             <padding>
-                <Insets top="30" right="50" bottom="30" left="50"/>
+                <Insets top="20" right="50" bottom="30" left="50"/>
             </padding>
-
+            <HBox alignment="CENTER" spacing="10">
+                <Label text="Wybierz konfigurację:" minWidth="150"/>
+                <ComboBox fx:id="configurationsComboBox" maxWidth="200"/>
+            </HBox>
             <TitledPane text="Map Properties" collapsible="false">
                 <VBox alignment="CENTER" spacing="8">
                     <HBox alignment="CENTER" spacing="10" maxWidth="Infinity">
@@ -107,6 +110,7 @@
 
             <HBox spacing="10" alignment="CENTER">
                 <Button fx:id="startButton" text="Start Simulation" onAction="#onSimulationStartClicked"/>
+                <Button fx:id="saveConfigurationButton" text="Zapisz konfigurację" onAction="#onSaveConfigurationClicked"/>
             </HBox>
         </VBox>
         </GridPane>

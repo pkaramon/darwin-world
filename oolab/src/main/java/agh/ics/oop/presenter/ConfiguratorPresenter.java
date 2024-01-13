@@ -11,6 +11,7 @@ import agh.ics.oop.model.maps.GlobeMap;
 import agh.ics.oop.model.maps.GrassMapField;
 import agh.ics.oop.model.maps.MapField;
 import agh.ics.oop.model.maps.WorldMap;
+import agh.ics.oop.model.util.JsonUtil;
 import agh.ics.oop.simulations.Simulation;
 import agh.ics.oop.simulations.SimulationParameters;
 import javafx.fxml.FXML;
@@ -23,6 +24,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class ConfiguratorPresenter {
@@ -59,6 +61,9 @@ public class ConfiguratorPresenter {
     private ComboBox<String> plantGrowthVariantField;
     @FXML
     private ComboBox<String> mutationVariantField;
+    @FXML
+    private ComboBox<String> configurationsComboBox;
+
 
 
     @FXML
@@ -80,6 +85,12 @@ public class ConfiguratorPresenter {
         plantGrowthVariantField.setValue("Equatorial Forests");
         mutationVariantField.getItems().addAll("Full Randomness", "Small Correction");
         mutationVariantField.setValue("Full Randomness");
+        loadConfigurations();
+    }
+
+    private void loadConfigurations() {
+        // Tutaj logika ładowania nazw konfiguracji z pliku JSON
+        // Przykład: configurationsComboBox.getItems().addAll(loadedConfigurationNames);
     }
 
     private void setupSpinner(Spinner<Integer> spinner, int min, int max, int initialValue) {
@@ -104,7 +115,51 @@ public class ConfiguratorPresenter {
             }
         });
     }
+    @FXML
+    private void onSaveConfigurationClicked() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Zapisz konfigurację");
+        dialog.setHeaderText("Wprowadź nazwę konfiguracji");
+        dialog.setContentText("Nazwa:");
 
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(this::saveConfiguration);
+    }
+
+    private void saveConfiguration(String configurationName) {
+        SimulationParameters parameters = getCurrentSimulationParameters();
+        List<SimulationParameters> configurations = loadConfigurationNames();
+        configurations.add(parameters);
+        JsonUtil.serialize(configurations, "configurations.json");
+    }
+
+    private List<SimulationParameters> loadConfigurationNames() {
+        List<SimulationParameters> configurations = JsonUtil.deserialize("configurations.json");
+        configurationsComboBox.getItems().clear();
+        for (SimulationParameters config : configurations) {
+//            configurationsComboBox.getItems().add(config.getName());
+        }
+        return configurations;
+    }
+
+    private SimulationParameters getCurrentSimulationParameters() {
+        return new SimulationParameters(
+                maxWidthField.getValue(),
+                mapHeightField.getValue(),
+                initialPlantsField.getValue(),
+                grassEnergyProfitField.getValue(),
+                grassSpawnedDayField.getValue(),
+                plantGrowthVariantField.getValue(),
+                animalsSpawningStartField.getValue(),
+                animalStartEnergyField.getValue(),
+                minEnergyCopulationField.getValue(),
+                parentEnergyGivenToChildField.getValue(),
+                minMutationsField.getValue(),
+                maxMutationsField.getValue(),
+                mutationVariantField.getValue(),
+                genomeLengthField.getValue()
+        );
+    }
     @FXML
     private void onSimulationStartClicked() {
         SimulationParameters parameters = new SimulationParameters(
