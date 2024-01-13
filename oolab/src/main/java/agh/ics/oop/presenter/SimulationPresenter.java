@@ -8,15 +8,19 @@ import agh.ics.oop.simulations.Simulation;
 import agh.ics.oop.simulations.SimulationState;
 import agh.ics.oop.simulations.SimulationStatsCalculator;
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
@@ -48,14 +52,14 @@ public class SimulationPresenter {
     private Animal watchedAnimal = null;
     private SimulationState lastState = null;
     private SimulationCanvas simulationCanvas;
-    private Stage stage;
     private Genotype dominantGenotype;
     private StatisticsExporter statisticsExport;
+    private Stage stage;
 
 
     public void setStage(Stage stage) {
+        stage.setOnCloseRequest((e) -> terminate());
         this.stage = stage;
-        this.stage.setOnCloseRequest((e) -> shutDownAnimationAndSimulation());
     }
 
     @FXML
@@ -84,13 +88,30 @@ public class SimulationPresenter {
         int mapHeight = simulation.getWorldMap().getHeight();
         simulationCanvas = new SimulationCanvas(mapWidth, mapHeight);
         mapContainer.getChildren().add(simulationCanvas);
-        startAnimationLoop(simulationCanvas);
+        startAnimationLoop();
     }
 
-    public void shutDownAnimationAndSimulation() {
+    public void terminate() {
         if (animationTimer != null) {
             animationTimer.stop();
         }
+        if (statisticsExport != null) {
+            try {
+                statisticsExport.close();
+            } catch (IOException e) {
+                System.out.println("Error while closing statistics exporter");
+            }
+        }
+    }
+
+
+    private void onSimulationEnded() {
+        terminate();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setHeaderText("Simulation ended");
+        alert.setContentText("Simulation ended after " + lastState.currentDay() + " days");
+        alert.show();
+        alert.setOnCloseRequest(e -> stage.close());
     }
 
     @FXML
@@ -99,93 +120,101 @@ public class SimulationPresenter {
             animationTimer.stop();
             toggleAnimationButton.setText("Resume");
 
-            simulationCanvas.setOnMouseClicked(e -> {
-                leftInfoColumn.getChildren().remove(watchedAnimalPresenter.getNode());
-                Vector2d position = simulationCanvas.correspondingWorldMapPosition((int) e.getX(), (int) e.getY());
-                WorldMap map = simulation.getWorldMap();
-                List<Animal> animals = map.mapFieldAt(position).getOrderedAnimals();
-                if (!animals.isEmpty()) {
-                    watchedAnimal = animals.get(animals.size() - 1);
-
-                    leftInfoColumn.getChildren().add(0, watchedAnimalPresenter.getNode());
-                    watchedAnimalPresenter.updateWatchedAnimalInfo(watchedAnimal, lastState.currentDay());
-                } else {
-                    watchedAnimal = null;
-                }
-            });
-
-            preferredFieldsHighlightButton.setOnMouseClicked(e -> {
-                simulationCanvas.drawPreferredFields(lastState, simulation.getGrassGenerator());
-            });
-            mostPopularGenotypeHighlightButton.setOnMouseClicked(e -> {
-                simulationCanvas.drawDominantGenotypeAnimals(lastState, dominantGenotype);
-            });
-
+            simulationCanvas.setOnMouseClicked(this::canvasOnClickWhenPaused);
+            preferredFieldsHighlightButton.setOnMouseClicked(e -> simulationCanvas.drawPreferredFields(lastState, simulation.getGrassGenerator()));
+            mostPopularGenotypeHighlightButton.setOnMouseClicked(e -> simulationCanvas.drawDominantGenotypeAnimals(lastState, dominantGenotype));
         } else {
             animationTimer.start();
             toggleAnimationButton.setText("Pause");
             simulationCanvas.setOnMouseClicked(null);
-
             preferredFieldsHighlightButton.setOnMouseClicked(null);
-
         }
         isRunning.set(!isRunning.get());
     }
 
+    private void canvasOnClickWhenPaused(MouseEvent e) {
+        leftInfoColumn.getChildren().remove(watchedAnimalPresenter.getNode());
+        Vector2d position = simulationCanvas.correspondingWorldMapPosition((int) e.getX(), (int) e.getY());
+        WorldMap map = simulation.getWorldMap();
+        List<Animal> animals = map.mapFieldAt(position).getOrderedAnimals();
+        if (!animals.isEmpty()) {
+            watchedAnimal = animals.get(animals.size() - 1);
+            leftInfoColumn.getChildren().add(0, watchedAnimalPresenter.getNode());
+            watchedAnimalPresenter.updateWatchedAnimalInfo(watchedAnimal, lastState.currentDay());
+        } else {
+            watchedAnimal = null;
+        }
+    }
 
-    private void startAnimationLoop(SimulationCanvas simulationCanvas) {
+
+    private void startAnimationLoop() {
         animationTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                Instant start = Instant.now();
-                SimulationState state = simulation.run();
-                lastState = state;
-
-                Collection<Animal> allAnimals = Stream
-                        .concat(
-                                state.animalsOnMap().stream(),
-                                state.removedFromMapAnimals().stream()
-                        )
-                        .collect(Collectors.toList());
-
-                SimulationStatsCalculator statsCalculator = new SimulationStatsCalculator(
-                        state.currentDay(),
-                        allAnimals,
-                        state.map()
-                );
-
-                List<Genotype> dominantGenotypes = statsCalculator.getMostPopularGenotypes(3);
-                Genotype dominant = dominantGenotypes.isEmpty() ? new Genotype(List.of()) : dominantGenotypes.get(0);
-
-                dominantGenotype = dominant;
-                simulationCanvas.draw(state, dominant, watchedAnimal);
-                simulationChartsPresenter.updateCharts(state, statsCalculator);
-                watchedAnimalPresenter.updateWatchedAnimalInfo(watchedAnimal, state.currentDay());
-                mostPopularGenotypesPresenter.update(dominantGenotypes);
-
-
-                SimulationStats stats = new SimulationStats(
-                        state.currentDay(),
-                        statsCalculator.getNumberOfAnimalsAlive(),
-                        statsCalculator.getNumberOfFreeFields(),
-                        dominant.getGenes(),
-                        statsCalculator.getAverageEnergy(),
-                        statsCalculator.getAverageLifetimeForDeadAnimals(),
-                        statsCalculator.getAverageNumberOfChildren()
-                );
-                statisticsExport.export(stats);
-
-                Instant end = Instant.now();
-                if (end.toEpochMilli() - start.toEpochMilli() < 1000 / 24) {
-                    try {
-                        Thread.sleep(1000 / 24 - (end.toEpochMilli() - start.toEpochMilli()));
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+                tryToKeepFrameRate(SimulationPresenter.this::animationIteration);
             }
         };
         animationTimer.start();
+    }
+
+
+
+    public void animationIteration() {
+        SimulationState state = simulation.run();
+        lastState = state;
+
+        if(!state.isRunning()) {
+            onSimulationEnded();
+            return;
+        }
+
+        Collection<Animal> allAnimals = Stream
+                .concat( state.animalsOnMap().stream(), state.removedFromMapAnimals().stream())
+                .collect(Collectors.toList());
+
+        SimulationStatsCalculator statsCalculator = new SimulationStatsCalculator(
+                state.currentDay(),
+                allAnimals,
+                state.map()
+        );
+        List<Genotype> dominantGenotypes = statsCalculator.getMostPopularGenotypes(3);
+        Genotype dominant = dominantGenotypes.isEmpty() ? new Genotype(List.of()) : dominantGenotypes.get(0);
+
+        dominantGenotype = dominant;
+        simulationCanvas.draw(state, dominant, watchedAnimal);
+        simulationChartsPresenter.updateCharts(state, statsCalculator);
+        watchedAnimalPresenter.updateWatchedAnimalInfo(watchedAnimal, state.currentDay());
+        mostPopularGenotypesPresenter.update(dominantGenotypes);
+
+
+        exportStatistics(state, statsCalculator, dominant);
+    }
+
+
+    private void exportStatistics(SimulationState state, SimulationStatsCalculator statsCalculator, Genotype dominant) {
+        SimulationStats stats = new SimulationStats(
+                state.currentDay(),
+                statsCalculator.getNumberOfAnimalsAlive(),
+                statsCalculator.getNumberOfFreeFields(),
+                dominant.getGenes(),
+                statsCalculator.getAverageEnergy(),
+                statsCalculator.getAverageLifetimeForDeadAnimals(),
+                statsCalculator.getAverageNumberOfChildren()
+        );
+        statisticsExport.export(stats);
+    }
+
+
+    private void tryToKeepFrameRate(Runnable runnable) {
+        int desiredFrameDurationMS = 1000 / 24;
+        Instant now = Instant.now();
+        Platform.runLater(runnable);
+        Instant after = Instant.now();
+        if (after.toEpochMilli() - now.toEpochMilli() < desiredFrameDurationMS) {
+            try {
+                Thread.sleep(desiredFrameDurationMS - (after.toEpochMilli() - now.toEpochMilli()));
+            } catch (InterruptedException ignored) {}
+        }
     }
 
 }
