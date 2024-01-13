@@ -32,7 +32,9 @@ class SimulationTest {
                                         poses.get(i),
                                         genotypes.get(i),
                                         energies.get(i)
-                                ), feeder, mover, crosser
+                                ),
+                                feeder, mover, crosser,
+                                new AnimalComparator(()-> 1)
                         )
                 ).toList()
         );
@@ -168,7 +170,6 @@ class SimulationTest {
         when(grassGenerator.generateInitialGrass()).thenReturn(
                 List.of(new Grass(new Vector2d(2, 2), 10))
         );
-        //noinspection unchecked
         when(grassGenerator.generateGrassForDay()).thenReturn(
                 List.of(new Grass(new Vector2d(3, 3), 20)),
                 List.of()

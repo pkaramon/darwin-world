@@ -1,86 +1,144 @@
 package agh.ics.oop.presenter;
 
+import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.animals.Animal;
+import agh.ics.oop.model.maps.WorldMap;
+import agh.ics.oop.simulations.Simulation;
+import agh.ics.oop.simulations.SimulationState;
+import agh.ics.oop.simulations.SimulationStatsCalculator;
+import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class SimulationPresenter {
-    @FXML
-    public Label moveInfoLabel;
-    @FXML
-    public Button startButton;
-    @FXML
-    public GridPane mapGrid;
-    @FXML
-    private Spinner<Integer> mapHeightField;
-    @FXML
-    private Spinner<Integer> maxWidthField;
-    @FXML
-    private Spinner<Integer> jungleWidthField;
-    @FXML
-    private Spinner<Integer> jungleHeightField;
-    @FXML
-    private Spinner<Integer> grassEnergyProfitField;
-    @FXML
-    private Spinner<Integer> minEnergyCopulationField;
-    @FXML
-    private Spinner<Integer> animalStartEnergyField;
-    @FXML
-    private Spinner<Integer> dailyEnergyCostField;
-    @FXML
-    private Spinner<Integer> animalsSpawningStartField;
-    @FXML
-    private Spinner<Integer> grassSpawnedDayField;
-    @FXML
-    private Spinner<Integer> realRefreshTimeField;
 
+    StatsChart animalCountChart = new StatsChart("Animal Count", "#ff0000");
+    StatsChart grassCountChart = new StatsChart("Grass Count", "#00ff00");
+    StatsChart averageEnergyChart = new StatsChart("Average Energy", "#0000ff");
+    StatsChart averageLifeLengthChart = new StatsChart("Average Life Length", "#ff00ff");
+    StatsChart averageChildrenCountChart = new StatsChart("Average Children Count", "#00ffff");
+    @FXML
+    private Label watchedAnimalLabel;
+    @FXML
+    private VBox leftColumn;
+    @FXML
+    private VBox rightChartColumn;
+    @FXML
+    private StackPane mapContainer;
+    @FXML
+    private Button toggleAnimationButton;
+    private AnimationTimer animationTimer;
+    private boolean isAnimationRunning = true;
+    private Simulation simulation;
+    private SimulationCanvas simulationCanvas;
+    private Animal watchedAnimal = null;
+    private SimulationState lastState = null;
 
     @FXML
     public void initialize() {
-        setupSpinner(mapHeightField, 1, 1000, 1);
-        setupSpinner(maxWidthField, 1, 1000, 1);
-        setupSpinner(jungleWidthField, 1, 1000, 1);
-        setupSpinner(jungleHeightField, 1, 1000, 1);
-        setupSpinner(grassEnergyProfitField, 1, 1000, 1);
-        setupSpinner(minEnergyCopulationField, 1, 1000, 1);
-        setupSpinner(animalStartEnergyField, 1, 1000, 1);
-        setupSpinner(dailyEnergyCostField, 1, 1000, 1);
-        setupSpinner(animalsSpawningStartField, 1, 1000, 1);
-        setupSpinner(grassSpawnedDayField, 1, 1000, 1);
-        setupSpinner(realRefreshTimeField, 1, 1000, 1);
+        leftColumn.getChildren().addAll(
+                animalCountChart.getNode(),
+                grassCountChart.getNode(),
+                averageEnergyChart.getNode()
+        );
+        rightChartColumn.getChildren().addAll(
+                averageLifeLengthChart.getNode(),
+                averageChildrenCountChart.getNode()
+        );
     }
 
-    private void setupSpinner(Spinner<Integer> spinner, int min, int max, int initialValue) {
-        spinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(min, max, initialValue));
-        spinner.setEditable(true);
-
-        spinner.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*") && !newValue.isEmpty()) {
-                spinner.getEditor().setText(oldValue);
-            }
-        });
-
-        spinner.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) {
-                try {
-                    Integer value = Integer.parseInt(spinner.getEditor().getText());
-                    spinner.getValueFactory().setValue(value);
-                } catch (NumberFormatException e) {
-                    spinner.getEditor().setText(String.valueOf(initialValue));
-                    spinner.getValueFactory().setValue(initialValue);
-                }
-            }
-        });
+    public void initializeSimulation(Simulation simulation) {
+        this.simulation = simulation;
+        setupSimulationCanvas();
     }
 
     @FXML
-    private void onSimulationStartClicked() {
-        startSimulation();
+    private void toggleAnimation() {
+        if (isAnimationRunning) {
+            animationTimer.stop();
+            toggleAnimationButton.setText("Resume");
+
+
+            simulationCanvas.setOnMouseClicked(e -> {
+                Vector2d position = simulationCanvas.correspondingWorldMapPosition((int) e.getX(), (int) e.getY());
+                WorldMap map = simulation.getWorldMap();
+                List<Animal> animals = map.mapFieldAt(position).getOrderedAnimals();
+                if (!animals.isEmpty()) {
+                    watchedAnimal = animals.get(animals.size() - 1);
+                }
+            });
+            simulationCanvas.drawWhenPaused(lastState, simulation.getGrassGenerator());
+        } else {
+            animationTimer.start();
+            toggleAnimationButton.setText("Pause");
+            simulationCanvas.setOnMouseClicked(null);
+        }
+        isAnimationRunning = !isAnimationRunning;
     }
 
-    private void startSimulation() {
+    private void setupSimulationCanvas() {
+        int mapWidth = simulation.getWorldMap().getWidth();
+        int mapHeight = simulation.getWorldMap().getHeight();
+        simulationCanvas = new SimulationCanvas(mapWidth, mapHeight);
+
+
+        mapContainer.getChildren().add(simulationCanvas);
+        startAnimationLoop(simulationCanvas);
     }
 
+    private void startAnimationLoop(SimulationCanvas simulationCanvas) {
+        animationTimer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                SimulationState state = simulation.run();
+                simulationCanvas.drawWhenRunning(state);
+                lastState = state;
+
+                Collection<Animal> allAnimals = Stream
+                        .concat(
+                            state.animalsOnMap().stream(),
+                            state.removedFromMapAnimals().stream()
+                        )
+                        .collect(Collectors.toList());
+
+                SimulationStatsCalculator statsCalculator = new SimulationStatsCalculator(
+                        state.currentDay(),
+                        allAnimals,
+                        state.map()
+                );
+                updateCharts(state, statsCalculator);
+                updateWatchedAnimalLabel();
+            }
+        };
+        animationTimer.start();
+    }
+
+    private void updateWatchedAnimalLabel() {
+        if (watchedAnimal == null) {
+            watchedAnimalLabel.setText("");
+        } else {
+            watchedAnimalLabel.setText("Watched animal: " + watchedAnimal + "\n" +
+                    "Genotype: " + watchedAnimal.getGenotype().toString() + "\n" +
+                    "Energy: " + watchedAnimal.getEnergy() + "\n" +
+                    "Birth day: " + watchedAnimal.getBirthDay() + "\n" +
+                    "Death day: " + watchedAnimal.getDeathDay() + "\n");
+        }
+    }
+
+
+    public void updateCharts(SimulationState state, SimulationStatsCalculator statsCalculator) {
+        int currentDay = state.currentDay();
+        animalCountChart.update(statsCalculator.getNumberOfAnimalsAlive(), currentDay);
+        grassCountChart.update(statsCalculator.getNumberOfGrassOnMap(), currentDay);
+        averageEnergyChart.update(statsCalculator.getAverageEnergy(), currentDay);
+        averageLifeLengthChart.update(statsCalculator.getAverageLifetimeForDeadAnimals(), currentDay);
+    }
 }
-

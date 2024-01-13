@@ -8,8 +8,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
 
 class AnimalComparatorTest {
     private AnimalData createAnimalData(int energy, int bornDay) {
@@ -25,7 +27,7 @@ class AnimalComparatorTest {
 
     @BeforeEach
     void setUp() {
-        comparator = new AnimalComparator();
+        comparator = new AnimalComparator(()-> 1);
     }
 
     @Test
@@ -53,6 +55,18 @@ class AnimalComparatorTest {
 
         assertTrue(comparator.compare(a, b) < 0);
         assertTrue(comparator.compare(b, a) > 0);
+    }
+
+    @Test
+    void inCaseOfADrawItSelectsUsingPassedFunction() {
+        Supplier<Integer> inCaseOfDraw = mock(Supplier.class);
+        when(inCaseOfDraw.get()).thenReturn(1);
+        AnimalComparator comparator = new AnimalComparator(inCaseOfDraw);
+        AnimalData a = createAnimalData(10, 0);
+        AnimalData b = createAnimalData(10, 0);
+
+        assertTrue(comparator.compare(a, b) > 0);
+        verify(inCaseOfDraw).get();
     }
 
 }

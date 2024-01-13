@@ -54,7 +54,7 @@ class EquatorGrassGeneratorTest {
 
         List<Grass> grass = generator.generateInitialGrass();
 
-        assertEquals(8, grass.stream().filter(g -> g.getPosition().getY() == 2).toList().size());
+        assertEquals(8, grass.stream().filter(g -> g.getPosition().y() == 2).toList().size());
     }
 
 }

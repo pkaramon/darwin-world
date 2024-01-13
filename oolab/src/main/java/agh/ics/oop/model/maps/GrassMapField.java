@@ -4,9 +4,7 @@ import agh.ics.oop.model.Grass;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.animals.Animal;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class GrassMapField implements MapField {
     private final Vector2d position;
@@ -50,7 +48,14 @@ public class GrassMapField implements MapField {
 
     @Override
     public List<Animal> getOrderedAnimals() {
-        return animals.stream().sorted(Animal::compareTo).toList();
+        if(animals.size() <= 1) return animals;
+        animals.sort(Animal::compareTo);
+        return animals;
+    }
+
+    @Override
+    public int amountOfAnimals() {
+        return animals.size();
     }
 
 }
