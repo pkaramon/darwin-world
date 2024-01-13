@@ -50,6 +50,7 @@ public class SimulationPresenter {
     private SimulationCanvas simulationCanvas;
     private Stage stage;
     private Genotype dominantGenotype;
+    private StatisticsExporter statisticsExport;
 
 
     public void setStage(Stage stage) {
@@ -72,6 +73,10 @@ public class SimulationPresenter {
     public void setSimulation(Simulation simulation) {
         this.simulation = simulation;
         setupSimulationCanvas();
+    }
+
+    public void setStatisticsExporter(StatisticsExporter statisticsExporter) {
+        this.statisticsExport = statisticsExporter;
     }
 
     private void setupSimulationCanvas() {
@@ -157,6 +162,18 @@ public class SimulationPresenter {
                 simulationChartsPresenter.updateCharts(state, statsCalculator);
                 watchedAnimalPresenter.updateWatchedAnimalInfo(watchedAnimal, state.currentDay());
                 mostPopularGenotypesPresenter.update(dominantGenotypes);
+
+
+                SimulationStats stats = new SimulationStats(
+                        state.currentDay(),
+                        statsCalculator.getNumberOfAnimalsAlive(),
+                        statsCalculator.getNumberOfFreeFields(),
+                        dominant.getGenes(),
+                        statsCalculator.getAverageEnergy(),
+                        statsCalculator.getAverageLifetimeForDeadAnimals(),
+                        statsCalculator.getAverageNumberOfChildren()
+                );
+                statisticsExport.export(stats);
 
                 Instant end = Instant.now();
                 if (end.toEpochMilli() - start.toEpochMilli() < 1000 / 24) {

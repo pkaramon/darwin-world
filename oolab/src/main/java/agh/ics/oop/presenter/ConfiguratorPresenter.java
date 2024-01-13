@@ -249,6 +249,7 @@ public class ConfiguratorPresenter {
 
             simulationPresenter.setSimulation(simulation);
             simulationPresenter.setStage(stage);
+            simulationPresenter.setStatisticsExporter(new CSVStatisticsExporter("simulation.csv"));
 
             stage.show();
 
