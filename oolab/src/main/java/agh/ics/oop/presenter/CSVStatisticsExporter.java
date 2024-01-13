@@ -44,7 +44,5 @@ public class CSVStatisticsExporter implements StatisticsExporter {
     }
 
     @Override
-    public void close() throws IOException {
-
-    }
+    public void close() {}
 }
