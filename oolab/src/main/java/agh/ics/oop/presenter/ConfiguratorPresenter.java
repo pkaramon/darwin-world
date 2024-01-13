@@ -69,6 +69,7 @@ public class ConfiguratorPresenter {
 
     @FXML
     public void initialize() {
+        configurationsComboBox.setValue("Default");
         setupSpinner(mapHeightField, 1, 1000, 50);
         setupSpinner(maxWidthField, 1, 1000, 50);
         setupSpinner(grassEnergyProfitField, 1, 1000, 20);
@@ -132,7 +133,6 @@ public class ConfiguratorPresenter {
     private void saveConfiguration(String configurationName) {
         List<SimulationConfiguration> configurations = loadConfigurationNames();
 
-        // Sprawdź, czy konfiguracja o tej samej nazwie już istnieje
         for (SimulationConfiguration config : configurations) {
             if (config.getName().equals(configurationName)) {
                 showAlert("Błąd zapisu", "Konfiguracja o nazwie '" + configurationName + "' już istnieje.");
