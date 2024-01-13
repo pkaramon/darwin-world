@@ -10,7 +10,6 @@
             minHeight="400.0" minWidth="400.0"
             fx:controller="agh.ics.oop.presenter.ConfiguratorPresenter">
     <center>
-        <GridPane fx:id="mapGrid">
         <VBox spacing="10" alignment="TOP_CENTER">
             <padding>
                 <Insets top="20" right="50" bottom="30" left="50"/>
@@ -113,6 +112,5 @@
                 <Button text="Save configuration" onAction="#onSaveConfigurationClicked"/>
             </HBox>
         </VBox>
-        </GridPane>
     </center>
 </BorderPane>

@@ -70,11 +70,19 @@ public class Animal implements WorldElement, Comparable<Animal> {
         return data.getDescendantsCount();
     }
 
+    public int getChildrenCount() {
+        return data.getChildren().size();
+    }
+
     public Genotype getGenotype() {
         return this.data.getGenotype();
     }
 
     public MapDirection getOrientation() {
         return this.data.getOrientation();
+    }
+
+    public int getPlantsEaten() {
+        return this.data.getPlantsEaten();
     }
 }

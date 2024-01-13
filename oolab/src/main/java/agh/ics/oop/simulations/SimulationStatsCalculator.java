@@ -10,12 +10,15 @@ import java.util.*;
 
 
 public class SimulationStatsCalculator {
+
+
     record AnimalStatsInfo(
             boolean isDead,
             int deathDay,
             int birthDay,
             int energy,
-            Genotype genotype) {}
+            Genotype genotype,
+            int numberOfChildren) {}
 
     record MapFieldStatsInfo(int numberOfAnimals, boolean isGrassed) {}
 
@@ -42,14 +45,24 @@ public class SimulationStatsCalculator {
         );
     }
 
+
+    public double getAverageNumberOfChildren() {
+        return aliveAnimalStats
+                .stream()
+                .map(AnimalStatsInfo::numberOfChildren)
+                .mapToInt(Integer::intValue)
+                .average()
+                .orElse(0);
+    }
+
     private static List<AnimalStatsInfo> getAllAnimalsStats(Collection<Animal> allAnimals) {
         return allAnimals.stream().map(a -> new AnimalStatsInfo(
                 a.isDead(),
                 a.getDeathDay(),
                 a.getBirthDay(),
                 a.getEnergy(),
-                a.getGenotype()
-        )).toList();
+                a.getGenotype(),
+                a.getChildrenCount())).toList();
     }
 
     private static MapFieldStatsInfo[][] getMapFieldStatsInfos(WorldMap map) {
@@ -70,7 +83,7 @@ public class SimulationStatsCalculator {
                 .filter(a -> !a.isDead())
                 .mapToInt(AnimalStatsInfo::energy)
                 .average()
-                .orElse(-1);
+                .orElse(0);
     }
 
     public int getNumberOfAnimalsAlive() {
@@ -94,7 +107,7 @@ public class SimulationStatsCalculator {
                 .stream()
                 .mapToInt(a -> a.deathDay() - a.birthDay())
                 .average()
-                .orElse(-1);
+                .orElse(0);
     }
 
     public Optional<Genotype> getDominantGenotype() {
@@ -114,6 +127,22 @@ public class SimulationStatsCalculator {
                 .map(Map.Entry::getKey);
     }
 
+    public List<Genotype> getMostPopularGenotypes(int amount) {
+        Map<Genotype, Integer> counter = new HashMap<>();
+
+        aliveAnimalStats
+                .stream()
+                .map(AnimalStatsInfo::genotype)
+                .forEach(g ->
+                        counter.put(g, counter.getOrDefault(g, 0) + 1)
+                );
+        return counter.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .limit(amount)
+                .map(Map.Entry::getKey)
+                .toList();
+    }
     public int getNumberOfGrassOnMap() {
         return Arrays.stream(fieldsStats)
                 .flatMap(Arrays::stream)
@@ -129,6 +158,4 @@ public class SimulationStatsCalculator {
                 .mapToInt(f -> !f.isGrassed() && f.numberOfAnimals() == 0 ? 1 : 0)
                 .sum();
     }
-
-
 }

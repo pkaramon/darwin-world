@@ -11,19 +11,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 public class ConfiguratorPresenter {
-    @FXML
-    public Button startButton;
-    @FXML
-    public GridPane mapGrid;
     @FXML
     private Spinner<Integer> mapHeightField;
     @FXML
@@ -246,18 +242,22 @@ public class ConfiguratorPresenter {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/simulationMap.fxml"));
             StackPane root = loader.load();
             SimulationPresenter simulationPresenter = loader.getController();
-            simulationPresenter.initializeSimulation(simulation);
 
             Stage stage = new Stage();
             stage.setTitle("Simulation Map");
             stage.setScene(new Scene(root, 1280, 720));
+
+            simulationPresenter.setSimulation(simulation);
+            simulationPresenter.setStage(stage);
+
             stage.show();
+
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-
             alert.setHeaderText("Error while loading simulation map");
-            alert.setContentText("Display for map could not be loaded. Please try again.");
+            alert.setContentText("Display for map could not be loaded. Please try again." + Arrays.toString(e.getStackTrace()));
             alert.show();
+            throw new IllegalArgumentException(e) ;
         }
     }
 }
