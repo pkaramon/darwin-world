@@ -13,6 +13,7 @@ import agh.ics.oop.model.maps.MapField;
 import agh.ics.oop.model.maps.WorldMap;
 import agh.ics.oop.model.util.JsonUtil;
 import agh.ics.oop.simulations.Simulation;
+import agh.ics.oop.simulations.SimulationConfiguration;
 import agh.ics.oop.simulations.SimulationParameters;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -128,16 +129,18 @@ public class ConfiguratorPresenter {
 
     private void saveConfiguration(String configurationName) {
         SimulationParameters parameters = getCurrentSimulationParameters();
-        List<SimulationParameters> configurations = loadConfigurationNames();
-        configurations.add(parameters);
+        SimulationConfiguration simConfig = new SimulationConfiguration(configurationName, parameters);
+
+        List<SimulationConfiguration> configurations = loadConfigurationNames();
+        configurations.add(simConfig);
         JsonUtil.serialize(configurations, "configurations.json");
     }
 
-    private List<SimulationParameters> loadConfigurationNames() {
-        List<SimulationParameters> configurations = JsonUtil.deserialize("configurations.json");
+    private List<SimulationConfiguration> loadConfigurationNames() {
+        List<SimulationConfiguration> configurations = JsonUtil.deserialize("configurations.json");
         configurationsComboBox.getItems().clear();
-        for (SimulationParameters config : configurations) {
-//            configurationsComboBox.getItems().add(config.getName());
+        for (SimulationConfiguration config : configurations) {
+            configurationsComboBox.getItems().add(config.getName());
         }
         return configurations;
     }
