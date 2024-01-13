@@ -1,5 +1,23 @@
 [ {
-  "name" : "test1",
+  "name" : "222",
+  "parameters" : {
+    "mapWidth" : 50,
+    "mapHeight" : 50,
+    "initialNumberOfPlants" : 5,
+    "plantEnergy" : 20,
+    "plantsPerDay" : 20,
+    "plantGrowthVariant" : "Equatorial Forests",
+    "initialNumberOfAnimals" : 20,
+    "animalStartEnergy" : 100,
+    "energyToReproduce" : 30,
+    "parentEnergyGivenToChild" : 10,
+    "minMutations" : 5,
+    "maxMutations" : 5,
+    "mutationVariant" : "Full Randomness",
+    "genomeLength" : 20
+  }
+}, {
+  "name" : "22",
   "parameters" : {
     "mapWidth" : 50,
     "mapHeight" : 50,
@@ -12,6 +30,132 @@
     "energyToReproduce" : 30,
     "parentEnergyGivenToChild" : 10,
     "minMutations" : 1,
+    "maxMutations" : 5,
+    "mutationVariant" : "Full Randomness",
+    "genomeLength" : 20
+  }
+}, {
+  "name" : "456356",
+  "parameters" : {
+    "mapWidth" : 50,
+    "mapHeight" : 50,
+    "initialNumberOfPlants" : 5,
+    "plantEnergy" : 20,
+    "plantsPerDay" : 20,
+    "plantGrowthVariant" : "Equatorial Forests",
+    "initialNumberOfAnimals" : 20,
+    "animalStartEnergy" : 100,
+    "energyToReproduce" : 30,
+    "parentEnergyGivenToChild" : 13,
+    "minMutations" : 1,
+    "maxMutations" : 5,
+    "mutationVariant" : "Full Randomness",
+    "genomeLength" : 20
+  }
+}, {
+  "name" : "test1",
+  "parameters" : {
+    "mapWidth" : 50,
+    "mapHeight" : 50,
+    "initialNumberOfPlants" : 5,
+    "plantEnergy" : 20,
+    "plantsPerDay" : 20,
+    "plantGrowthVariant" : "Equatorial Forests",
+    "initialNumberOfAnimals" : 24,
+    "animalStartEnergy" : 100,
+    "energyToReproduce" : 30,
+    "parentEnergyGivenToChild" : 13,
+    "minMutations" : 1,
+    "maxMutations" : 5,
+    "mutationVariant" : "Full Randomness",
+    "genomeLength" : 20
+  }
+}, {
+  "name" : "test2",
+  "parameters" : {
+    "mapWidth" : 53,
+    "mapHeight" : 53,
+    "initialNumberOfPlants" : 5,
+    "plantEnergy" : 20,
+    "plantsPerDay" : 20,
+    "plantGrowthVariant" : "Equatorial Forests",
+    "initialNumberOfAnimals" : 24,
+    "animalStartEnergy" : 100,
+    "energyToReproduce" : 30,
+    "parentEnergyGivenToChild" : 13,
+    "minMutations" : 1,
+    "maxMutations" : 5,
+    "mutationVariant" : "Full Randomness",
+    "genomeLength" : 20
+  }
+}, {
+  "name" : "test 3",
+  "parameters" : {
+    "mapWidth" : 53,
+    "mapHeight" : 53,
+    "initialNumberOfPlants" : 5,
+    "plantEnergy" : 20,
+    "plantsPerDay" : 20,
+    "plantGrowthVariant" : "Life-giving Carcasses",
+    "initialNumberOfAnimals" : 24,
+    "animalStartEnergy" : 100,
+    "energyToReproduce" : 30,
+    "parentEnergyGivenToChild" : 14,
+    "minMutations" : 1,
+    "maxMutations" : 5,
+    "mutationVariant" : "Small Correction",
+    "genomeLength" : 20
+  }
+}, {
+  "name" : "tt",
+  "parameters" : {
+    "mapWidth" : 53,
+    "mapHeight" : 53,
+    "initialNumberOfPlants" : 5,
+    "plantEnergy" : 20,
+    "plantsPerDay" : 20,
+    "plantGrowthVariant" : "Life-giving Carcasses",
+    "initialNumberOfAnimals" : 24,
+    "animalStartEnergy" : 100,
+    "energyToReproduce" : 30,
+    "parentEnergyGivenToChild" : 14,
+    "minMutations" : 1,
+    "maxMutations" : 5,
+    "mutationVariant" : "Small Correction",
+    "genomeLength" : 20
+  }
+}, {
+  "name" : "ff",
+  "parameters" : {
+    "mapWidth" : 50,
+    "mapHeight" : 50,
+    "initialNumberOfPlants" : 5,
+    "plantEnergy" : 20,
+    "plantsPerDay" : 20,
+    "plantGrowthVariant" : "Life-giving Carcasses",
+    "initialNumberOfAnimals" : 20,
+    "animalStartEnergy" : 100,
+    "energyToReproduce" : 30,
+    "parentEnergyGivenToChild" : 13,
+    "minMutations" : 1,
+    "maxMutations" : 5,
+    "mutationVariant" : "Small Correction",
+    "genomeLength" : 20
+  }
+}, {
+  "name" : "212",
+  "parameters" : {
+    "mapWidth" : 50,
+    "mapHeight" : 50,
+    "initialNumberOfPlants" : 5,
+    "plantEnergy" : 20,
+    "plantsPerDay" : 20,
+    "plantGrowthVariant" : "Equatorial Forests",
+    "initialNumberOfAnimals" : 20,
+    "animalStartEnergy" : 100,
+    "energyToReproduce" : 30,
+    "parentEnergyGivenToChild" : 10,
+    "minMutations" : 5,
     "maxMutations" : 5,
     "mutationVariant" : "Full Randomness",
     "genomeLength" : 20

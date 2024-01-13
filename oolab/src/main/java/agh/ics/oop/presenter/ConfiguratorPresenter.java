@@ -86,6 +86,13 @@ public class ConfiguratorPresenter {
         plantGrowthVariantField.setValue("Equatorial Forests");
         mutationVariantField.getItems().addAll("Full Randomness", "Small Correction");
         mutationVariantField.setValue("Full Randomness");
+
+        configurationsComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                loadConfiguration(newValue);
+            }
+        });
+
         loadConfigurationNames();
     }
 
@@ -211,6 +218,39 @@ public class ConfiguratorPresenter {
         alert.setContentText(content);
         alert.showAndWait();
     }
+
+    private void updateUIWithParameters(SimulationParameters parameters) {
+        if (parameters == null) return;
+
+        updateSpinnerValue(mapHeightField, parameters.mapHeight());
+        updateSpinnerValue(maxWidthField, parameters.mapWidth());
+        updateSpinnerValue(grassEnergyProfitField, parameters.plantEnergy());
+        updateSpinnerValue(minEnergyCopulationField, parameters.energyToReproduce());
+        updateSpinnerValue(animalStartEnergyField, parameters.animalStartEnergy());
+        updateSpinnerValue(animalsSpawningStartField, parameters.initialNumberOfAnimals());
+        updateSpinnerValue(grassSpawnedDayField, parameters.plantsPerDay());
+        updateSpinnerValue(initialPlantsField, parameters.initialNumberOfPlants());
+        updateSpinnerValue(parentEnergyGivenToChildField, parameters.parentEnergyGivenToChild());
+        updateSpinnerValue(minMutationsField, parameters.minMutations());
+        updateSpinnerValue(maxMutationsField, parameters.maxMutations());
+        updateSpinnerValue(genomeLengthField, parameters.genomeLength());
+    }
+
+    private void updateSpinnerValue(Spinner<Integer> spinner, int value) {
+        spinner.getValueFactory().setValue(value);
+    }
+
+
+    private void loadConfiguration(String configurationName) {
+        List<SimulationConfiguration> configurations = loadConfigurationNames();
+        for (SimulationConfiguration config : configurations) {
+            if (config.getName().equals(configurationName)) {
+                updateUIWithParameters(config.getParameters());
+                break;
+            }
+        }
+    }
+
 
     public void initializeSimulationWithParameters(SimulationParameters parameters) {
         Simulation simulation = new Simulation();

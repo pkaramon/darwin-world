@@ -1,10 +1,18 @@
 package agh.ics.oop.simulations;
 
-public class SimulationConfiguration {
-    private final String name;
-    private final SimulationParameters parameters;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    public SimulationConfiguration(String name, SimulationParameters parameters) {
+public class SimulationConfiguration {
+    private String name;
+    private SimulationParameters parameters;
+
+    public SimulationConfiguration() {
+    }
+
+    @JsonCreator
+    public SimulationConfiguration(@JsonProperty("name") String name,
+                                   @JsonProperty("parameters") SimulationParameters parameters) {
         this.name = name;
         this.parameters = parameters;
     }
@@ -13,7 +21,15 @@ public class SimulationConfiguration {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public SimulationParameters getParameters() {
         return parameters;
+    }
+
+    public void setParameters(SimulationParameters parameters) {
+        this.parameters = parameters;
     }
 }

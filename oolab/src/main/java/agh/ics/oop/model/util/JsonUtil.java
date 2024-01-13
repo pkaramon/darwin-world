@@ -25,13 +25,18 @@ public class JsonUtil {
 
     public static List<SimulationConfiguration> deserialize(String fileName) {
         try {
+            System.out.println("Deserializing configurations from " + fileName);
             TypeFactory typeFactory = objectMapper.getTypeFactory();
             CollectionType collectionType = typeFactory.constructCollectionType(ArrayList.class, SimulationConfiguration.class);
 
-            return objectMapper.readValue(new File(fileName), collectionType);
+            List<SimulationConfiguration> configurations = objectMapper.readValue(new File(fileName), collectionType);
+            System.out.println("Deserialization successful. Loaded " + configurations.size() + " configurations.");
+            return configurations;
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println("Deserialization failed.");
             return new ArrayList<>();
         }
     }
+
 }
