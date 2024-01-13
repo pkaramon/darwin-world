@@ -23,7 +23,7 @@ public class DeadAnimalsGrassGenerator extends AbstractGrassGenerator implements
     }
 
     @Override
-    protected boolean isPreferredPosition(Vector2d position) {
+    public boolean isPreferredPosition(Vector2d position) {
         int deathDay =  positionToMostRecentDeathDay.getOrDefault(position, -ANIMAL_BODY_DECOMPOSITION_DAYS -1);
         return getCurrentDay.get() - deathDay <= ANIMAL_BODY_DECOMPOSITION_DAYS;
     }

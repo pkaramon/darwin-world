@@ -40,6 +40,7 @@ public class SimulationPresenter {
     private Simulation simulation;
     private SimulationCanvas simulationCanvas;
     private Animal watchedAnimal = null;
+    private SimulationState lastState = null;
 
     @FXML
     public void initialize() {
@@ -55,9 +56,6 @@ public class SimulationPresenter {
     }
 
     public void initializeSimulation(Simulation simulation) {
-        if (simulation == null) {
-            throw new IllegalStateException("Symulacja nie została zainicjalizowana.");
-        }
         this.simulation = simulation;
         setupSimulationCanvas();
     }
@@ -68,6 +66,7 @@ public class SimulationPresenter {
             animationTimer.stop();
             toggleAnimationButton.setText("Resume");
 
+
             simulationCanvas.setOnMouseClicked(e -> {
                 Vector2d position = simulationCanvas.correspondingWorldMapPosition((int) e.getX(), (int) e.getY());
                 WorldMap map = simulation.getWorldMap();
@@ -76,6 +75,7 @@ public class SimulationPresenter {
                     watchedAnimal = animals.get(animals.size() - 1);
                 }
             });
+            simulationCanvas.drawWhenPaused(lastState, simulation.getGrassGenerator());
         } else {
             animationTimer.start();
             toggleAnimationButton.setText("Pause");
@@ -99,7 +99,8 @@ public class SimulationPresenter {
             @Override
             public void handle(long now) {
                 SimulationState state = simulation.run();
-                simulationCanvas.updateAndDraw(state);
+                simulationCanvas.drawWhenRunning(state);
+                lastState = state;
 
                 Collection<Animal> allAnimals = Stream
                         .concat(

@@ -82,9 +82,6 @@ public abstract class AbstractGrassGenerator implements GrassGenerator {
     }
 
 
-
-    abstract protected boolean isPreferredPosition(Vector2d position);
-
     private GrassPositions getGrassPositions() {
         List<Vector2d> normal = new ArrayList<>();
         List<Vector2d> preferred = new ArrayList<>();

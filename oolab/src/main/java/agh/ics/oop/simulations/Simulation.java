@@ -41,6 +41,10 @@ public class Simulation {
         return this.map;
     }
 
+    public GrassGenerator getGrassGenerator() {
+        return grassGenerator;
+    }
+
     public void setWorldMap(WorldMap map) {
         this.map = map;
     }

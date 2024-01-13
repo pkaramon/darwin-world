@@ -23,7 +23,7 @@ public class EquatorGrassGenerator extends AbstractGrassGenerator {
     }
 
     @Override
-    protected boolean isPreferredPosition(Vector2d position) {
+    public boolean isPreferredPosition(Vector2d position) {
         boolean isOnEquator = position.y()>= yEquatorStart && position.y() <= yEquatorEnd;
         boolean isNotGrassed = !worldMap.mapFieldAt(position).isGrassed();
         return isOnEquator && isNotGrassed;
