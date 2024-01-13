@@ -129,7 +129,9 @@ public class SimulationPresenter {
                     "Genotype: " + watchedAnimal.getGenotype().toString() + "\n" +
                     "Energy: " + watchedAnimal.getEnergy() + "\n" +
                     "Birth day: " + watchedAnimal.getBirthDay() + "\n" +
-                    "Death day: " + watchedAnimal.getDeathDay() + "\n");
+                    "Death day: " + watchedAnimal.getDeathDay() + "\n" +
+                    "Descendants: " + watchedAnimal.getDescendantsCount() + "\n"
+                    );
         }
     }
 

@@ -66,6 +66,10 @@ public class Animal implements WorldElement, Comparable<Animal> {
         return data.getBirthDay();
     }
 
+    public int getDescendantsCount() {
+        return data.getDescendantsCount();
+    }
+
     public Genotype getGenotype() {
         return this.data.getGenotype();
     }
