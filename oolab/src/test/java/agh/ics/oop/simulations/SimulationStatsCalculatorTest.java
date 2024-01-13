@@ -244,6 +244,7 @@ class SimulationStatsCalculatorTest {
     }
 
 
+
     @Test
     void getAverageNumberOfChildren() {
         SimulationStatsCalculator calc = new SimulationStatsCalculator(

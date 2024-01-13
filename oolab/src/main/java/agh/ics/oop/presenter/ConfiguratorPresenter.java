@@ -245,7 +245,7 @@ public class ConfiguratorPresenter {
 
             Stage stage = new Stage();
             stage.setTitle("Simulation Map");
-            stage.setScene(new Scene(root, 1280, 720));
+            stage.setScene(new Scene(root, 1280, 900));
 
             simulationPresenter.setSimulation(simulation);
             simulationPresenter.setStage(stage);

@@ -108,7 +108,7 @@
             </TitledPane>
 
             <HBox spacing="10" alignment="CENTER">
-                <Button fx:id="startButton" text="Start Simulation" onAction="#onSimulationStartClicked"/>
+                <Button text="Start Simulation" onAction="#onSimulationStartClicked"/>
                 <Button text="Save configuration" onAction="#onSaveConfigurationClicked"/>
             </HBox>
         </VBox>

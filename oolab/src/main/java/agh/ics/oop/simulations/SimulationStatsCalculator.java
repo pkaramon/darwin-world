@@ -111,20 +111,7 @@ public class SimulationStatsCalculator {
     }
 
     public Optional<Genotype> getDominantGenotype() {
-        Map<Genotype, Integer> counter = new HashMap<>();
-
-        aliveAnimalStats
-                .stream()
-                .map(AnimalStatsInfo::genotype)
-                .forEach(g ->
-                    counter.put(g, counter.getOrDefault(g, 0) + 1)
-                );
-
-        return counter
-                .entrySet()
-                .stream()
-                .max(Comparator.comparingInt(Map.Entry::getValue))
-                .map(Map.Entry::getKey);
+        return getMostPopularGenotypes(1).stream().findFirst();
     }
 
     public List<Genotype> getMostPopularGenotypes(int amount) {

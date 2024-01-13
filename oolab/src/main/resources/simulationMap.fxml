@@ -5,12 +5,11 @@
 <?import javafx.scene.layout.*?>
 <StackPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
            fx:controller="agh.ics.oop.presenter.SimulationPresenter">
-    <VBox>
+    <VBox alignment="CENTER">
         <HBox alignment="CENTER">
-            <VBox fx:id="leftInfoColumn">
-            </VBox>
+            <VBox fx:id="leftInfoColumn" alignment="CENTER"/>
             <StackPane fx:id="mapContainer"/>
-            <VBox fx:id="rightInfoColumn">
+            <VBox fx:id="rightInfoColumn" alignment="CENTER">
                 <BorderPane fx:id="popularGenotypesBorderPane">
                     <top>
                         <Label text="Most Popular Genotypes:"
@@ -18,12 +17,14 @@
                             Most Popular Genotypes:
                         </Label>
                     </top>
-                    <center></center>
+                    <center/>
                 </BorderPane>
             </VBox>
         </HBox>
-        <HBox alignment="CENTER">
+        <HBox alignment="CENTER" style="-fx-spacing: 10">
             <Button fx:id="toggleAnimationButton" text="Pause" onAction="#toggleAnimation"/>
+            <Button fx:id="mostPopularGenotypeHighlightButton">Dominant Genotype Animals</Button>
+            <Button fx:id="preferredFieldsHighlightButton">Preferred fields To Grow</Button>
         </HBox>
     </VBox>
 </StackPane>

@@ -2,9 +2,7 @@ package agh.ics.oop.presenter;
 
 import agh.ics.oop.model.animals.Animal;
 import agh.ics.oop.model.genes.Genotype;
-import agh.ics.oop.simulations.SimulationState;
 import javafx.collections.FXCollections;
-import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -45,8 +43,8 @@ public class WatchedAnimalInfoPresenter {
     }
 
     private void setupTable() {
+        watchedAnimalInfoTable.setPrefHeight(200);
         watchedAnimalInfoTable.setTableMenuButtonVisible(false);
-        watchedAnimalInfoTable.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
     }
 
 
@@ -91,6 +89,8 @@ public class WatchedAnimalInfoPresenter {
     }
 
 
+    // used by javaFX, needs to be in this particular format
+    @SuppressWarnings("unused")
     public static class WatchedAnimalProperty {
         private final String name;
         private final String value;
