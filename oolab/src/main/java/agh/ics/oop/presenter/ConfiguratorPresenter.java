@@ -2,6 +2,7 @@ package agh.ics.oop.presenter;
 
 import agh.ics.oop.simulations.configuration.SimulationConfigurationMapper;
 import agh.ics.oop.simulations.Simulation;
+import agh.ics.oop.presenter.CSVStatisticsExporter;
 import agh.ics.oop.simulations.configuration.SimulationConfiguration;
 import agh.ics.oop.simulations.configuration.GrassGrowthVariant;
 import agh.ics.oop.simulations.configuration.MutationVariant;
@@ -260,6 +261,19 @@ public class ConfiguratorPresenter {
             alert.show();
             throw new IllegalArgumentException(e) ;
         }
+    }
+
+    @FXML
+    private void handleExportCSV() {
+        CSVStatisticsExporter exporter = new CSVStatisticsExporter("output.csv");
+        SimulationStats stats = getSimulationStats();
+        exporter.export(stats);
+        exporter.close();
+        System.out.println("Data exported to CSV successfully.");
+    }
+
+    private SimulationStats getSimulationStats() {
+
     }
 }
 
