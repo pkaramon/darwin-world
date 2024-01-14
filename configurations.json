@@ -160,4 +160,94 @@
     "mutationVariant" : "Full Randomness",
     "genomeLength" : 20
   }
+}, {
+  "name" : "sssss",
+  "parameters" : {
+    "mapWidth" : 50,
+    "mapHeight" : 50,
+    "initialNumberOfPlants" : 5,
+    "plantEnergy" : 20,
+    "plantsPerDay" : 20,
+    "plantGrowthVariant" : "Equatorial Forests",
+    "initialNumberOfAnimals" : 20,
+    "animalStartEnergy" : 100,
+    "energyToReproduce" : 30,
+    "parentEnergyGivenToChild" : 10,
+    "minMutations" : 1,
+    "maxMutations" : 5,
+    "mutationVariant" : "Full Randomness",
+    "genomeLength" : 30
+  }
+}, {
+  "name" : "sseeee",
+  "parameters" : {
+    "mapWidth" : 50,
+    "mapHeight" : 50,
+    "initialNumberOfPlants" : 5,
+    "plantEnergy" : 20,
+    "plantsPerDay" : 20,
+    "plantGrowthVariant" : "Equatorial Forests",
+    "initialNumberOfAnimals" : 20,
+    "animalStartEnergy" : 100,
+    "energyToReproduce" : 30,
+    "parentEnergyGivenToChild" : 10,
+    "minMutations" : 1,
+    "maxMutations" : 5,
+    "mutationVariant" : "Full Randomness",
+    "genomeLength" : 30
+  }
+}, {
+  "name" : "erqw",
+  "parameters" : {
+    "mapWidth" : 50,
+    "mapHeight" : 50,
+    "initialNumberOfPlants" : 5,
+    "plantEnergy" : 20,
+    "plantsPerDay" : 20,
+    "plantGrowthVariant" : "Equatorial Forests",
+    "initialNumberOfAnimals" : 20,
+    "animalStartEnergy" : 100,
+    "energyToReproduce" : 30,
+    "parentEnergyGivenToChild" : 10,
+    "minMutations" : 1,
+    "maxMutations" : 5,
+    "mutationVariant" : "Full Randomness",
+    "genomeLength" : 20
+  }
+}, {
+  "name" : "fwf",
+  "parameters" : {
+    "mapWidth" : 50,
+    "mapHeight" : 50,
+    "initialNumberOfPlants" : 5,
+    "plantEnergy" : 20,
+    "plantsPerDay" : 20,
+    "plantGrowthVariant" : "Equatorial Forests",
+    "initialNumberOfAnimals" : 20,
+    "animalStartEnergy" : 100,
+    "energyToReproduce" : 30,
+    "parentEnergyGivenToChild" : 13,
+    "minMutations" : 1,
+    "maxMutations" : 5,
+    "mutationVariant" : "Full Randomness",
+    "genomeLength" : 20
+  }
+}, {
+  "name" : "wqdq",
+  "parameters" : {
+    "mapWidth" : 50,
+    "mapHeight" : 50,
+    "initialNumberOfPlants" : 5,
+    "plantEnergy" : 20,
+    "plantsPerDay" : 20,
+    "plantGrowthVariant" : "Equatorial Forests",
+    "initialNumberOfAnimals" : 20,
+    "animalStartEnergy" : 100,
+    "energyToReproduce" : 30,
+    "parentEnergyGivenToChild" : 10,
+    "minMutations" : 1,
+    "maxMutations" : 5,
+    "mutationVariant" : "Full Randomness",
+    "genomeLength" : 20
+  }
 } ]

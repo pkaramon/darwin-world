@@ -65,7 +65,7 @@ public class ConfiguratorPresenter {
     @FXML
     private ComboBox<String> configurationsComboBox;
 
-
+    private List<SimulationConfiguration> configurations;
 
     @FXML
     public void initialize() {
@@ -119,11 +119,12 @@ public class ConfiguratorPresenter {
             }
         });
     }
+
     @FXML
     private void onSaveConfigurationClicked() {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Zapisz konfigurację");
-        dialog.setHeaderText("Wprowadź nazwę konfiguracji");
+        dialog.setHeaderText("Wprowadz nazwe konfiguracji");
         dialog.setContentText("Nazwa:");
 
         Optional<String> result = dialog.showAndWait();
@@ -131,9 +132,7 @@ public class ConfiguratorPresenter {
     }
 
     private void saveConfiguration(String configurationName) {
-        List<SimulationConfiguration> configurations = loadConfigurationNames();
-
-        for (SimulationConfiguration config : configurations) {
+        for (SimulationConfiguration config : this.configurations) {
             if (config.getName().equals(configurationName)) {
                 showAlert("Błąd zapisu", "Konfiguracja o nazwie '" + configurationName + "' już istnieje.");
                 return;
@@ -142,18 +141,19 @@ public class ConfiguratorPresenter {
 
         SimulationParameters parameters = getCurrentSimulationParameters();
         SimulationConfiguration newConfig = new SimulationConfiguration(configurationName, parameters);
-        configurations.add(newConfig);
-        JsonUtil.serialize(configurations, "configurations.json");
+        this.configurations.add(newConfig);
+        JsonUtil.serialize(this.configurations, "configurations.json");
     }
 
-    private List<SimulationConfiguration> loadConfigurationNames() {
-        List<SimulationConfiguration> configurations = JsonUtil.deserialize("configurations.json");
+    private void loadConfigurationNames() {
+        this.configurations = JsonUtil.deserialize("configurations.json");
         configurationsComboBox.getItems().clear();
-        for (SimulationConfiguration config : configurations) {
+        for (SimulationConfiguration config : this.configurations) {
             configurationsComboBox.getItems().add(config.getName());
         }
-        return configurations;
     }
+
+
 
     private SimulationParameters getCurrentSimulationParameters() {
         return new SimulationParameters(
@@ -240,17 +240,20 @@ public class ConfiguratorPresenter {
         spinner.getValueFactory().setValue(value);
     }
 
+    private void updateComboBoxValue(String configurationName) {
+        System.out.println("Updating ComboBox value to: " + configurationName); // Dodaj to wypisywanie
+        configurationsComboBox.setValue(configurationName);
+    }
 
     private void loadConfiguration(String configurationName) {
-        List<SimulationConfiguration> configurations = loadConfigurationNames();
-        for (SimulationConfiguration config : configurations) {
+        for (SimulationConfiguration config : this.configurations) {
             if (config.getName().equals(configurationName)) {
                 updateUIWithParameters(config.getParameters());
+                // Nie wywołuj tutaj updateComboBoxValue, aby uniknąć pętli
                 break;
             }
         }
     }
-
 
     public void initializeSimulationWithParameters(SimulationParameters parameters) {
         Simulation simulation = new Simulation();
