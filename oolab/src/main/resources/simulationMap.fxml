@@ -3,6 +3,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Slider?>
 <StackPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
            fx:controller="agh.ics.oop.presenter.SimulationPresenter">
     <VBox alignment="CENTER">
@@ -20,6 +21,9 @@
                     <center/>
                 </BorderPane>
             </VBox>
+        </HBox>
+        <HBox alignment="CENTER" style="-fx-spacing: 10">
+            <Slider fx:id="frameRateSlider" min="1" max="60" value="30" showTickLabels="true" showTickMarks="true" />
         </HBox>
         <HBox alignment="CENTER" style="-fx-spacing: 10">
             <Button fx:id="toggleAnimationButton" text="Pause" onAction="#toggleAnimation"/>
