@@ -1,20 +1,12 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.model.Vector2d;
-import agh.ics.oop.model.animals.Animal;
-import agh.ics.oop.model.animals.AnimalFactory;
-import agh.ics.oop.model.generator.DeadAnimalsGrassGenerator;
-import agh.ics.oop.model.generator.EquatorGrassGenerator;
-import agh.ics.oop.model.generator.GrassGenerator;
-import agh.ics.oop.model.generator.GrassGeneratorInfo;
-import agh.ics.oop.model.maps.GlobeMap;
-import agh.ics.oop.model.maps.GrassMapField;
-import agh.ics.oop.model.maps.MapField;
-import agh.ics.oop.model.maps.WorldMap;
-import agh.ics.oop.model.util.JsonUtil;
+import agh.ics.oop.simulations.configuration.SimulationConfigurationMapper;
 import agh.ics.oop.simulations.Simulation;
-import agh.ics.oop.simulations.SimulationConfiguration;
-import agh.ics.oop.simulations.SimulationParameters;
+import agh.ics.oop.simulations.configuration.SimulationConfiguration;
+import agh.ics.oop.simulations.configuration.GrassGrowthVariant;
+import agh.ics.oop.simulations.configuration.MutationVariant;
+import agh.ics.oop.simulations.configuration.SimulationParameters;
+import agh.ics.oop.simulations.creation.SimulationCreator;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -26,7 +18,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 public class ConfiguratorPresenter {
     @FXML
@@ -69,24 +60,17 @@ public class ConfiguratorPresenter {
 
     @FXML
     public void initialize() {
-        configurationsComboBox.setValue("Default");
-        setupSpinner(mapHeightField, 1, 1000, 50);
-        setupSpinner(maxWidthField, 1, 1000, 50);
-        setupSpinner(grassEnergyProfitField, 1, 1000, 20);
-        setupSpinner(minEnergyCopulationField, 1, 1000, 30);
-        setupSpinner(animalStartEnergyField, 1, 1000, 100);
-        setupSpinner(animalsSpawningStartField, 1, 1000, 20);
-        setupSpinner(grassSpawnedDayField, 1, 1000, 20);
-        setupSpinner(initialPlantsField, 1, 100000, 5);
-        setupSpinner(parentEnergyGivenToChildField, 1, 1000, 10);
-        setupSpinner(minMutationsField, 1, 1000, 1);
-        setupSpinner(maxMutationsField, 1, 1000, 5);
-        setupSpinner(genomeLengthField, 1, 1000, 20);
+        setupSpinners();
+        SimulationConfiguration config = loadConfigurations();
+        updateUIWithParameters(config.getParameters());
+        setupComboBoxes();
+    }
 
-        plantGrowthVariantField.getItems().addAll("Equatorial Forests", "Life-giving Carcasses");
-        plantGrowthVariantField.setValue("Equatorial Forests");
-        mutationVariantField.getItems().addAll("Full Randomness", "Small Correction");
-        mutationVariantField.setValue("Full Randomness");
+    private void setupComboBoxes() {
+        plantGrowthVariantField.getItems().addAll(GrassGrowthVariant.getNames());
+        plantGrowthVariantField.setValue(GrassGrowthVariant.EQUATORIAL_FORESTS.toString());
+        mutationVariantField.getItems().addAll(MutationVariant.getNames());
+        mutationVariantField.setValue(MutationVariant.FULL_RANDOMNESS.toString());
 
         configurationsComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -94,11 +78,25 @@ public class ConfiguratorPresenter {
             }
         });
 
-        loadConfigurationNames();
     }
 
-    private void setupSpinner(Spinner<Integer> spinner, int min, int max, int initialValue) {
-        spinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(min, max, initialValue));
+    private void setupSpinners() {
+        setupSpinner(mapHeightField, 1, 1000);
+        setupSpinner(maxWidthField, 1, 1000);
+        setupSpinner(grassEnergyProfitField, 0, 1000);
+        setupSpinner(minEnergyCopulationField, 1, 1000);
+        setupSpinner(animalStartEnergyField, 1, 1000);
+        setupSpinner(animalsSpawningStartField, 0, 1000);
+        setupSpinner(grassSpawnedDayField, 0, 1000);
+        setupSpinner(initialPlantsField, 0, 100000);
+        setupSpinner(parentEnergyGivenToChildField, 1, 1000);
+        setupSpinner(minMutationsField, 0, 1000);
+        setupSpinner(maxMutationsField, 0, 1000);
+        setupSpinner(genomeLengthField, 1, 1000);
+    }
+
+    private void setupSpinner(Spinner<Integer> spinner, int min, int max) {
+        spinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(min, max, min));
         spinner.setEditable(true);
 
         spinner.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
@@ -113,8 +111,8 @@ public class ConfiguratorPresenter {
                     Integer value = Integer.parseInt(spinner.getEditor().getText());
                     spinner.getValueFactory().setValue(value);
                 } catch (NumberFormatException e) {
-                    spinner.getEditor().setText(String.valueOf(initialValue));
-                    spinner.getValueFactory().setValue(initialValue);
+                    spinner.getEditor().setText(String.valueOf(min));
+                    spinner.getValueFactory().setValue(min);
                 }
             }
         });
@@ -123,25 +121,19 @@ public class ConfiguratorPresenter {
     @FXML
     private void onSaveConfigurationClicked() {
         TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Zapisz konfigurację");
-        dialog.setHeaderText("Wprowadz nazwe konfiguracji");
-        dialog.setContentText("Nazwa:");
+        dialog.setTitle("Save configuration");
+        dialog.setHeaderText("Input name of the configuration:");
+        dialog.setContentText("Name:");
 
         Optional<String> result = dialog.showAndWait();
         result.ifPresent(this::saveConfiguration);
-    }
-    private void refreshConfigurationsComboBox() {
-        configurationsComboBox.getItems().clear();
-        for (SimulationConfiguration config : this.configurations) {
-            configurationsComboBox.getItems().add(config.getName());
-        }
     }
 
 
     private void saveConfiguration(String configurationName) {
         for (SimulationConfiguration config : this.configurations) {
             if (config.getName().equals(configurationName)) {
-                showAlert("Błąd zapisu", "Konfiguracja o nazwie '" + configurationName + "' już istnieje.");
+                showAlert("Error when saving", "Configuration with name: '" + configurationName + "' already exists");
                 return;
             }
         }
@@ -149,8 +141,8 @@ public class ConfiguratorPresenter {
         SimulationParameters parameters = getCurrentSimulationParameters();
         SimulationConfiguration newConfig = new SimulationConfiguration(configurationName, parameters);
         this.configurations.add(newConfig);
-        JsonUtil.serialize(this.configurations, "configurations.json");
-        loadConfigurationNames();
+        SimulationConfigurationMapper.serialize(this.configurations, "configurations.json");
+        loadConfigurations();
         configurationsComboBox.setValue(configurationName);
 
         if (!configurationsComboBox.getItems().isEmpty()) {
@@ -158,13 +150,17 @@ public class ConfiguratorPresenter {
         }
     }
 
-    private void loadConfigurationNames() {
-        this.configurations = JsonUtil.deserialize("configurations.json");
+    private SimulationConfiguration loadConfigurations() {
+        this.configurations = SimulationConfigurationMapper.deserialize("configurations.json");
         configurationsComboBox.getItems().clear();
         for (SimulationConfiguration config : this.configurations) {
             configurationsComboBox.getItems().add(config.getName());
         }
+        SimulationConfiguration defaultConfiguration = configurations.get(0);
+        configurationsComboBox.setValue(defaultConfiguration.getName());
+        return defaultConfiguration;
     }
+
 
 
 
@@ -175,35 +171,20 @@ public class ConfiguratorPresenter {
                 initialPlantsField.getValue(),
                 grassEnergyProfitField.getValue(),
                 grassSpawnedDayField.getValue(),
-                plantGrowthVariantField.getValue(),
+                GrassGrowthVariant.fromString(plantGrowthVariantField.getValue()),
                 animalsSpawningStartField.getValue(),
                 animalStartEnergyField.getValue(),
                 minEnergyCopulationField.getValue(),
                 parentEnergyGivenToChildField.getValue(),
                 minMutationsField.getValue(),
                 maxMutationsField.getValue(),
-                mutationVariantField.getValue(),
+                MutationVariant.fromString(mutationVariantField.getValue()),
                 genomeLengthField.getValue()
         );
     }
     @FXML
     private void onSimulationStartClicked() {
-        SimulationParameters parameters = new SimulationParameters(
-                maxWidthField.getValue(),
-                mapHeightField.getValue(),
-                initialPlantsField.getValue(),
-                grassEnergyProfitField.getValue(),
-                grassSpawnedDayField.getValue(),
-                plantGrowthVariantField.getValue(),
-                animalsSpawningStartField.getValue(),
-                animalStartEnergyField.getValue(),
-                minEnergyCopulationField.getValue(),
-                parentEnergyGivenToChildField.getValue(),
-                minMutationsField.getValue(),
-                maxMutationsField.getValue(),
-                mutationVariantField.getValue(),
-                genomeLengthField.getValue()
-        );
+        SimulationParameters parameters = getCurrentSimulationParameters();
 
         int minEnergyCopulation = minEnergyCopulationField.getValue();
         int parentEnergyGivenToChild = parentEnergyGivenToChildField.getValue();
@@ -221,7 +202,8 @@ public class ConfiguratorPresenter {
             return;
         }
 
-        initializeSimulationWithParameters(parameters);
+        SimulationCreator creator = new SimulationCreator(parameters);
+        startSimulation(creator.create());
     }
 
     private void showAlert(String title, String content) {
@@ -233,8 +215,6 @@ public class ConfiguratorPresenter {
     }
 
     private void updateUIWithParameters(SimulationParameters parameters) {
-        if (parameters == null) return;
-
         updateSpinnerValue(mapHeightField, parameters.mapHeight());
         updateSpinnerValue(maxWidthField, parameters.mapWidth());
         updateSpinnerValue(grassEnergyProfitField, parameters.plantEnergy());
@@ -253,66 +233,12 @@ public class ConfiguratorPresenter {
         spinner.getValueFactory().setValue(value);
     }
 
-    private void updateComboBoxValue(String configurationName) {
-        System.out.println("Updating ComboBox value to: " + configurationName); // Dodaj to wypisywanie
-        configurationsComboBox.setValue(configurationName);
-    }
-
     private void loadConfiguration(String configurationName) {
-        for (SimulationConfiguration config : this.configurations) {
-            if (config.getName().equals(configurationName)) {
-                updateUIWithParameters(config.getParameters());
-                // Nie wywołuj tutaj updateComboBoxValue, aby uniknąć pętli
-                break;
-            }
-        }
-    }
-
-    public void initializeSimulationWithParameters(SimulationParameters parameters) {
-        Simulation simulation = new Simulation();
-
-        WorldMap worldMap = createWorldMap(parameters);
-        simulation.setWorldMap(worldMap);
-
-        GrassGenerator grassGenerator = createGrassGenerator(parameters, worldMap, simulation::getCurrentDay);
-        simulation.setGrassGenerator(grassGenerator);
-
-        List<Animal> initialAnimals = createInitialAnimals(parameters, simulation);
-        simulation.setInitialAnimals(initialAnimals);
-
-        startSimulation(simulation);
-    }
-
-    private static WorldMap createWorldMap(SimulationParameters parameters) {
-        MapField[][] mapFields = new MapField[parameters.mapWidth()][parameters.mapHeight()];
-        for (int x = 0; x < parameters.mapWidth(); x++) {
-            for (int y = 0; y < parameters.mapHeight(); y++) {
-                mapFields[x][y] = new GrassMapField(new Vector2d(x, y));
-            }
-        }
-        return new GlobeMap(mapFields);
-    }
-
-    private static GrassGenerator createGrassGenerator(SimulationParameters parameters, WorldMap worldMap, Supplier<Integer> getCurrentDay) {
-        GrassGeneratorInfo growthInfo = new GrassGeneratorInfo(
-                parameters.plantsPerDay(),
-                parameters.plantEnergy(),
-                parameters.initialNumberOfPlants()
-        );
-
-        return switch (parameters.plantGrowthVariant()) {
-            case "Life-giving Carcasses" -> new DeadAnimalsGrassGenerator(growthInfo, worldMap, getCurrentDay);
-            case "Equatorial Forests" -> new EquatorGrassGenerator(growthInfo, worldMap);
-            default ->
-                    throw new IllegalArgumentException("Unknown plant growth variant: " + parameters.plantGrowthVariant());
-        };
-    }
-
-    private static List<Animal> createInitialAnimals(SimulationParameters parameters, Simulation simulation) {
-        return AnimalFactory.createInitialAnimals(
-                parameters,
-                simulation::getCurrentDay
-        );
+        this.configurations
+                .stream()
+                .filter(config-> config.getName().equals(configurationName))
+                .findFirst()
+                .ifPresent(config -> updateUIWithParameters(config.getParameters()));
     }
 
     private void startSimulation(Simulation simulation) {

@@ -1,4 +1,4 @@
-package agh.ics.oop.simulations;
+package agh.ics.oop.simulations.configuration;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,9 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class SimulationConfiguration {
     private String name;
     private SimulationParameters parameters;
-
-    public SimulationConfiguration() {
-    }
 
     @JsonCreator
     public SimulationConfiguration(@JsonProperty("name") String name,

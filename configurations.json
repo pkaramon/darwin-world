@@ -1,19 +1,91 @@
 [ {
-  "name" : "test1",
+  "name" : "nowa",
   "parameters" : {
     "mapWidth" : 50,
-    "mapHeight" : 55,
+    "mapHeight" : 30,
     "initialNumberOfPlants" : 5,
     "plantEnergy" : 20,
     "plantsPerDay" : 20,
-    "plantGrowthVariant" : "Equatorial Forests",
-    "initialNumberOfAnimals" : 20,
+    "grassGrowthVariant" : "EQUATORIAL_FORESTS",
+    "initialNumberOfAnimals" : 50,
     "animalStartEnergy" : 100,
     "energyToReproduce" : 30,
     "parentEnergyGivenToChild" : 10,
     "minMutations" : 1,
     "maxMutations" : 5,
-    "mutationVariant" : "Full Randomness",
+    "mutationVariant" : "FULL_RANDOMNESS",
+    "genomeLength" : 20
+  }
+}, {
+  "name" : "big",
+  "parameters" : {
+    "mapWidth" : 100,
+    "mapHeight" : 100,
+    "initialNumberOfPlants" : 10,
+    "plantEnergy" : 3,
+    "plantsPerDay" : 10,
+    "grassGrowthVariant" : "EQUATORIAL_FORESTS",
+    "initialNumberOfAnimals" : 50,
+    "animalStartEnergy" : 30,
+    "energyToReproduce" : 20,
+    "parentEnergyGivenToChild" : 10,
+    "minMutations" : 2,
+    "maxMutations" : 5,
+    "mutationVariant" : "FULL_RANDOMNESS",
+    "genomeLength" : 10
+  }
+}, {
+  "name" : "huge",
+  "parameters" : {
+    "mapWidth" : 200,
+    "mapHeight" : 200,
+    "initialNumberOfPlants" : 5,
+    "plantEnergy" : 20,
+    "plantsPerDay" : 20,
+    "grassGrowthVariant" : "LIFE_GIVING_CARCASSES",
+    "initialNumberOfAnimals" : 1000,
+    "animalStartEnergy" : 100,
+    "energyToReproduce" : 30,
+    "parentEnergyGivenToChild" : 10,
+    "minMutations" : 1,
+    "maxMutations" : 5,
+    "mutationVariant" : "FULL_RANDOMNESS",
+    "genomeLength" : 20
+  }
+}, {
+  "name" : "i",
+  "parameters" : {
+    "mapWidth" : 50,
+    "mapHeight" : 666,
+    "initialNumberOfPlants" : 5,
+    "plantEnergy" : 20,
+    "plantsPerDay" : 20,
+    "grassGrowthVariant" : "LIFE_GIVING_CARCASSES",
+    "initialNumberOfAnimals" : 50,
+    "animalStartEnergy" : 100,
+    "energyToReproduce" : 30,
+    "parentEnergyGivenToChild" : 10,
+    "minMutations" : 1,
+    "maxMutations" : 5,
+    "mutationVariant" : "FULL_RANDOMNESS",
+    "genomeLength" : 20
+  }
+}, {
+  "name" : "tiny",
+  "parameters" : {
+    "mapWidth" : 10,
+    "mapHeight" : 10,
+    "initialNumberOfPlants" : 5,
+    "plantEnergy" : 20,
+    "plantsPerDay" : 20,
+    "grassGrowthVariant" : "EQUATORIAL_FORESTS",
+    "initialNumberOfAnimals" : 1000,
+    "animalStartEnergy" : 100,
+    "energyToReproduce" : 30,
+    "parentEnergyGivenToChild" : 10,
+    "minMutations" : 1,
+    "maxMutations" : 5,
+    "mutationVariant" : "FULL_RANDOMNESS",
     "genomeLength" : 20
   }
 } ]
