@@ -14,7 +14,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -70,8 +69,8 @@ public class SimulationPresenter {
     @FXML
     public void initialize() {
         frameRateSlider.setMin(1);
-        frameRateSlider.setMax(60);
-        frameRateSlider.setValue(30);
+        frameRateSlider.setMax(240);
+        frameRateSlider.setValue(60);
         popularGenotypesBorderPane.setCenter(mostPopularGenotypesPresenter.getNode());
         simulationChartsPresenter.putCharts(leftInfoColumn, rightInfoColumn);
 

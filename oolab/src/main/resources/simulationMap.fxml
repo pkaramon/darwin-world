@@ -23,7 +23,7 @@
             </VBox>
         </HBox>
         <HBox alignment="CENTER" style="-fx-spacing: 10">
-            <Slider fx:id="frameRateSlider" min="1" max="60" value="30" showTickLabels="true" showTickMarks="true" />
+            <Slider fx:id="frameRateSlider" showTickLabels="true" showTickMarks="true" />
         </HBox>
         <HBox alignment="CENTER" style="-fx-spacing: 10">
             <Button fx:id="toggleAnimationButton" text="Pause" onAction="#toggleAnimation"/>
