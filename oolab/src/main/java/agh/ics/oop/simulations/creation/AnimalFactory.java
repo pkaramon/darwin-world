@@ -1,10 +1,12 @@
-package agh.ics.oop.model.animals;
+package agh.ics.oop.simulations.creation;
 
 import agh.ics.oop.model.MapDirection;
 import agh.ics.oop.model.Pose;
 import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.animals.*;
 import agh.ics.oop.model.genes.*;
-import agh.ics.oop.simulations.SimulationParameters;
+import agh.ics.oop.simulations.configuration.MutationVariant;
+import agh.ics.oop.simulations.configuration.SimulationParameters;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,11 +64,10 @@ public class AnimalFactory {
         return initialAnimals;
     }
 
-    private static GeneMutation getGeneMutation(String mutationVariant, GenotypeInfo info) {
+    private static GeneMutation getGeneMutation(MutationVariant mutationVariant, GenotypeInfo info) {
         return switch (mutationVariant) {
-            case "Full Randomness" -> new CompletelyRandomGeneMutation(info);
-            case "Small Correction" -> new StepGeneMutation(info);
-            default -> throw new IllegalArgumentException("Unknown mutation variant: " + mutationVariant);
+            case FULL_RANDOMNESS -> new CompletelyRandomGeneMutation(info);
+            case STEP_MUTATION -> new StepGeneMutation(info);
         };
     }
 
