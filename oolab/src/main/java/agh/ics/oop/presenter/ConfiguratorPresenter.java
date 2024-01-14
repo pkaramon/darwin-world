@@ -2,6 +2,7 @@ package agh.ics.oop.presenter;
 
 import agh.ics.oop.simulations.configuration.SimulationConfigurationMapper;
 import agh.ics.oop.simulations.Simulation;
+import agh.ics.oop.presenter.CSVStatisticsExporter;
 import agh.ics.oop.simulations.configuration.SimulationConfiguration;
 import agh.ics.oop.simulations.configuration.GrassGrowthVariant;
 import agh.ics.oop.simulations.configuration.MutationVariant;
@@ -51,7 +52,8 @@ public class ConfiguratorPresenter {
     private ComboBox<String> mutationVariantField;
     @FXML
     private ComboBox<String> configurationsComboBox;
-
+    @FXML
+    private CheckBox csvExportCheckbox;
     private List<SimulationConfiguration> configurations;
 
     @FXML
@@ -249,7 +251,12 @@ public class ConfiguratorPresenter {
 
             simulationPresenter.setSimulation(simulation);
             simulationPresenter.setStage(stage);
-            simulationPresenter.setStatisticsExporter(new CSVStatisticsExporter("simulation.csv"));
+
+            if (csvExportCheckbox.isSelected()) {
+                simulationPresenter.setStatisticsExporter(new CSVStatisticsExporter("simulation.csv"));
+            } else {
+                simulationPresenter.setStatisticsExporter(new NullStatisticsExporter());
+            }
 
             stage.show();
 
@@ -261,5 +268,18 @@ public class ConfiguratorPresenter {
             throw new IllegalArgumentException(e) ;
         }
     }
+
+//    @FXML
+//    private void handleExportCSV() {
+//        CSVStatisticsExporter exporter = new CSVStatisticsExporter("output.csv");
+//        SimulationStats stats = getSimulationStats();
+//        exporter.export(stats);
+//        exporter.close();
+//        System.out.println("Data exported to CSV successfully.");
+//    }
+//
+//    private SimulationStats getSimulationStats() {
+//
+//    }
 }
 

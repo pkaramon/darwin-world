@@ -14,6 +14,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
@@ -46,6 +47,9 @@ public class SimulationPresenter {
     private Button toggleAnimationButton;
     @FXML
     private BorderPane popularGenotypesBorderPane;
+    @FXML
+    private Slider frameRateSlider;
+
     private AnimationTimer animationTimer;
     private final BooleanProperty isRunning = new SimpleBooleanProperty(true);
     private Simulation simulation;
@@ -64,6 +68,9 @@ public class SimulationPresenter {
 
     @FXML
     public void initialize() {
+        frameRateSlider.setMin(1);
+        frameRateSlider.setMax(240);
+        frameRateSlider.setValue(60);
         popularGenotypesBorderPane.setCenter(mostPopularGenotypesPresenter.getNode());
         simulationChartsPresenter.putCharts(leftInfoColumn, rightInfoColumn);
 
@@ -204,18 +211,17 @@ public class SimulationPresenter {
         statisticsExport.export(stats);
     }
 
-
     private void tryToKeepFrameRate(Runnable runnable) {
-        int desiredFrameDurationMS = 1000 / 24;
+        int frameDurationMS = (int)(1000 / frameRateSlider.getValue());
         Instant now = Instant.now();
         Platform.runLater(runnable);
         Instant after = Instant.now();
-        if (after.toEpochMilli() - now.toEpochMilli() < desiredFrameDurationMS) {
+        int elapsed = (int)(after.toEpochMilli() - now.toEpochMilli());
+        if (elapsed < frameDurationMS) {
             try {
-                Thread.sleep(desiredFrameDurationMS - (after.toEpochMilli() - now.toEpochMilli()));
+                Thread.sleep(frameDurationMS - elapsed);
             } catch (InterruptedException ignored) {}
         }
     }
-
 }
 
