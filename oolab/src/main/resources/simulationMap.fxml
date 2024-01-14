@@ -1,22 +1,30 @@
 <!-- simulationMap.fxml -->
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Button?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.*?>
 <StackPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
            fx:controller="agh.ics.oop.presenter.SimulationPresenter">
-    <VBox>
+    <VBox alignment="CENTER">
         <HBox alignment="CENTER">
-            <VBox fx:id="leftColumn"/>
+            <VBox fx:id="leftInfoColumn" alignment="CENTER"/>
             <StackPane fx:id="mapContainer"/>
-            <VBox fx:id="rightChartColumn">
-                <Label fx:id="watchedAnimalLabel"/>
+            <VBox fx:id="rightInfoColumn" alignment="CENTER">
+                <BorderPane fx:id="popularGenotypesBorderPane">
+                    <top>
+                        <Label text="Most Popular Genotypes:"
+                               style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-alignment: center">
+                            Most Popular Genotypes:
+                        </Label>
+                    </top>
+                    <center/>
+                </BorderPane>
             </VBox>
         </HBox>
-        <HBox alignment="CENTER">
+        <HBox alignment="CENTER" style="-fx-spacing: 10">
             <Button fx:id="toggleAnimationButton" text="Pause" onAction="#toggleAnimation"/>
+            <Button fx:id="mostPopularGenotypeHighlightButton">Dominant Genotype Animals</Button>
+            <Button fx:id="preferredFieldsHighlightButton">Preferred fields To Grow</Button>
         </HBox>
     </VBox>
 </StackPane>

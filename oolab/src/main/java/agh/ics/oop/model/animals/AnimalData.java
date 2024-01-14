@@ -6,6 +6,7 @@ import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.genes.Genotype;
 
 import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.List;
 
 public class AnimalData {
@@ -34,11 +35,25 @@ public class AnimalData {
     }
 
     int getDescendantsCount() {
+        IdentityHashMap<AnimalData, Boolean> visited = new IdentityHashMap<>();
+        return getDescendantsCount(visited);
+    }
+
+    private int getDescendantsCount(IdentityHashMap<AnimalData, Boolean> visited) {
+        if (visited.containsKey(this)) {
+            return 0;
+        }
+        visited.put(this, true);
+
         int count = 0;
         for (AnimalData child : children) {
-            count += 1 + child.getDescendantsCount();
+            if(visited.containsKey(child)) {
+                continue;
+            }
+            count += 1+ child.getDescendantsCount(visited);
         }
         return count;
+
     }
 
     void addChild(AnimalData child) {

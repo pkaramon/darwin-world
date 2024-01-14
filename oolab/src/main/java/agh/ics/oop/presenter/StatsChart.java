@@ -31,10 +31,10 @@ public class StatsChart {
 
     private LineChart<Number, Number> configureChart(String color, NumberAxis yAxis) {
         LineChart<Number, Number> chart = new LineChart<>(xAxis, yAxis);
-        chart.setMaxWidth(300);
-        chart.setMinWidth(300);
-        chart.setMaxHeight(200);
-        chart.setMinHeight(200);
+        chart.setMaxWidth(250);
+        chart.setMinWidth(250);
+        chart.setMaxHeight(150);
+        chart.setMinHeight(150);
         chart.setCreateSymbols(false);
         chart.getData().add(dataSeries);
         chart.setStyle("CHART_COLOR_1:" + color + ";");

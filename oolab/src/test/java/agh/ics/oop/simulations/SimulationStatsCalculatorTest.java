@@ -20,10 +20,10 @@ class SimulationStatsCalculatorTest {
         SimulationStatsCalculator calc = new SimulationStatsCalculator(
                 3,
                 List.of(
-                        new AnimalStatsInfo(true, 3, 0, 0, new Genotype(List.of(1, 2, 3))),
-                        new AnimalStatsInfo(false, -1, 0, 5, new Genotype(List.of(1, 2, 3))),
-                        new AnimalStatsInfo(false, -1, 0, 6, new Genotype(List.of(1, 2, 3))),
-                        new AnimalStatsInfo(false, -1, 0, 7, new Genotype(List.of(1, 2, 3)))
+                        new AnimalStatsInfo(true, 3, 0, 0, new Genotype(List.of(1, 2, 3)), 0),
+                        new AnimalStatsInfo(false, -1, 0, 5, new Genotype(List.of(1, 2, 3)), 0),
+                        new AnimalStatsInfo(false, -1, 0, 6, new Genotype(List.of(1, 2, 3)), 0),
+                        new AnimalStatsInfo(false, -1, 0, 7, new Genotype(List.of(1, 2, 3)), 0)
                 ),
                 new MapFieldStatsInfo[][]{});
 
@@ -37,10 +37,10 @@ class SimulationStatsCalculatorTest {
         SimulationStatsCalculator calc = new SimulationStatsCalculator(
                 3,
                 List.of(
-                        new AnimalStatsInfo(true, 1, 0, 0, new Genotype(List.of(1, 2, 3))),
-                        new AnimalStatsInfo(true, 2, 0, 0, new Genotype(List.of(1, 2, 3))),
-                        new AnimalStatsInfo(true, 3, 0, 0, new Genotype(List.of(1, 2, 3))),
-                        new AnimalStatsInfo(false, -1, 0, 7, new Genotype(List.of(1, 2, 3)))
+                        new AnimalStatsInfo(true, 1, 0, 0, new Genotype(List.of(1, 2, 3)), 0),
+                        new AnimalStatsInfo(true, 2, 0, 0, new Genotype(List.of(1, 2, 3)), 0),
+                        new AnimalStatsInfo(true, 3, 0, 0, new Genotype(List.of(1, 2, 3)), 0),
+                        new AnimalStatsInfo(false, -1, 0, 7, new Genotype(List.of(1, 2, 3)), 0)
                 ),
                 new MapFieldStatsInfo[][]{}
         );
@@ -55,10 +55,10 @@ class SimulationStatsCalculatorTest {
         SimulationStatsCalculator calc = new SimulationStatsCalculator(
                 2,
                 List.of(
-                        new AnimalStatsInfo(true, 1, 0, 0, new Genotype(List.of(1, 2, 3))),
-                        new AnimalStatsInfo(true, 2, 0, 0, new Genotype(List.of(1, 2, 3))),
-                        new AnimalStatsInfo(true, 2, 0, 0, new Genotype(List.of(1, 2, 3))),
-                        new AnimalStatsInfo(false, -1, 0, 7, new Genotype(List.of(1, 2, 3)))
+                        new AnimalStatsInfo(true, 1, 0, 0, new Genotype(List.of(1, 2, 3)), 0),
+                        new AnimalStatsInfo(true, 2, 0, 0, new Genotype(List.of(1, 2, 3)), 0),
+                        new AnimalStatsInfo(true, 2, 0, 0, new Genotype(List.of(1, 2, 3)), 0),
+                        new AnimalStatsInfo(false, -1, 0, 7, new Genotype(List.of(1, 2, 3)), 0)
                 ),
                 new MapFieldStatsInfo[][]{});
 
@@ -72,17 +72,17 @@ class SimulationStatsCalculatorTest {
         SimulationStatsCalculator calc = new SimulationStatsCalculator(
                 2,
                 List.of(
-                        new AnimalStatsInfo(true, 1, 0, 0, new Genotype(List.of(1, 2, 3))),
-                        new AnimalStatsInfo(true, 2, 0, 0, new Genotype(List.of(1, 2, 3))),
-                        new AnimalStatsInfo(true, 2, 0, 0, new Genotype(List.of(1, 2, 3))),
-                        new AnimalStatsInfo(true, 2, 0, 0, new Genotype(List.of(1, 2, 3)))
+                        new AnimalStatsInfo(true, 1, 0, 0, new Genotype(List.of(1, 2, 3)), 0),
+                        new AnimalStatsInfo(true, 2, 0, 0, new Genotype(List.of(1, 2, 3)), 0),
+                        new AnimalStatsInfo(true, 2, 0, 0, new Genotype(List.of(1, 2, 3)), 0),
+                        new AnimalStatsInfo(true, 2, 0, 0, new Genotype(List.of(1, 2, 3)), 0)
                 ),
                 new MapFieldStatsInfo[][]{}
         );
 
         double averageEnergy = calc.getAverageEnergy();
 
-        assertEquals(-1, averageEnergy);
+        assertEquals(0, averageEnergy);
     }
 
     @Test
@@ -90,10 +90,10 @@ class SimulationStatsCalculatorTest {
         SimulationStatsCalculator calc = new SimulationStatsCalculator(
                 2,
                 List.of(
-                        new AnimalStatsInfo(true, 1, 0, 0, new Genotype(List.of(1, 2, 3))),
-                        new AnimalStatsInfo(false, -1, 0, 5, new Genotype(List.of(1, 2, 3))),
-                        new AnimalStatsInfo(true, 2, 0, 0, new Genotype(List.of(1, 2, 3))),
-                        new AnimalStatsInfo(false, -1, 0, 7, new Genotype(List.of(1, 2, 3)))
+                        new AnimalStatsInfo(true, 1, 0, 0, new Genotype(List.of(1, 2, 3)), 0),
+                        new AnimalStatsInfo(false, -1, 0, 5, new Genotype(List.of(1, 2, 3)), 0),
+                        new AnimalStatsInfo(true, 2, 0, 0, new Genotype(List.of(1, 2, 3)), 0),
+                        new AnimalStatsInfo(false, -1, 0, 7, new Genotype(List.of(1, 2, 3)), 0)
                 ),
                 new MapFieldStatsInfo[][]{});
 
@@ -107,14 +107,14 @@ class SimulationStatsCalculatorTest {
         SimulationStatsCalculator calc = new SimulationStatsCalculator(
                 2,
                 List.of(
-                        new AnimalStatsInfo(false, -1, 0, 2, new Genotype(List.of(1, 2, 3))),
-                        new AnimalStatsInfo(false, -1, 0, 5, new Genotype(List.of(1, 2, 3)))
+                        new AnimalStatsInfo(false, -1, 0, 2, new Genotype(List.of(1, 2, 3)), 0),
+                        new AnimalStatsInfo(false, -1, 0, 5, new Genotype(List.of(1, 2, 3)), 0)
                 ),
                 new MapFieldStatsInfo[][]{});
 
         double averageLifetimeForDeadAnimals = calc.getAverageLifetimeForDeadAnimals();
 
-        assertEquals(-1, averageLifetimeForDeadAnimals);
+        assertEquals(0, averageLifetimeForDeadAnimals);
     }
 
     @Test
@@ -122,10 +122,10 @@ class SimulationStatsCalculatorTest {
         SimulationStatsCalculator calc = new SimulationStatsCalculator(
                 7,
                 List.of(
-                        new AnimalStatsInfo(true, 3, 1, 0, new Genotype(List.of(1, 2, 3))),
-                        new AnimalStatsInfo(true, 4, 2, 0, new Genotype(List.of(1, 2, 3))),
-                        new AnimalStatsInfo(true, 7, 3, 0, new Genotype(List.of(1, 2, 3))),
-                        new AnimalStatsInfo(false, -1, 0, 7, new Genotype(List.of(1, 2, 3)))
+                        new AnimalStatsInfo(true, 3, 1, 0, new Genotype(List.of(1, 2, 3)), 0),
+                        new AnimalStatsInfo(true, 4, 2, 0, new Genotype(List.of(1, 2, 3)), 0),
+                        new AnimalStatsInfo(true, 7, 3, 0, new Genotype(List.of(1, 2, 3)), 0),
+                        new AnimalStatsInfo(false, -1, 0, 7, new Genotype(List.of(1, 2, 3)), 0)
                 ),
                 new MapFieldStatsInfo[][]{});
 
@@ -139,7 +139,7 @@ class SimulationStatsCalculatorTest {
         SimulationStatsCalculator calc = new SimulationStatsCalculator(
                 7,
                 List.of(
-                        new AnimalStatsInfo(true, 3, 1, 0, new Genotype(List.of(1, 2, 3)))
+                        new AnimalStatsInfo(true, 3, 1, 0, new Genotype(List.of(1, 2, 3)), 0)
                 ),
                 new MapFieldStatsInfo[][]{});
 
@@ -153,12 +153,12 @@ class SimulationStatsCalculatorTest {
         SimulationStatsCalculator calc = new SimulationStatsCalculator(
                 7,
                 List.of(
-                        new AnimalStatsInfo(true, 3, 1, 0, new Genotype(List.of(5, 6))),
-                        new AnimalStatsInfo(true, 4, 2, 0, new Genotype(List.of(5, 6))),
-                        new AnimalStatsInfo(true, 4, 2, 0, new Genotype(List.of(5, 6))),
-                        new AnimalStatsInfo(false, -1, 0, 7, new Genotype(List.of(1, 2))),
-                        new AnimalStatsInfo(false, -1, 0, 7, new Genotype(List.of(1, 2))),
-                        new AnimalStatsInfo(false, -1, 0, 7, new Genotype(List.of(2, 3, 4)))
+                        new AnimalStatsInfo(true, 3, 1, 0, new Genotype(List.of(5, 6)), 0),
+                        new AnimalStatsInfo(true, 4, 2, 0, new Genotype(List.of(5, 6)), 0),
+                        new AnimalStatsInfo(true, 4, 2, 0, new Genotype(List.of(5, 6)), 0),
+                        new AnimalStatsInfo(false, -1, 0, 7, new Genotype(List.of(1, 2)), 0),
+                        new AnimalStatsInfo(false, -1, 0, 7, new Genotype(List.of(1, 2)), 0),
+                        new AnimalStatsInfo(false, -1, 0, 7, new Genotype(List.of(2, 3, 4)), 0)
                 ),
                 new MapFieldStatsInfo[][]{});
 
@@ -224,7 +224,43 @@ class SimulationStatsCalculatorTest {
         assertEquals(2, freeFields);
     }
 
+    @Test
+    void getMostPopularGenotypes() {
+        SimulationStatsCalculator calc = new SimulationStatsCalculator(
+                7,
+                List.of(
+                        new AnimalStatsInfo(false, -1, 1, 2, new Genotype(List.of(5, 6)), 0),
+                        new AnimalStatsInfo(false, -1, 2, 2, new Genotype(List.of(5, 6)), 0),
+                        new AnimalStatsInfo(false, -1, 2, 3, new Genotype(List.of(5, 6)), 0),
+                        new AnimalStatsInfo(false, -1, 0, 7, new Genotype(List.of(1, 2)), 0),
+                        new AnimalStatsInfo(false, -1, 0, 7, new Genotype(List.of(1, 2)), 0),
+                        new AnimalStatsInfo(false, -1, 0, 7, new Genotype(List.of(2, 3, 4)), 0)
+                ),
+                new MapFieldStatsInfo[][]{});
 
+        List<Genotype> mostPopularGenotypes = calc.getMostPopularGenotypes(2);
+
+        assertEquals(List.of(new Genotype(List.of(5, 6)), new Genotype(List.of(1, 2))), mostPopularGenotypes);
+    }
+
+
+
+    @Test
+    void getAverageNumberOfChildren() {
+        SimulationStatsCalculator calc = new SimulationStatsCalculator(
+                7,
+                List.of(
+                        new AnimalStatsInfo(true, 2, 1, 2, new Genotype(List.of(5, 6)), 0),
+                        new AnimalStatsInfo(false, -1, 2, 2, new Genotype(List.of(5, 6)), 2),
+                        new AnimalStatsInfo(false, -1, 2, 3, new Genotype(List.of(5, 6)), 3),
+                        new AnimalStatsInfo(false, -1, 0, 7, new Genotype(List.of(1, 2)), 4)
+                ),
+                new MapFieldStatsInfo[][]{});
+
+        double averageNumberOfChildren = calc.getAverageNumberOfChildren();
+
+        assertEquals(3, averageNumberOfChildren);
+    }
 
 }
 
