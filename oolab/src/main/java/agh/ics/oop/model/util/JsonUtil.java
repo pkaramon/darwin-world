@@ -1,5 +1,6 @@
 package agh.ics.oop.model.util;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
@@ -23,20 +24,21 @@ public class JsonUtil {
         }
     }
 
-    public static List<SimulationConfiguration> deserialize(String fileName) {
-        try {
-            System.out.println("Deserializing configurations from " + fileName);
-            TypeFactory typeFactory = objectMapper.getTypeFactory();
-            CollectionType collectionType = typeFactory.constructCollectionType(ArrayList.class, SimulationConfiguration.class);
-
-            List<SimulationConfiguration> configurations = objectMapper.readValue(new File(fileName), collectionType);
-            System.out.println("Deserialization successful. Loaded " + configurations.size() + " configurations.");
-            return configurations;
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Deserialization failed.");
+    public static List<SimulationConfiguration> deserialize(String filename) {
+        File file = new File(filename);
+        if (file.exists() && file.length() > 0) {
+            // Odczytaj plik, jeśli istnieje i nie jest pusty
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(file, new TypeReference<List<SimulationConfiguration>>() {});
+            } catch (IOException e) {
+                e.printStackTrace();
+                return new ArrayList<>();
+            }
+        } else {
             return new ArrayList<>();
         }
     }
+
 
 }

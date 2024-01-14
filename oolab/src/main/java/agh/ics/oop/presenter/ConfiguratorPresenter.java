@@ -152,6 +152,10 @@ public class ConfiguratorPresenter {
         JsonUtil.serialize(this.configurations, "configurations.json");
         loadConfigurationNames();
         configurationsComboBox.setValue(configurationName);
+
+        if (!configurationsComboBox.getItems().isEmpty()) {
+            configurationsComboBox.setValue(configurationName);
+        }
     }
 
     private void loadConfigurationNames() {
