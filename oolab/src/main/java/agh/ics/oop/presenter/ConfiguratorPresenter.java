@@ -130,6 +130,13 @@ public class ConfiguratorPresenter {
         Optional<String> result = dialog.showAndWait();
         result.ifPresent(this::saveConfiguration);
     }
+    private void refreshConfigurationsComboBox() {
+        configurationsComboBox.getItems().clear();
+        for (SimulationConfiguration config : this.configurations) {
+            configurationsComboBox.getItems().add(config.getName());
+        }
+    }
+
 
     private void saveConfiguration(String configurationName) {
         for (SimulationConfiguration config : this.configurations) {
@@ -143,6 +150,8 @@ public class ConfiguratorPresenter {
         SimulationConfiguration newConfig = new SimulationConfiguration(configurationName, parameters);
         this.configurations.add(newConfig);
         JsonUtil.serialize(this.configurations, "configurations.json");
+        loadConfigurationNames();
+        configurationsComboBox.setValue(configurationName);
     }
 
     private void loadConfigurationNames() {
