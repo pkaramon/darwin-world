@@ -14,6 +14,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
@@ -203,7 +204,6 @@ public class SimulationPresenter {
         );
         statisticsExport.export(stats);
     }
-
 
     private void tryToKeepFrameRate(Runnable runnable) {
         int desiredFrameDurationMS = 1000 / 24;

@@ -110,7 +110,7 @@
             <HBox spacing="10" alignment="CENTER">
                 <Button text="Start Simulation" onAction="#onSimulationStartClicked"/>
                 <Button text="Save configuration" onAction="#onSaveConfigurationClicked"/>
-                <Button fx:id="btnExportCSV" text="Export CSV" onAction="#handleExportCSV"/>
+                <CheckBox fx:id="csvExportCheckbox" text="Enable CSV Export"/>
             </HBox>
 
         </VBox>
