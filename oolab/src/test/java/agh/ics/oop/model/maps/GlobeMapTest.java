@@ -18,7 +18,7 @@ class GlobeMapTest {
         MapField[][] fields = new MapField[width][height];
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                fields[i][j] = new GrassMapField(new Vector2d(i, j));
+                fields[i][j] = new GlobeMapField(new Vector2d(i, j));
             }
         }
 

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class SimulationConfigurationMapper {
@@ -14,11 +15,20 @@ public class SimulationConfigurationMapper {
             .enable(SerializationFeature.INDENT_OUTPUT);
 
     public static void serialize(List<SimulationConfiguration> configurations, String fileName) {
+        List<SimulationConfiguration> uniqueConfigurations = removeDuplicatesKeepLastOccurrence(configurations);
         try {
-            objectMapper.writeValue(new File(fileName), configurations);
+            objectMapper.writeValue(new File(fileName), uniqueConfigurations);
         } catch (IOException e) {
             System.out.println("Could not serialize configurations " + e.getMessage());
         }
+    }
+
+    private static List<SimulationConfiguration> removeDuplicatesKeepLastOccurrence(List<SimulationConfiguration> configurations) {
+        LinkedHashMap<String, SimulationConfiguration> map = new LinkedHashMap<>();
+        for (SimulationConfiguration config : configurations) {
+            map.put(config.getName(), config);
+        }
+        return new ArrayList<>(map.values());
     }
 
     public static List<SimulationConfiguration> deserialize(String filename) {

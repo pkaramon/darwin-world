@@ -111,6 +111,7 @@
                 <Button text="Start Simulation" onAction="#onSimulationStartClicked"/>
                 <Button text="Save configuration" onAction="#onSaveConfigurationClicked"/>
                 <CheckBox fx:id="csvExportCheckbox" text="Enable CSV Export"/>
+                <Button fx:id="csvFileNameButton">FileName: </Button>
             </HBox>
 
         </VBox>

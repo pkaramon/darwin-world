@@ -11,7 +11,6 @@ import java.util.*;
 
 public class SimulationStatsCalculator {
 
-
     record AnimalStatsInfo(
             boolean isDead,
             int deathDay,

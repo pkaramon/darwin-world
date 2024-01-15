@@ -6,12 +6,13 @@ import agh.ics.oop.model.animals.Animal;
 
 import java.util.*;
 
-public class GrassMapField implements MapField {
+public class GlobeMapField implements MapField {
     private final Vector2d position;
     private final List<Animal> animals = new ArrayList<>();
+
     private Grass grass = null;
 
-    public GrassMapField(Vector2d position) {
+    public GlobeMapField(Vector2d position) {
         this.position = position;
     }
 

@@ -1,20 +1,20 @@
 [ {
-  "name" : "Default",
+  "name" : "default",
   "parameters" : {
     "mapWidth" : 50,
     "mapHeight" : 50,
-    "initialNumberOfPlants" : 10,
-    "plantEnergy" : 3,
-    "plantsPerDay" : 10,
+    "initialNumberOfPlants" : 5,
+    "plantEnergy" : 20,
+    "plantsPerDay" : 20,
     "grassGrowthVariant" : "EQUATORIAL_FORESTS",
-    "initialNumberOfAnimals" : 50,
-    "animalStartEnergy" : 30,
-    "energyToReproduce" : 20,
+    "initialNumberOfAnimals" : 20,
+    "animalStartEnergy" : 100,
+    "energyToReproduce" : 30,
     "parentEnergyGivenToChild" : 10,
-    "minMutations" : 2,
+    "minMutations" : 1,
     "maxMutations" : 5,
     "mutationVariant" : "FULL_RANDOMNESS",
-    "genomeLength" : 10
+    "genomeLength" : 20
   }
 }, {
   "name" : "dense",
@@ -35,25 +35,7 @@
     "genomeLength" : 10
   }
 }, {
-  "name" : "quite good",
-  "parameters" : {
-    "mapWidth" : 50,
-    "mapHeight" : 50,
-    "initialNumberOfPlants" : 5,
-    "plantEnergy" : 20,
-    "plantsPerDay" : 20,
-    "grassGrowthVariant" : "EQUATORIAL_FORESTS",
-    "initialNumberOfAnimals" : 20,
-    "animalStartEnergy" : 100,
-    "energyToReproduce" : 30,
-    "parentEnergyGivenToChild" : 10,
-    "minMutations" : 1,
-    "maxMutations" : 5,
-    "mutationVariant" : "FULL_RANDOMNESS",
-    "genomeLength" : 20
-  }
-}, {
-  "name" : "quite goodv2",
+  "name" : "quite good v2",
   "parameters" : {
     "mapWidth" : 50,
     "mapHeight" : 50,
@@ -69,6 +51,24 @@
     "maxMutations" : 5,
     "mutationVariant" : "FULL_RANDOMNESS",
     "genomeLength" : 20
+  }
+}, {
+  "name" : "small",
+  "parameters" : {
+    "mapWidth" : 15,
+    "mapHeight" : 15,
+    "initialNumberOfPlants" : 10,
+    "plantEnergy" : 3,
+    "plantsPerDay" : 10,
+    "grassGrowthVariant" : "EQUATORIAL_FORESTS",
+    "initialNumberOfAnimals" : 50,
+    "animalStartEnergy" : 30,
+    "energyToReproduce" : 20,
+    "parentEnergyGivenToChild" : 10,
+    "minMutations" : 2,
+    "maxMutations" : 5,
+    "mutationVariant" : "FULL_RANDOMNESS",
+    "genomeLength" : 10
   }
 }, {
   "name" : "big",
@@ -89,21 +89,21 @@
     "genomeLength" : 10
   }
 }, {
-  "name" : "small",
+  "name" : "quick death",
   "parameters" : {
-    "mapWidth" : 15,
-    "mapHeight" : 15,
+    "mapWidth" : 30,
+    "mapHeight" : 30,
     "initialNumberOfPlants" : 10,
     "plantEnergy" : 3,
     "plantsPerDay" : 10,
-    "grassGrowthVariant" : "EQUATORIAL_FORESTS",
-    "initialNumberOfAnimals" : 50,
-    "animalStartEnergy" : 30,
+    "grassGrowthVariant" : "LIFE_GIVING_CARCASSES",
+    "initialNumberOfAnimals" : 250,
+    "animalStartEnergy" : 20,
     "energyToReproduce" : 20,
     "parentEnergyGivenToChild" : 10,
-    "minMutations" : 2,
-    "maxMutations" : 5,
-    "mutationVariant" : "FULL_RANDOMNESS",
-    "genomeLength" : 10
+    "minMutations" : 0,
+    "maxMutations" : 1,
+    "mutationVariant" : "STEP_MUTATION",
+    "genomeLength" : 3
   }
 } ]

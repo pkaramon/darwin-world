@@ -7,7 +7,7 @@ import agh.ics.oop.model.generator.EquatorGrassGenerator;
 import agh.ics.oop.model.generator.GrassGenerator;
 import agh.ics.oop.model.generator.GrassGeneratorInfo;
 import agh.ics.oop.model.maps.GlobeMap;
-import agh.ics.oop.model.maps.GrassMapField;
+import agh.ics.oop.model.maps.GlobeMapField;
 import agh.ics.oop.model.maps.MapField;
 import agh.ics.oop.model.maps.WorldMap;
 import agh.ics.oop.simulations.Simulation;
@@ -42,7 +42,7 @@ public class SimulationCreator {
         MapField[][] mapFields = new MapField[parameters.mapWidth()][parameters.mapHeight()];
         for (int x = 0; x < parameters.mapWidth(); x++) {
             for (int y = 0; y < parameters.mapHeight(); y++) {
-                mapFields[x][y] = new GrassMapField(new Vector2d(x, y));
+                mapFields[x][y] = new GlobeMapField(new Vector2d(x, y));
             }
         }
         return new GlobeMap(mapFields);

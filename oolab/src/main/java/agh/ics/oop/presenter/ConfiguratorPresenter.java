@@ -53,6 +53,10 @@ public class ConfiguratorPresenter {
     private ComboBox<String> configurationsComboBox;
     @FXML
     private CheckBox csvExportCheckbox;
+    @FXML
+    private Button csvFileNameButton;
+    private String csvFileName = "simulation";
+
     private List<SimulationConfiguration> configurations;
 
     @FXML
@@ -61,6 +65,28 @@ public class ConfiguratorPresenter {
         SimulationConfiguration config = loadConfigurations();
         updateUIWithParameters(config.getParameters());
         setupComboBoxes();
+
+        setupCSVButtons();
+    }
+
+
+    private void setupCSVButtons() {
+        csvFileNameButton.visibleProperty().bind(csvExportCheckbox.selectedProperty());
+        csvFileNameButton.managedProperty().bind(csvExportCheckbox.selectedProperty());
+        csvFileNameButton.setText("File name: " + csvFileName);
+        csvFileNameButton.setOnMouseClicked((e)-> {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Save CSV");
+            dialog.setHeaderText("Input name of the CSV file(without .csv extension):");
+            dialog.setContentText("FileName :");
+
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent((name)-> {
+                this.csvFileName = name;
+                this.csvFileNameButton.setText("File name: " + name);
+            });
+
+        });
     }
 
     private void setupComboBoxes() {
@@ -128,13 +154,6 @@ public class ConfiguratorPresenter {
 
 
     private void saveConfiguration(String configurationName) {
-        for (SimulationConfiguration config : this.configurations) {
-            if (config.getName().equals(configurationName)) {
-                showAlert("Error when saving", "Configuration with name: '" + configurationName + "' already exists");
-                return;
-            }
-        }
-
         SimulationParameters parameters = getCurrentSimulationParameters();
         SimulationConfiguration newConfig = new SimulationConfiguration(configurationName, parameters);
         this.configurations.add(newConfig);
@@ -219,6 +238,7 @@ public class ConfiguratorPresenter {
         alert.showAndWait();
     }
 
+
     private void updateUIWithParameters(SimulationParameters parameters) {
         updateSpinnerValue(mapHeightField, parameters.mapHeight());
         updateSpinnerValue(maxWidthField, parameters.mapWidth());
@@ -260,7 +280,7 @@ public class ConfiguratorPresenter {
             simulationPresenter.setStage(stage);
 
             if (csvExportCheckbox.isSelected()) {
-                simulationPresenter.setStatisticsExporter(new CSVStatisticsExporter("simulation.csv"));
+                simulationPresenter.setStatisticsExporter(new CSVStatisticsExporter(csvFileName + ".csv"));
             } else {
                 simulationPresenter.setStatisticsExporter(new NullStatisticsExporter());
             }
@@ -275,5 +295,6 @@ public class ConfiguratorPresenter {
             throw new IllegalArgumentException(e) ;
         }
     }
+
 }
 
