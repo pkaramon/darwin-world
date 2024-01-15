@@ -6,6 +6,7 @@ import agh.ics.oop.model.genes.Genotype;
 import agh.ics.oop.model.maps.WorldMap;
 import agh.ics.oop.simulations.Simulation;
 import agh.ics.oop.simulations.SimulationState;
+import agh.ics.oop.simulations.SimulationStats;
 import agh.ics.oop.simulations.SimulationStatsCalculator;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
@@ -60,9 +61,9 @@ public class SimulationPresenter {
     private Simulation simulation;
     private Animal watchedAnimal = null;
     private SimulationCanvas simulationCanvas;
-    private StatisticsExporter statisticsExport;
+    private StatisticsExporter statisticsExporter;
     private Stage stage;
-    private final MapVisualizer mapVisualizer = new MapVisualizer();
+    private MapVisualizer mapVisualizer;
     private final ExecutorService simulationExecutor = Executors.newSingleThreadExecutor();
 
 
@@ -88,11 +89,15 @@ public class SimulationPresenter {
 
     public void setSimulation(Simulation simulation) {
         this.simulation = simulation;
+        this.mapVisualizer = new MapVisualizer(
+                simulation.getWorldMap(),
+                simulation.getGrassGenerator()::isPreferredPosition
+        );
         setupSimulationCanvas();
     }
 
     public void setStatisticsExporter(StatisticsExporter statisticsExporter) {
-        this.statisticsExport = statisticsExporter;
+        this.statisticsExporter = statisticsExporter;
     }
 
     private void setupSimulationCanvas() {
@@ -116,9 +121,9 @@ public class SimulationPresenter {
     }
 
     private void tryToCloseStatisticsExporter() {
-        if (statisticsExport != null) {
+        if (statisticsExporter != null) {
             try {
-                statisticsExport.close();
+                statisticsExporter.close();
             } catch (IOException e) {
                 System.out.println("Error while closing statistics exporter");
             }
@@ -191,40 +196,28 @@ public class SimulationPresenter {
         animationTimer.start();
     }
 
-
-    private record AllOfStats(SimulationStatsCalculator statsCalculator, SimulationStats stats) {}
-
     public void animationIteration() {
         SimulationState state = getNewSimulationState();
-        AllOfStats allOfStats = getNewAllOfStats(state);
+        SimulationStats simulationStats = getNewSimulationStats(state);
+
+        var watchedAnimalInfo  = WatchedAnimalInfo.fromAnimal(watchedAnimal, state.currentDay());
+        mapVisualizer.update(
+                animal -> animal.getGenotype().equals(simulationStats.dominantGenotype()),
+                watchedAnimal
+        );
 
         Platform.runLater(() -> {
-            if(!state.isRunning()) {
-                onSimulationEnded();
-                return;
-            }
-            SimulationStatsCalculator statsCalculator = allOfStats.statsCalculator();
-            List<Genotype> dominantGenotypes = statsCalculator.getMostPopularGenotypes(3);
-            Genotype dominant = dominantGenotypes.isEmpty() ? new Genotype(List.of()) : dominantGenotypes.get(0);
-
-
-            var watchedAnimalInfo  = watchedAnimal != null ? WatchedAnimalInfo.fromAnimal(watchedAnimal, state.currentDay()) : null;
-
-            mapVisualizer.update(
-                    state.map(),
-                    simulation.getGrassGenerator()::isPreferredPosition,
-                    animal -> animal.getGenotype().equals(dominant),
-                    watchedAnimal
-            );
-
             simulationCanvas.draw(mapVisualizer);
-            simulationChartsPresenter.updateCharts(state.currentDay(), allOfStats.stats());
+            simulationChartsPresenter.updateCharts(state.currentDay(), simulationStats);
             watchedAnimalPresenter.updateWatchedAnimalInfo(watchedAnimalInfo);
-            mostPopularGenotypesPresenter.update(formatGenotypes(dominantGenotypes));
+            mostPopularGenotypesPresenter.update(formatGenotypes(simulationStats.dominantGenotypes()));
             currentDayLabel.setText("Current day: " + state.currentDay());
 
+            statisticsExporter.export(simulationStats);
 
-            statisticsExport.export(allOfStats.stats());
+            if(!state.isRunning()) {
+                onSimulationEnded();
+            }
         });
     }
 
@@ -241,21 +234,21 @@ public class SimulationPresenter {
             return simulationFuture.get();
         } catch (InterruptedException | ExecutionException e) {
             System.out.println("Error while running simulation");
-            throw new RuntimeException("Could not run simulation" + e.getMessage());
+            throw new RuntimeException("Could not run simulation: " + e.getMessage());
         }
     }
 
-    private AllOfStats getNewAllOfStats(SimulationState state) {
+    private SimulationStats getNewSimulationStats(SimulationState state) {
         try {
-            Future<AllOfStats> allOfStatsFuture = simulationExecutor.submit(()-> this.calcuateAllOfStats(state));
+            Future<SimulationStats> allOfStatsFuture = simulationExecutor.submit(()-> this.calculateSimulationStats(state));
             return allOfStatsFuture.get();
         } catch (InterruptedException | ExecutionException e) {
-            System.out.println("Error while running simulation");
-            throw new RuntimeException("Could not run simulation" + e.getMessage());
+            System.out.println("Error while calculating statistics");
+            throw new RuntimeException("Could not calculate statistics: " + e.getMessage());
         }
     }
 
-    private AllOfStats calcuateAllOfStats(SimulationState state) {
+    private SimulationStats calculateSimulationStats(SimulationState state) {
         Collection<Animal> allAnimals = Stream
                 .concat(state.animalsOnMap().stream(), state.removedFromMapAnimals().stream())
                 .collect(Collectors.toList());
@@ -265,20 +258,21 @@ public class SimulationPresenter {
                 allAnimals,
                 state.map()
         );
+
         List<Genotype> dominantGenotypes = statsCalculator.getMostPopularGenotypes(3);
         Genotype dominant = dominantGenotypes.isEmpty() ? new Genotype(List.of()) : dominantGenotypes.get(0);
 
-        SimulationStats stats = new SimulationStats(
+        return new SimulationStats(
                 state.currentDay(),
                 statsCalculator.getNumberOfAnimalsAlive(),
                 statsCalculator.getNumberOfFreeFields(),
                 statsCalculator.getNumberOfGrassOnMap(),
-                dominant.getGenes(),
+                dominant,
+                dominantGenotypes,
                 statsCalculator.getAverageEnergy(),
                 statsCalculator.getAverageLifetimeForDeadAnimals(),
                 statsCalculator.getAverageNumberOfChildren()
         );
-        return new AllOfStats(statsCalculator, stats);
     }
 
 

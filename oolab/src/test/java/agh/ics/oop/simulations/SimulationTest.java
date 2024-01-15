@@ -34,7 +34,7 @@ class SimulationTest {
                                         energies.get(i)
                                 ),
                                 feeder, mover, crosser,
-                                new AnimalComparator(()-> 1)
+                                new AnimalComparator((a, b)-> 1)
                         )
                 ).toList()
         );

@@ -1,4 +1,6 @@
-package agh.ics.oop.presenter;
+package agh.ics.oop.simulations;
+
+import agh.ics.oop.model.genes.Genotype;
 
 import java.util.List;
 
@@ -7,10 +9,8 @@ public record SimulationStats(
         int aliveAnimals,
         int emptyFields,
         int grassFields,
-        List<Integer> dominantGenes,
+        Genotype dominantGenotype,
+        List<Genotype> dominantGenotypes,
         double averageEnergy,
         double averageLifeLength,
-        double averageNumberOfChildren)
-{
-
-}
+        double averageNumberOfChildren) {}

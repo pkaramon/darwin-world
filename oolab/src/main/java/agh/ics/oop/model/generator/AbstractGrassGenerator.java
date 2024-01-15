@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 public abstract class AbstractGrassGenerator implements GrassGenerator {
     private final GrassGeneratorInfo info;
-    protected WorldMap worldMap;
+    protected final WorldMap worldMap;
     private static final double CHANCE_FOR_GROWTH_ON_PREFERRED_POSITION = 0.8;
 
     public AbstractGrassGenerator(GrassGeneratorInfo info, WorldMap worldMap) {

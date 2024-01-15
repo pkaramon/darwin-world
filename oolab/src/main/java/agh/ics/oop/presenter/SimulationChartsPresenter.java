@@ -1,5 +1,6 @@
 package agh.ics.oop.presenter;
 
+import agh.ics.oop.simulations.SimulationStats;
 import javafx.scene.layout.VBox;
 
 public class SimulationChartsPresenter {

@@ -38,8 +38,10 @@ public class AnimalFactory {
                 currentDaySupplier
         );
         AnimalCrosser crosser = new AnimalCrosser(crossingInfo);
-        AnimalComparator comparator = new AnimalComparator(()-> random.nextBoolean()? 1: -1);
 
+        // the reason why we don't have true randomness in AnimalComparator is that
+        // such randomness would violate TimSort contract, thus leading to spontaneous exceptions
+        AnimalComparator comparator = new AnimalComparator((a, b)-> a.hashCode() - b.hashCode());
 
         for (int i = 0; i < params.initialNumberOfAnimals(); i++) {
             Pose pose = new Pose(getRandomPosition(params.mapWidth(), params.mapHeight()), getRandomDirection());

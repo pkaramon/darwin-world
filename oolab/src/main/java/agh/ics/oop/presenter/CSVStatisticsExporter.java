@@ -1,10 +1,12 @@
 package agh.ics.oop.presenter;
 
+import agh.ics.oop.model.genes.Genotype;
+import agh.ics.oop.simulations.SimulationStats;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 
 public class CSVStatisticsExporter implements StatisticsExporter {
     private final File file;
@@ -31,7 +33,7 @@ public class CSVStatisticsExporter implements StatisticsExporter {
                     statistics.aliveAnimals() + "," +
                     statistics.grassFields() + "," +
                     statistics.emptyFields() + "," +
-                    printGenes(statistics.dominantGenes()) + "," +
+                    printGenes(statistics.dominantGenotype()) + "," +
                     statistics.averageEnergy() + "," +
                     statistics.averageLifeLength() + "," +
                     statistics.averageNumberOfChildren() + "\n");
@@ -40,8 +42,8 @@ public class CSVStatisticsExporter implements StatisticsExporter {
         }
     }
 
-    private String printGenes(List<Integer> genes) {
-        return "[" + String.join(" ", genes.stream().map(Object::toString).toList()) + "]";
+    private String printGenes(Genotype genotype) {
+        return "[" + String.join(" ", genotype.getGenes().stream().map(Object::toString).toList()) + "]";
     }
 
     @Override

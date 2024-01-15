@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.function.BiFunction;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
@@ -27,7 +27,7 @@ class AnimalComparatorTest {
 
     @BeforeEach
     void setUp() {
-        comparator = new AnimalComparator(()-> 1);
+        comparator = new AnimalComparator((a, b)-> 1);
     }
 
     @Test
@@ -59,14 +59,15 @@ class AnimalComparatorTest {
 
     @Test
     void inCaseOfADrawItSelectsUsingPassedFunction() {
-        Supplier<Integer> inCaseOfDraw = mock(Supplier.class);
-        when(inCaseOfDraw.get()).thenReturn(1);
-        AnimalComparator comparator = new AnimalComparator(inCaseOfDraw);
         AnimalData a = createAnimalData(10, 0);
         AnimalData b = createAnimalData(10, 0);
+        BiFunction<AnimalData, AnimalData, Integer> inCaseOfDraw = mock(BiFunction.class);
+        when(inCaseOfDraw.apply(a, b)).thenReturn(1);
+
+        AnimalComparator comparator = new AnimalComparator(inCaseOfDraw);
 
         assertTrue(comparator.compare(a, b) > 0);
-        verify(inCaseOfDraw).get();
+        verify(inCaseOfDraw).apply(a, b);
     }
 
 }

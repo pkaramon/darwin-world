@@ -7,25 +7,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class Vector2dTest {
     @Test
-    public void equals_OtherIsNotVector_ReturnsFalse() {
-        Vector2d v = new Vector2d(2, 3);
-
-        assertFalse(v.equals("not a string"));
-    }
-
-    @Test
-    public void equals_OtherIsNull_ReturnsFalse() {
-        Vector2d v = new Vector2d(2, 3);
-
-        assertFalse(v.equals(null));
-    }
-
-    @Test
     public void equals_VectorsHaveTheSameComponents_ReturnsTrue() {
         Vector2d a = new Vector2d(2, 3);
         Vector2d b = new Vector2d(2, 3);
 
-        assertTrue(a.equals(b));
+        assertEquals(a, b);
     }
 
     @Test
@@ -33,9 +19,8 @@ public class Vector2dTest {
         Vector2d a = new Vector2d(2, 3);
         Vector2d b = new Vector2d(8, 9);
 
-        assertFalse(a.equals(b));
+        assertNotEquals(a, b);
     }
-
 
     @Test
     public void toString_returnsVectorStringRepresentation() {

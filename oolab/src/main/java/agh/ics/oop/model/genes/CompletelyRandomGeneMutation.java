@@ -10,7 +10,7 @@ public class CompletelyRandomGeneMutation extends AbstractGeneMutation {
 
     @Override
     protected int mutateGene(GenotypeInfo info, int gene) {
-        int result = info.minGene() + rand.nextInt(info.maxGene() - info.minGene()); // Generate a random number in [a, b-1]
+        int result = info.minGene() + rand.nextInt(info.maxGene() - info.minGene());
         if (result >= gene) {
             result++;
         }

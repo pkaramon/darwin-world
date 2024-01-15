@@ -15,8 +15,8 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public class MapVisualizer {
-    private WorldMap worldMap;
-    private Function<Vector2d, Boolean> isPreferred;
+    private final WorldMap worldMap;
+    private final Function<Vector2d, Boolean> isPreferred;
     private Function<Animal, Boolean> shouldHighlight;
     private Animal watchedAnimal;
 
@@ -27,11 +27,14 @@ public class MapVisualizer {
     }
     public record Figure(Shape shape, Color color) {}
 
-    public void update(WorldMap worldMap, Function<Vector2d, Boolean> isPreferred,
-                         Function<Animal, Boolean> shouldHighlightAnimal,
-                         Animal watchedAnimal) {
+    public MapVisualizer(WorldMap worldMap, Function<Vector2d, Boolean> isPreferred ) {
         this.worldMap = worldMap;
         this.isPreferred = isPreferred;
+    }
+
+
+    public void update(Function<Animal, Boolean> shouldHighlightAnimal,
+                       Animal watchedAnimal) {
         this.shouldHighlight = shouldHighlightAnimal;
         this.watchedAnimal = watchedAnimal;
 
