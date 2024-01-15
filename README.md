@@ -1,4 +1,5 @@
-# PO_2023_PON1500_KARAMON
+# DARWIN WORLD, Piotr Karamon, Nikodem Adamczyk 
+PO_2023_PON1500_KARAMON
 
 1. Piotr Karamon
 2. Grupa 14, Pon 15:00
