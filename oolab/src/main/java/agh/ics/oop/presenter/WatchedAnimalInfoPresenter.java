@@ -1,14 +1,10 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.model.animals.Animal;
-import agh.ics.oop.model.genes.Genotype;
 import javafx.collections.FXCollections;
 import javafx.scene.Node;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-
-import java.util.List;
 
 public class WatchedAnimalInfoPresenter {
     private final TableView<WatchedAnimalProperty> watchedAnimalInfoTable = new TableView<>();
@@ -54,38 +50,25 @@ public class WatchedAnimalInfoPresenter {
     }
 
 
-    public void updateWatchedAnimalInfo(Animal watchedAnimal, int currentDay) {
-        if (watchedAnimal == null) {
+    public void updateWatchedAnimalInfo(WatchedAnimalInfo animalInfo) {
+        if (animalInfo == null) {
             return;
         }
 
         watchedAnimalInfoTable.setItems(FXCollections.observableArrayList(
-                new WatchedAnimalProperty("Status", watchedAnimal.isDead() ? "Dead" : "Alive"),
-                new WatchedAnimalProperty("Genotype", prettyPrintGenotypeForWatchedAnimal(watchedAnimal.getGenotype())),
-                new WatchedAnimalProperty("Energy", Integer.toString(watchedAnimal.getEnergy())),
-                new WatchedAnimalProperty("Plants Eaten", Integer.toString(watchedAnimal.getPlantsEaten())),
-                new WatchedAnimalProperty("Children", Integer.toString(watchedAnimal.getChildrenCount())),
-                new WatchedAnimalProperty("Descendants", Integer.toString(watchedAnimal.getDescendantsCount()))
+                new WatchedAnimalProperty("Status", animalInfo.isDead() ? "Dead" : "Alive"),
+                new WatchedAnimalProperty("Genotype", animalInfo.genotype()),
+                new WatchedAnimalProperty("Energy", Integer.toString(animalInfo.energy())),
+                new WatchedAnimalProperty("Plants Eaten", Integer.toString(animalInfo.plantsEaten())),
+                new WatchedAnimalProperty("Children", Integer.toString(animalInfo.childrenCount())),
+                new WatchedAnimalProperty("Descendants", Integer.toString(animalInfo.descendantsCount()))
         ));
 
-        if(watchedAnimal.isDead()) {
-            watchedAnimalInfoTable.getItems().add(new WatchedAnimalProperty("Death day", Integer.toString(watchedAnimal.getDeathDay())));
+        if(animalInfo.isDead()) {
+            watchedAnimalInfoTable.getItems().add(new WatchedAnimalProperty("Death day", Integer.toString(animalInfo.deathDay())));
         } else {
-            watchedAnimalInfoTable.getItems().add(new WatchedAnimalProperty("Lifetime", Integer.toString(currentDay - watchedAnimal.getBirthDay())));
+            watchedAnimalInfoTable.getItems().add(new WatchedAnimalProperty("Lifetime", Integer.toString(animalInfo.lifeLength())));
         }
-    }
-
-    private String prettyPrintGenotypeForWatchedAnimal(Genotype genotype) {
-        List<Integer> genes = genotype.getGenes();
-        StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < genes.size(); i++) {
-            if(i == genotype.getCurrentGeneIndex()) {
-                sb.append("<").append(genes.get(i)).append(">");
-            } else {
-                sb.append(genes.get(i)).append(" ");
-            }
-        }
-        return sb.toString();
     }
 
 

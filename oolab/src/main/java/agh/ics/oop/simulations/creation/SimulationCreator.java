@@ -1,6 +1,5 @@
 package agh.ics.oop.simulations.creation;
 
-import agh.ics.oop.model.Grass;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.animals.Animal;
 import agh.ics.oop.model.generator.DeadAnimalsGrassGenerator;
@@ -15,7 +14,6 @@ import agh.ics.oop.simulations.Simulation;
 import agh.ics.oop.simulations.configuration.SimulationParameters;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 public class SimulationCreator {
 

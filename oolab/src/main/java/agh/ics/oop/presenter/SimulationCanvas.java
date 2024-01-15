@@ -1,18 +1,14 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.model.generator.GrassGenerator;
-import agh.ics.oop.model.genes.Genotype;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import agh.ics.oop.simulations.SimulationState;
-import agh.ics.oop.model.animals.Animal;
 import agh.ics.oop.model.Vector2d;
-import agh.ics.oop.model.maps.MapField;
+
+import java.util.List;
 
 public class SimulationCanvas extends Canvas {
     private final int mapHeight;
-
     private final int cellSize;
     private final static int MAX_DIMENSION = 700;
 
@@ -26,91 +22,60 @@ public class SimulationCanvas extends Canvas {
         this.mapHeight = mapHeight;
     }
 
-    public void draw(SimulationState state,
-                     Genotype dominantGenotype,
-                     Animal watchedAnimal){
+    public void draw(MapVisualizer mapVisualizer){
+        GraphicsContext gc = clearCanvas();
+        mapVisualizer.positionStream().forEach(position ->
+                drawFigures(mapVisualizer.whatToDrawAtNormally(position), position, gc)
+        );
+    }
+
+    public void drawPreferredFields(MapVisualizer visualizer) {
+        GraphicsContext gc = clearCanvas();
+        visualizer.positionStream().forEach(position ->
+            drawFigures(visualizer.whatToDrawWhenShowingPreferredFields(position), position, gc)
+        );
+    }
+
+    public void drawDominantGenotypeAnimals(MapVisualizer visualizer) {
+        GraphicsContext gc = clearCanvas();
+        visualizer.positionStream().forEach(position ->
+                drawFigures(visualizer.whatToDrawWhenShowingDominantGenotypeAnimals(position), position, gc)
+        );
+    }
+
+    private GraphicsContext clearCanvas() {
         GraphicsContext gc = getGraphicsContext2D();
-        clearCanvas(gc);
-        drawPlants(gc, state);
-        drawAnimals(gc, state,dominantGenotype);
-
-        if(watchedAnimal != null) {
-            drawWatchedAnimal(watchedAnimal, gc);
-        }
-    }
-
-    public void drawPreferredFields(SimulationState state, GrassGenerator grassGenerator) {
-        GraphicsContext gc = getGraphicsContext2D();
-        clearCanvas(gc);
-
-        for (MapField field: state.map()) {
-            Vector2d position = field.getPosition();
-            if(grassGenerator.isPreferredPosition(position)) {
-                drawRectangle(gc, position, Color.LIGHTGREEN);
-            }
-        }
-    }
-
-    public void drawDominantGenotypeAnimals(SimulationState lastState, Genotype dominantGenotype) {
-        GraphicsContext gc = getGraphicsContext2D();
-        clearCanvas(gc);
-
-        for (Animal animal : lastState.animalsOnMap()) {
-            if(animal.getGenotype().equals(dominantGenotype)) {
-                drawCircleAt(gc, animal.getPosition(),  getAnimalColor(animal));
-                drawStartAt(gc, animal.getPosition(), Color.GOLD);
-            }
-        }
-    }
-
-    private void drawWatchedAnimal(Animal watchedAnimal, GraphicsContext gc) {
-        drawCircleAt(gc, watchedAnimal.getPosition(),  getAnimalColor(watchedAnimal));
-        drawStartAt(gc, watchedAnimal.getPosition(), Color.RED);
-    }
-
-
-    private void clearCanvas(GraphicsContext gc) {
         gc.setFill(Color.WHITE);
         gc.fillRect(0, 0, getWidth(), getHeight());
+        return gc;
     }
 
-    private void drawAnimals(GraphicsContext gc, SimulationState state, Genotype dominantGenotype) {
-        for (Animal animal : state.animalsOnMap()) {
-            drawCircleAt(gc, animal.getPosition(),  getAnimalColor(animal));
-            if(animal.getGenotype().equals(dominantGenotype)) {
-                drawStartAt(gc, animal.getPosition(), Color.GOLD);
+    private void drawFigures(List<MapVisualizer.Figure> visualizer, Vector2d position, GraphicsContext gc) {
+        visualizer.forEach(figure -> {
+            Vector2d mapped = convertToCanvasCoordinateSystem(position);
+            switch (figure.shape()) {
+                case RECTANGLE -> drawRectangle(gc, mapped, figure.color());
+                case CIRCLE -> drawCircleAt(gc, mapped, figure.color());
+                case STAR -> drawStartAt(gc, mapped, figure.color());
             }
-        }
+        });
     }
 
 
-
-    private void drawPlants(GraphicsContext gc, SimulationState state) {
-        for (MapField field: state.map()) {
-            Vector2d position = field.getPosition();
-            if (field.isGrassed()) {
-                drawRectangle(gc, position, Color.GREEN);
-            }
-        }
-    }
-
-    private void drawRectangle(GraphicsContext gc, Vector2d position, Color color) {
-        Vector2d mapped = convertToCanvasCoordinateSystem(position);
+    private void drawRectangle(GraphicsContext gc, Vector2d mapped, Color color) {
         gc.setFill(color);
         gc.fillRect(mapped.x() * cellSize, mapped.y() * cellSize, cellSize, cellSize);
     }
 
-    private void drawStartAt(GraphicsContext gc, Vector2d position, Color color) {
-        Vector2d mapped = convertToCanvasCoordinateSystem(position);
+    private void drawCircleAt(GraphicsContext gc, Vector2d mapped, Color color) {
+        gc.setFill(color);
+        gc.fillOval(mapped.x() * cellSize, mapped.y() * cellSize, cellSize, cellSize);
+    }
+
+    private void drawStartAt(GraphicsContext gc, Vector2d mapped, Color color) {
         double xCenter = mapped.x() * cellSize + (double) cellSize /2;
         double yCenter = mapped.y() * cellSize + (double) cellSize /2;
         drawStar(gc,color,  xCenter, yCenter , (double) cellSize * 0.42);
-    }
-
-    private void drawCircleAt(GraphicsContext gc, Vector2d position, Color color) {
-        Vector2d mapped = convertToCanvasCoordinateSystem(position);
-        gc.setFill(color);
-        gc.fillOval(mapped.x() * cellSize, mapped.y() * cellSize, cellSize, cellSize);
     }
 
     private void drawStar(GraphicsContext gc, Color color, double x, double y, double r) {
@@ -140,13 +105,5 @@ public class SimulationCanvas extends Canvas {
 
     public Vector2d correspondingWorldMapPosition(int canvasX, int canvasY) {
         return new Vector2d(canvasX/cellSize, -canvasY/cellSize + mapHeight-1);
-
     }
-
-
-    private Color getAnimalColor(Animal animal) {
-        double colorValue = Math.min(1, (double) animal.getEnergy() /100);
-        return Color.color(colorValue,0,colorValue);
-    }
-
 }

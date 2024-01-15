@@ -1,6 +1,5 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.model.genes.Genotype;
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
 
@@ -13,14 +12,9 @@ public class MostPopularGenotypesPresenter {
         this.genotypeList.setMaxHeight(100);
     }
 
-    public void update(List<Genotype> mostPopularGenotypes) {
+    public void update(List<String> mostPopularGenotypes) {
         genotypeList.getItems().clear();
-        genotypeList.getItems().addAll(
-                mostPopularGenotypes.stream()
-                        .map(Genotype::getGenes)
-                        .map(List::toString)
-                        .toList()
-        );
+        genotypeList.getItems().addAll(mostPopularGenotypes);
     }
 
     public Node getNode() {

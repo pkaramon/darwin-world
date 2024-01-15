@@ -59,12 +59,10 @@ public class SimulationPresenter {
     private final BooleanProperty isRunning = new SimpleBooleanProperty(true);
     private Simulation simulation;
     private Animal watchedAnimal = null;
-    private SimulationState lastState = null;
     private SimulationCanvas simulationCanvas;
-    private Genotype dominantGenotype;
     private StatisticsExporter statisticsExport;
     private Stage stage;
-
+    private final MapVisualizer mapVisualizer = new MapVisualizer();
     private final ExecutorService simulationExecutor = Executors.newSingleThreadExecutor();
 
 
@@ -112,10 +110,6 @@ public class SimulationPresenter {
     }
 
     private void stopAnimationTimer() {
-        extracted();
-    }
-
-    private void extracted() {
         if (animationTimer != null) {
             animationTimer.stop();
         }
@@ -146,7 +140,7 @@ public class SimulationPresenter {
         terminate();
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setHeaderText("Simulation ended");
-        alert.setContentText("Simulation ended after " + lastState.currentDay() + " days");
+        alert.setContentText("Simulation ended after " + simulation.getCurrentDay() + " days");
         alert.show();
         alert.setOnCloseRequest(e -> stage.close());
     }
@@ -155,11 +149,12 @@ public class SimulationPresenter {
     private void toggleAnimation() {
         if (isRunning.get()) {
             animationTimer.stop();
-            toggleAnimationButton.setText("Resume");
+            simulationCanvas.draw(mapVisualizer);
 
+            toggleAnimationButton.setText("Resume");
             simulationCanvas.setOnMouseClicked(this::canvasOnClickWhenPaused);
-            preferredFieldsHighlightButton.setOnMouseClicked(e -> simulationCanvas.drawPreferredFields(lastState, simulation.getGrassGenerator()));
-            mostPopularGenotypeHighlightButton.setOnMouseClicked(e -> simulationCanvas.drawDominantGenotypeAnimals(lastState, dominantGenotype));
+            preferredFieldsHighlightButton.setOnMouseClicked(e -> simulationCanvas.drawPreferredFields(mapVisualizer));
+            mostPopularGenotypeHighlightButton.setOnMouseClicked(e -> simulationCanvas.drawDominantGenotypeAnimals(mapVisualizer));
         } else {
             animationTimer.start();
             toggleAnimationButton.setText("Pause");
@@ -177,7 +172,9 @@ public class SimulationPresenter {
         if (!animals.isEmpty()) {
             watchedAnimal = animals.get(animals.size() - 1);
             leftInfoColumn.getChildren().add(0, watchedAnimalPresenter.getNode());
-            watchedAnimalPresenter.updateWatchedAnimalInfo(watchedAnimal, lastState.currentDay());
+            watchedAnimalPresenter.updateWatchedAnimalInfo(
+                    WatchedAnimalInfo.fromAnimal(watchedAnimal, simulation.getCurrentDay())
+            );
         } else {
             watchedAnimal = null;
         }
@@ -199,7 +196,6 @@ public class SimulationPresenter {
 
     public void animationIteration() {
         SimulationState state = getNewSimulationState();
-        lastState = state;
         AllOfStats allOfStats = getNewAllOfStats(state);
 
         Platform.runLater(() -> {
@@ -211,16 +207,32 @@ public class SimulationPresenter {
             List<Genotype> dominantGenotypes = statsCalculator.getMostPopularGenotypes(3);
             Genotype dominant = dominantGenotypes.isEmpty() ? new Genotype(List.of()) : dominantGenotypes.get(0);
 
-            dominantGenotype = dominant;
-            simulationCanvas.draw(state, dominant, watchedAnimal);
+
+            var watchedAnimalInfo  = watchedAnimal != null ? WatchedAnimalInfo.fromAnimal(watchedAnimal, state.currentDay()) : null;
+
+            mapVisualizer.update(
+                    state.map(),
+                    simulation.getGrassGenerator()::isPreferredPosition,
+                    animal -> animal.getGenotype().equals(dominant),
+                    watchedAnimal
+            );
+
+            simulationCanvas.draw(mapVisualizer);
             simulationChartsPresenter.updateCharts(state.currentDay(), allOfStats.stats());
-            watchedAnimalPresenter.updateWatchedAnimalInfo(watchedAnimal, state.currentDay());
-            mostPopularGenotypesPresenter.update(dominantGenotypes);
+            watchedAnimalPresenter.updateWatchedAnimalInfo(watchedAnimalInfo);
+            mostPopularGenotypesPresenter.update(formatGenotypes(dominantGenotypes));
             currentDayLabel.setText("Current day: " + state.currentDay());
 
 
             statisticsExport.export(allOfStats.stats());
         });
+    }
+
+    private List<String> formatGenotypes(List<Genotype> dominantGenotypes) {
+        return dominantGenotypes.stream()
+                .map(Genotype::getGenes)
+                .map(genes -> "[" + String.join(" ", genes.stream().map(Object::toString).toList()) + "]")
+                .toList();
     }
 
     private SimulationState getNewSimulationState() {
@@ -267,7 +279,6 @@ public class SimulationPresenter {
                 statsCalculator.getAverageNumberOfChildren()
         );
         return new AllOfStats(statsCalculator, stats);
-
     }
 
 

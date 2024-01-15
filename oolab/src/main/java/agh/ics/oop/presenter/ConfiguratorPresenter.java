@@ -2,13 +2,11 @@ package agh.ics.oop.presenter;
 
 import agh.ics.oop.simulations.configuration.SimulationConfigurationMapper;
 import agh.ics.oop.simulations.Simulation;
-import agh.ics.oop.presenter.CSVStatisticsExporter;
 import agh.ics.oop.simulations.configuration.SimulationConfiguration;
 import agh.ics.oop.simulations.configuration.GrassGrowthVariant;
 import agh.ics.oop.simulations.configuration.MutationVariant;
 import agh.ics.oop.simulations.configuration.SimulationParameters;
 import agh.ics.oop.simulations.creation.SimulationCreator;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -85,7 +83,7 @@ public class ConfiguratorPresenter {
         setupSpinner(grassEnergyProfitField, 0, 1000);
         setupSpinner(minEnergyCopulationField, 1, 1000);
         setupSpinner(animalStartEnergyField, 1, 1000);
-        setupSpinner(animalsSpawningStartField, 0, 1000);
+        setupSpinner(animalsSpawningStartField, 0, 100000);
         setupSpinner(grassSpawnedDayField, 0, 1000);
         setupSpinner(initialPlantsField, 0, 100000);
         setupSpinner(parentEnergyGivenToChildField, 1, 1000);
@@ -185,6 +183,13 @@ public class ConfiguratorPresenter {
     private void onSimulationStartClicked() {
         SimulationParameters parameters = getCurrentSimulationParameters();
 
+        if (checkIfFieldsHaveValidData()) {
+            SimulationCreator creator = new SimulationCreator(parameters);
+            startSimulation(creator.create());
+        }
+    }
+
+    private boolean checkIfFieldsHaveValidData() {
         int minEnergyCopulation = minEnergyCopulationField.getValue();
         int parentEnergyGivenToChild = parentEnergyGivenToChildField.getValue();
         int minMutations = minMutationsField.getValue();
@@ -193,16 +198,17 @@ public class ConfiguratorPresenter {
 
         if (minEnergyCopulation <= parentEnergyGivenToChild) {
             showAlert("Validation Error", "Minimum energy to copulation must be greater than parent energy given to child.");
-            return;
+            return false;
         }
-
-        if (minMutations >= genomeLength || maxMutations >= genomeLength) {
+        if (minMutations > genomeLength || maxMutations > genomeLength) {
             showAlert("Validation Error", "Min and max mutations must be less than genome length.");
-            return;
+            return false;
         }
-
-        SimulationCreator creator = new SimulationCreator(parameters);
-        startSimulation(creator.create());
+        if(minMutations > maxMutations) {
+            showAlert("Validation Error", "Min mutations must be less than or equal to max mutations.");
+            return false;
+        }
+        return true;
     }
 
     private void showAlert(String title, String content) {
@@ -269,18 +275,5 @@ public class ConfiguratorPresenter {
             throw new IllegalArgumentException(e) ;
         }
     }
-
-//    @FXML
-//    private void handleExportCSV() {
-//        CSVStatisticsExporter exporter = new CSVStatisticsExporter("output.csv");
-//        SimulationStats stats = getSimulationStats();
-//        exporter.export(stats);
-//        exporter.close();
-//        System.out.println("Data exported to CSV successfully.");
-//    }
-//
-//    private SimulationStats getSimulationStats() {
-//
-//    }
 }
 
