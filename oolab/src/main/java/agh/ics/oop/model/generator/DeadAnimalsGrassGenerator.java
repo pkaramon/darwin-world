@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.function.Supplier;
 
 public class DeadAnimalsGrassGenerator extends AbstractGrassGenerator implements SimulationListener {
-    private static final int ANIMAL_BODY_DECOMPOSITION_DAYS = 5;
+    private static final int ANIMAL_BODY_DECOMPOSITION_DAYS = 10;
     private final Supplier<Integer> getCurrentDay;
 
     private final Map<Vector2d, Integer> positionToMostRecentDeathDay = new HashMap<>();

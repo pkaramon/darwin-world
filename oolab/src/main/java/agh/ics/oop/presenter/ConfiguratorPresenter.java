@@ -8,6 +8,7 @@ import agh.ics.oop.simulations.configuration.GrassGrowthVariant;
 import agh.ics.oop.simulations.configuration.MutationVariant;
 import agh.ics.oop.simulations.configuration.SimulationParameters;
 import agh.ics.oop.simulations.creation.SimulationCreator;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

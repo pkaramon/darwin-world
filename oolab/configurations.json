@@ -70,4 +70,22 @@
     "mutationVariant" : "FULL_RANDOMNESS",
     "genomeLength" : 20
   }
+}, {
+  "name" : "big",
+  "parameters" : {
+    "mapWidth" : 200,
+    "mapHeight" : 200,
+    "initialNumberOfPlants" : 10,
+    "plantEnergy" : 3,
+    "plantsPerDay" : 300,
+    "grassGrowthVariant" : "EQUATORIAL_FORESTS",
+    "initialNumberOfAnimals" : 1000,
+    "animalStartEnergy" : 30,
+    "energyToReproduce" : 20,
+    "parentEnergyGivenToChild" : 10,
+    "minMutations" : 2,
+    "maxMutations" : 5,
+    "mutationVariant" : "FULL_RANDOMNESS",
+    "genomeLength" : 10
+  }
 } ]

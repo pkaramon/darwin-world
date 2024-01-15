@@ -14,6 +14,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,6 +35,9 @@ public class SimulationPresenter {
     private final WatchedAnimalInfoPresenter watchedAnimalPresenter = new WatchedAnimalInfoPresenter();
     private final MostPopularGenotypesPresenter mostPopularGenotypesPresenter = new MostPopularGenotypesPresenter();
     private final SimulationChartsPresenter simulationChartsPresenter = new SimulationChartsPresenter();
+
+    @FXML
+    private Label currentDayLabel;
     @FXML
     private Button mostPopularGenotypeHighlightButton;
     @FXML
@@ -60,6 +65,8 @@ public class SimulationPresenter {
     private StatisticsExporter statisticsExport;
     private Stage stage;
 
+    private final ExecutorService simulationExecutor = Executors.newSingleThreadExecutor();
+
 
     public void setStage(Stage stage) {
         stage.setOnCloseRequest((e) -> terminate());
@@ -70,7 +77,7 @@ public class SimulationPresenter {
     public void initialize() {
         frameRateSlider.setMin(1);
         frameRateSlider.setMax(240);
-        frameRateSlider.setValue(60);
+        frameRateSlider.setValue(24);
         popularGenotypesBorderPane.setCenter(mostPopularGenotypesPresenter.getNode());
         simulationChartsPresenter.putCharts(leftInfoColumn, rightInfoColumn);
 
@@ -99,15 +106,38 @@ public class SimulationPresenter {
     }
 
     public void terminate() {
+        stopAnimationTimer();
+        tryToCloseStatisticsExporter();
+        tryToTerminateSimulationExecutor();
+    }
+
+    private void stopAnimationTimer() {
+        extracted();
+    }
+
+    private void extracted() {
         if (animationTimer != null) {
             animationTimer.stop();
         }
+    }
+
+    private void tryToCloseStatisticsExporter() {
         if (statisticsExport != null) {
             try {
                 statisticsExport.close();
             } catch (IOException e) {
                 System.out.println("Error while closing statistics exporter");
             }
+        }
+    }
+
+    private void tryToTerminateSimulationExecutor() {
+        try {
+            if(!simulationExecutor.awaitTermination(250, TimeUnit.MILLISECONDS)) {
+                simulationExecutor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            System.out.println("Error while terminating simulation executor");
         }
     }
 
@@ -165,18 +195,57 @@ public class SimulationPresenter {
     }
 
 
+    private record AllOfStats(SimulationStatsCalculator statsCalculator, SimulationStats stats) {}
 
     public void animationIteration() {
-        SimulationState state = simulation.run();
+        SimulationState state = getNewSimulationState();
         lastState = state;
+        AllOfStats allOfStats = getNewAllOfStats(state);
 
-        if(!state.isRunning()) {
-            onSimulationEnded();
-            return;
+        Platform.runLater(() -> {
+            if(!state.isRunning()) {
+                onSimulationEnded();
+                return;
+            }
+            SimulationStatsCalculator statsCalculator = allOfStats.statsCalculator();
+            List<Genotype> dominantGenotypes = statsCalculator.getMostPopularGenotypes(3);
+            Genotype dominant = dominantGenotypes.isEmpty() ? new Genotype(List.of()) : dominantGenotypes.get(0);
+
+            dominantGenotype = dominant;
+            simulationCanvas.draw(state, dominant, watchedAnimal);
+            simulationChartsPresenter.updateCharts(state.currentDay(), allOfStats.stats());
+            watchedAnimalPresenter.updateWatchedAnimalInfo(watchedAnimal, state.currentDay());
+            mostPopularGenotypesPresenter.update(dominantGenotypes);
+            currentDayLabel.setText("Current day: " + state.currentDay());
+
+
+            statisticsExport.export(allOfStats.stats());
+        });
+    }
+
+    private SimulationState getNewSimulationState() {
+        try {
+            Future<SimulationState> simulationFuture = simulationExecutor.submit(this.simulation::run);
+            return simulationFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            System.out.println("Error while running simulation");
+            throw new RuntimeException("Could not run simulation" + e.getMessage());
         }
+    }
 
+    private AllOfStats getNewAllOfStats(SimulationState state) {
+        try {
+            Future<AllOfStats> allOfStatsFuture = simulationExecutor.submit(()-> this.calcuateAllOfStats(state));
+            return allOfStatsFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            System.out.println("Error while running simulation");
+            throw new RuntimeException("Could not run simulation" + e.getMessage());
+        }
+    }
+
+    private AllOfStats calcuateAllOfStats(SimulationState state) {
         Collection<Animal> allAnimals = Stream
-                .concat( state.animalsOnMap().stream(), state.removedFromMapAnimals().stream())
+                .concat(state.animalsOnMap().stream(), state.removedFromMapAnimals().stream())
                 .collect(Collectors.toList());
 
         SimulationStatsCalculator statsCalculator = new SimulationStatsCalculator(
@@ -187,34 +256,25 @@ public class SimulationPresenter {
         List<Genotype> dominantGenotypes = statsCalculator.getMostPopularGenotypes(3);
         Genotype dominant = dominantGenotypes.isEmpty() ? new Genotype(List.of()) : dominantGenotypes.get(0);
 
-        dominantGenotype = dominant;
-        simulationCanvas.draw(state, dominant, watchedAnimal);
-        simulationChartsPresenter.updateCharts(state, statsCalculator);
-        watchedAnimalPresenter.updateWatchedAnimalInfo(watchedAnimal, state.currentDay());
-        mostPopularGenotypesPresenter.update(dominantGenotypes);
-
-
-        exportStatistics(state, statsCalculator, dominant);
-    }
-
-
-    private void exportStatistics(SimulationState state, SimulationStatsCalculator statsCalculator, Genotype dominant) {
         SimulationStats stats = new SimulationStats(
                 state.currentDay(),
                 statsCalculator.getNumberOfAnimalsAlive(),
                 statsCalculator.getNumberOfFreeFields(),
+                statsCalculator.getNumberOfGrassOnMap(),
                 dominant.getGenes(),
                 statsCalculator.getAverageEnergy(),
                 statsCalculator.getAverageLifetimeForDeadAnimals(),
                 statsCalculator.getAverageNumberOfChildren()
         );
-        statisticsExport.export(stats);
+        return new AllOfStats(statsCalculator, stats);
+
     }
+
 
     private void tryToKeepFrameRate(Runnable runnable) {
         int frameDurationMS = (int)(1000 / frameRateSlider.getValue());
         Instant now = Instant.now();
-        Platform.runLater(runnable);
+        runnable.run();
         Instant after = Instant.now();
         int elapsed = (int)(after.toEpochMilli() - now.toEpochMilli());
         if (elapsed < frameDurationMS) {
@@ -223,5 +283,6 @@ public class SimulationPresenter {
             } catch (InterruptedException ignored) {}
         }
     }
+
 }
 

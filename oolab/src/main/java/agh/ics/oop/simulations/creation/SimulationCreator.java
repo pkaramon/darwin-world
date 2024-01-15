@@ -1,5 +1,6 @@
 package agh.ics.oop.simulations.creation;
 
+import agh.ics.oop.model.Grass;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.animals.Animal;
 import agh.ics.oop.model.generator.DeadAnimalsGrassGenerator;
@@ -30,7 +31,7 @@ public class SimulationCreator {
         WorldMap worldMap = createWorldMap();
         simulation.setWorldMap(worldMap);
 
-        GrassGenerator grassGenerator = createGrassGenerator(worldMap, simulation::getCurrentDay);
+        GrassGenerator grassGenerator = createGrassGenerator(worldMap, simulation);
         simulation.setGrassGenerator(grassGenerator);
 
         List<Animal> initialAnimals = createInitialAnimals(simulation);
@@ -49,7 +50,7 @@ public class SimulationCreator {
         return new GlobeMap(mapFields);
     }
 
-    private GrassGenerator createGrassGenerator(WorldMap worldMap, Supplier<Integer> getCurrentDay) {
+    private GrassGenerator createGrassGenerator(WorldMap worldMap, Simulation simulation) {
         GrassGeneratorInfo growthInfo = new GrassGeneratorInfo(
                 parameters.plantsPerDay(),
                 parameters.plantEnergy(),
@@ -57,7 +58,11 @@ public class SimulationCreator {
         );
 
         return switch (parameters.grassGrowthVariant()) {
-            case LIFE_GIVING_CARCASSES -> new DeadAnimalsGrassGenerator(growthInfo, worldMap, getCurrentDay);
+            case LIFE_GIVING_CARCASSES -> {
+                var grassGenerator = new DeadAnimalsGrassGenerator(growthInfo, worldMap, simulation::getCurrentDay);
+                simulation.addListener(grassGenerator);
+                yield grassGenerator;
+            }
             case EQUATORIAL_FORESTS -> new EquatorGrassGenerator(growthInfo, worldMap);
         };
     }

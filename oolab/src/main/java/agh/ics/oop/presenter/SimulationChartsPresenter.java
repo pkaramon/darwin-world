@@ -1,7 +1,5 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.simulations.SimulationState;
-import agh.ics.oop.simulations.SimulationStatsCalculator;
 import javafx.scene.layout.VBox;
 
 public class SimulationChartsPresenter {
@@ -13,14 +11,13 @@ public class SimulationChartsPresenter {
     private final StatsChart averageLifeLengthChart = new StatsChart("Average Life Length", "#ff00ff");
     private final StatsChart averageChildrenCountChart = new StatsChart("Average Children Count", "#00ffff");
 
-    public void updateCharts(SimulationState state, SimulationStatsCalculator statsCalculator) {
-        int currentDay = state.currentDay();
-        animalCountChart.update(statsCalculator.getNumberOfAnimalsAlive(), currentDay);
-        grassCountChart.update(statsCalculator.getNumberOfGrassOnMap(), currentDay);
-        emptyFieldsChart.update(statsCalculator.getNumberOfFreeFields(), currentDay);
-        averageEnergyChart.update(statsCalculator.getAverageEnergy(), currentDay);
-        averageLifeLengthChart.update(statsCalculator.getAverageLifetimeForDeadAnimals(), currentDay);
-        averageChildrenCountChart.update(statsCalculator.getAverageNumberOfChildren(), currentDay);
+    public void updateCharts(int currentDay, SimulationStats stats) {
+        animalCountChart.update(stats.aliveAnimals(), currentDay);
+        grassCountChart.update(stats.grassFields(), currentDay);
+        emptyFieldsChart.update(stats.emptyFields(), currentDay);
+        averageEnergyChart.update(stats.averageEnergy(), currentDay);
+        averageLifeLengthChart.update(stats.averageLifeLength(), currentDay);
+        averageChildrenCountChart.update(stats.averageNumberOfChildren(), currentDay);
     }
 
     public void putCharts(VBox leftInfoColumn, VBox rightInfoColumn) {

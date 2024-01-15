@@ -6,6 +6,7 @@ public record SimulationStats(
         int day,
         int aliveAnimals,
         int emptyFields,
+        int grassFields,
         List<Integer> dominantGenes,
         double averageEnergy,
         double averageLifeLength,

@@ -8,6 +8,12 @@
            fx:controller="agh.ics.oop.presenter.SimulationPresenter">
     <VBox alignment="CENTER">
         <HBox alignment="CENTER">
+            <Label fx:id="currentDayLabel" text="Current day:" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-alignment: center">
+                Simulation parameters:
+            </Label>
+        </HBox>
+
+        <HBox alignment="CENTER">
             <VBox fx:id="leftInfoColumn" alignment="CENTER"/>
             <StackPane fx:id="mapContainer"/>
             <VBox fx:id="rightInfoColumn" alignment="CENTER">

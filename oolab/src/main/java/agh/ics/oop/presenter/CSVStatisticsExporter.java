@@ -29,6 +29,7 @@ public class CSVStatisticsExporter implements StatisticsExporter {
             BufferedWriter bufferedWriter = new BufferedWriter(writer)) {
             bufferedWriter.write(statistics.day() + "," +
                     statistics.aliveAnimals() + "," +
+                    statistics.grassFields() + "," +
                     statistics.emptyFields() + "," +
                     printGenes(statistics.dominantGenes()) + "," +
                     statistics.averageEnergy() + "," +
